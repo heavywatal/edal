@@ -4,6 +4,8 @@
 
 #include <vector>
 
+class Individual;
+
 class Patch {
   public:
     double height() const {return height_;}
@@ -12,9 +14,9 @@ class Patch {
   private:
     double height_;
     double diameter_;
+    std::vector<Individual> males_;
+    std::vector<Individual> females_;
 };
-
-
 
 
 class Space {
