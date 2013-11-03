@@ -4,26 +4,31 @@
 
 #include <vector>
 
-class Individual;
+#include "individual.h"
 
 class Patch {
   public:
-    double height() const {return height_;}
-    double diameter() const {return diameter_;}
 
+    Patch() = default;
+    Patch(const size_t n): females_(n / 2), males_(n / 2) {}
+
+    void append(const Individual&);
+    size_t size() const {return females_.size() + males_.size();}
+
+    std::vector<Individual> mate_and_reproduce() const;
+    void viability_selection();
+
+    /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   private:
-    double height_;
-    double diameter_;
-    std::vector<Individual> males_;
+
+    double effective_population_size() const;
+
+    /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
+    // data member
     std::vector<Individual> females_;
+    std::vector<Individual> males_;
 };
 
-
-class Space {
-  public:
-    
-  private:
-    std::vector<std::vector<Patch> > matrix_;
-};
+extern void patch_unit_test();
 
 #endif /* ENVIRONMENT_H_ */
