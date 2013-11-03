@@ -9,7 +9,7 @@
 #include "cxxwtils/prandom.hpp"
 
 #include "individual.h"
-#include "environment.h"
+#include "patch.h"
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 // parameters

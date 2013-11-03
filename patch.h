@@ -1,6 +1,6 @@
 // -*- mode: c++; coding: utf-8 -*-
-#ifndef ENVIRONMENT_H_
-#define ENVIRONMENT_H_
+#ifndef PATCH_H_
+#define PATCH_H_
 
 #include <vector>
 
@@ -31,4 +31,4 @@ class Patch {
 
 extern void patch_unit_test();
 
-#endif /* ENVIRONMENT_H_ */
+#endif /* PATCH_H_ */
