@@ -2,14 +2,15 @@
 #include "patch.h"
 
 #include <cmath>
+#include <iostream>
+#include <string>
+
+#include <boost/program_options.hpp>
 
 #include "cxxwtils/prandom.hpp"
 
+/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
-namespace {
-} // namespace
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
 void Patch::append(const Individual& ind) {
     if (prandom().bernoulli(0.5)) {
@@ -24,13 +25,13 @@ std::vector<Individual> Patch::mate_and_reproduce() const {
     if (males_.empty()) {return offsprings;}
     offsprings.reserve(females_.size() * Individual::AVG_NUM_OFFSPINRGS_ + 8);
     for (const auto& mother: females_) {
-        std::vector<double> freqs;
-        freqs.reserve(males_.size());
+        std::vector<double> prefs;
+        prefs.reserve(males_.size());
         for (const auto& male: males_) {
-            freqs.push_back(mother.mating_frequencies(male));
+            prefs.push_back(mother.mating_preference(male));
         }
         std::vector<double> upper_bounds(males_.size());
-        std::partial_sum(freqs.begin(), freqs.end(), upper_bounds.begin());
+        std::partial_sum(prefs.begin(), prefs.end(), upper_bounds.begin());
         const double dart = prandom().uniform(upper_bounds.back());
         size_t father_i = 0;
         while (upper_bounds[father_i] < dart) {++father_i;}
@@ -43,33 +44,56 @@ std::vector<Individual> Patch::mate_and_reproduce() const {
     return offsprings;
 }
 
-double Patch::effective_population_size() const {
+double Patch::effective_num_competitors_f(const size_t index) const {
     double n = 0;
-    for (const auto& ind: females_) {
-        n += ind.effective_population_size_i();
+    for (size_t i=0; i<females_.size(); ++i) {
+        if (i==index) continue;
+        n += females_[index].effective_num_competitors(females_[i]);
     }
     for (const auto& ind: males_) {
-        n += ind.effective_population_size_i();
+        n += females_[index].effective_num_competitors(ind);
+    }
+    return n;
+}
+
+double Patch::effective_num_competitors_m(const size_t index) const {
+    double n = 0;
+    for (const auto& ind: females_) {
+        n += males_[index].effective_num_competitors(ind);
+    }
+    for (size_t i=0; i<males_.size(); ++i) {
+        if (i==index) continue;
+        n += males_[index].effective_num_competitors(males_[i]);
     }
     return n;
 }
 
 void Patch::viability_selection() {
-    const double N_e = effective_population_size();
     std::vector<Individual> survivors;
-    for (const auto& ind: females_) {
-        if (ind.survive(N_e)) {
-            survivors.push_back(ind);
+    for (size_t i=0; i<females_.size(); ++i) {
+        if (females_[i].survive(effective_num_competitors_f(i))) {
+            survivors.push_back(females_[i]);
         }
     }
     females_.swap(survivors);
     survivors.clear();
-    for (const auto& ind: males_) {
-        if (ind.survive(N_e)) {
-            survivors.push_back(ind);
+    for (size_t i=0; i<males_.size(); ++i) {
+        if (males_[i].survive(effective_num_competitors_m(i))) {
+            survivors.push_back(males_[i]);
         }
     }
     males_.swap(survivors);
+}
+
+std::string Patch::str() const {
+    std::ostringstream ost;
+    for (const auto& ind: females_) {
+        ost << ind.str() << "\n";
+    }
+    for (const auto& ind: males_) {
+        ost << ind.str() << "\n";
+    }
+    return ost.str();
 }
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////

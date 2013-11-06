@@ -9,10 +9,11 @@ int main(int argc, char* argv[]) {
     std::cin.tie(0);
     std::cout.precision(16);
     std::cerr.precision(6);
-    
+
+//    check_flags(argc, argv);
     run();
     return EXIT_SUCCESS;
-    
+
     return EXIT_FAILURE;
 }
 

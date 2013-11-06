@@ -1,4 +1,5 @@
 // -*- mode: c++; coding: utf-8 -*-
+#pragma once
 #ifndef INDIVIDUAL_H_
 #define INDIVIDUAL_H_
 #include <iostream>
@@ -7,6 +8,12 @@
 #include <string>
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
+
+namespace boost {
+    namespace program_options {
+        class options_description;
+    }
+}
 
 namespace wtl {
 namespace detail {
@@ -43,13 +50,14 @@ enum {
     // habitat preference characters
     height_preference,
     diameter_preference,
-    height_tolerance,
-    diameter_tolerance,
 
     // mating compatibility characters
     male_trait,
     female_trait,
     choosiness,
+
+    // to calculate genetic divergence
+    neutral,
 
     // for computational convenience
     size
@@ -59,14 +67,16 @@ enum {
 class Individual {
     // parameters
   public:
-    static constexpr size_t AVG_NUM_OFFSPINRGS_ = 4;
+    static size_t AVG_NUM_OFFSPINRGS_;
   private:
-    static constexpr size_t NUM_LOCI_ = 8;  // per trait
-    static constexpr unsigned long FULL_BITS = wtl::pow<NUM_LOCI_>(2) - 1;
-    static constexpr unsigned long HALF_BITS = wtl::pow<NUM_LOCI_ / 2>(2) - 1;
-    static constexpr double INV_NUM_LOCI_ = 0.5 / NUM_LOCI_;
-    static constexpr double STRENGTH_OF_MATING_PREFERENCE_ = 0.05;
-    static constexpr double MU_LOCUS_ = 1e-5;
+    static double STRENGTH_OF_MATING_PREFERENCE_;
+    static double MU_LOCUS_;
+    static double MU_NEUTRAL_;
+    constexpr static size_t NUM_LOCI_ = 8;  // per trait
+
+    constexpr static unsigned long FULL_BITS = wtl::pow<NUM_LOCI_>(2) - 1;
+    constexpr static unsigned long HALF_BITS = wtl::pow<NUM_LOCI_ / 2>(2) - 1;
+    constexpr static double INV_NUM_LOCI_ = 0.5 / NUM_LOCI_;
 
     typedef std::bitset<NUM_LOCI_> Loci;
 
@@ -74,38 +84,46 @@ class Individual {
   public:
 
     Individual(): genotype_{
-        {HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, FULL_BITS, FULL_BITS, HALF_BITS, HALF_BITS, HALF_BITS},
-        {HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, FULL_BITS, FULL_BITS, HALF_BITS, HALF_BITS, HALF_BITS}} {}
+        {HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS},
+        {HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS}},
+        phenotype_(init_phenotype()),
+        denominator_{denom_()}, sqrt_denominator_2_{sqrt_denom_2_()},
+        effective_carrying_capacity_{effective_carrying_capacity()} {}
 
     Individual(const std::vector<Loci>& egg, const std::vector<Loci>& sperm):
-        genotype_{egg, sperm} {}
+        genotype_{egg, sperm}, phenotype_(init_phenotype()),
+        denominator_{denom_()}, sqrt_denominator_2_{sqrt_denom_2_()},
+        effective_carrying_capacity_{effective_carrying_capacity()} {}
 
     Individual(const std::vector<size_t>&);
 
-    double carrying_capacity() const;
-    double carrying_capacity_prime() const;
-    double effective_population_size_i() const;
+    double effective_carrying_capacity() const;
+    double effective_num_competitors(const Individual&) const;
 
     bool survive(const double effective_population_size) const;
 
-    double mating_frequencies(const Individual& male) const;
+    double mating_preference(const Individual& male) const;
     std::vector<Loci> gametogenesis() const;
 
     std::string str() const;
 
+    static boost::program_options::options_description& opt_description();
+
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   private:
 
-    double phenotype(size_t t) const {
-        return (genotype_.first[t].count() + genotype_.second[t].count()) * INV_NUM_LOCI_;
-    }
+    std::vector<double> init_phenotype() const {
+        const size_t n(trait::size);
+        std::vector<double> output(n);
+        for (size_t i=0; i<n; ++i) {
+            output[i] = (genotype_.first[i].count() + genotype_.second[i].count()) * INV_NUM_LOCI_;
+        }
+        return output;
+    };
     double habitat_preference(const double height, const double diameter) const;
-    double denominator() const;
-    double denominator_2() const;
-    double denominator_prime() const;
-    double denominator_prime_2() const;
+    double denom_() const;
+    double sqrt_denom_2_() const;
     double fitness(const double height, const double diameter) const;
-    double mating_preference(const Individual& male) const;
 
     static Loci recombination(const Loci&, const Loci&);
     static std::vector<Loci> mutate(std::vector<Loci>);
@@ -115,9 +133,15 @@ class Individual {
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
     // data member (genotype)
     std::pair<std::vector<Loci>, std::vector<Loci> > genotype_;
-
+    std::vector<double> phenotype_;
+    double denominator_;
+    double sqrt_denominator_2_;
+    double effective_carrying_capacity_;
 };
 
+inline std::ostream& operator<< (std::ostream& ost, const Individual& ind) {
+    return ost << ind.str();
+}
 extern void individual_unit_test();
 
 #endif /* INDIVIDUAL_H_ */
