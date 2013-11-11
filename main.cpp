@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
     std::cout.precision(16);
     std::cerr.precision(6);
 
-//    check_flags(argc, argv);
+    check_flags(argc, argv);
     run();
     return EXIT_SUCCESS;
 

@@ -24,6 +24,8 @@ boost::program_options::options_description& Individual::opt_description() {
     namespace po = boost::program_options;
     static po::options_description desc{"Individual"};
     desc.add_options()
+        ("birth_rate,b", po::value<size_t>(&AVG_NUM_OFFSPINRGS_)->default_value(AVG_NUM_OFFSPINRGS_))
+        ("m", po::value<double>(&STRENGTH_OF_MATING_PREFERENCE_)->default_value(STRENGTH_OF_MATING_PREFERENCE_))
         ("mu_locus,u", po::value<double>(&MU_LOCUS_)->default_value(MU_LOCUS_))
         ("mu_neutral,n", po::value<double>(&MU_NEUTRAL_)->default_value(MU_NEUTRAL_))
     ;

@@ -17,7 +17,7 @@ class Patch {
   public:
 
     Patch() = default;
-    Patch(const size_t n): females_(n / 2), males_(n / 2) {}
+    Patch(const size_t n): females_(n / 2), males_(n - females_.size()) {}
 
     void append(const Individual&);
     size_t size() const {return females_.size() + males_.size();}
@@ -25,8 +25,6 @@ class Patch {
 
     std::vector<Individual> mate_and_reproduce() const;
     void viability_selection();
-
-    static boost::program_options::options_description& opt_description();
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   private:
