@@ -109,21 +109,12 @@ Depend:
 .PHONY: open
 
 mainsrcs := $(addprefix ${SRCDIR}/,\
-optimum.h \
-stimulus.h \
-environment.h \
-gene.h \
 individual.h \
-population.h \
-main.h \
-optimum.cpp \
-stimulus.cpp \
-environment.cpp \
-gene.cpp \
 individual.cpp \
-population.cpp \
+patch.h \
+patch.cpp \
+main.h \
 main.cpp \
-global.hpp \
 )
 
 libsrcs := $(addprefix ${INCLUDEDIR}/cxxwtils/,\
@@ -134,9 +125,7 @@ gz.hpp \
 os.hpp \
 algorithm.hpp \
 prandom.hpp \
-genetic.hpp \
-grn.hpp \
 )
 
 open:
-	open -a mi ${mainsrcs} ${libsrcs} python/run.py
+	open -a mi ${mainsrcs} ${libsrcs}
