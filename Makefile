@@ -58,7 +58,7 @@ ${PROGRAM}: ${OBJS}
 	${LINK.cpp} ${OUTPUT_OPTION} $^ ${LOADLIBES} ${LDLIBS}
 
 clean:
-	${RM} ${OBJS} ${PROGRAM} ${PROGRAM}.sh ${PROGRAM}.bc ${PROGRAM}.s
+	${RM} ${OBJS} ${PROGRAM}
 
 run:
 	./${PROGRAM}

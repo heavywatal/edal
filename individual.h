@@ -66,14 +66,17 @@ enum {
 
 class Individual {
     // parameters
-  public:
-    static size_t AVG_NUM_OFFSPINRGS_;
   private:
-    static double STRENGTH_OF_MATING_PREFERENCE_;
+    static size_t CARRYING_CAPACITY;
+    static size_t AVG_NUM_OFFSPINRGS_;
+    static double HABITAT_SIGMA_;
+    static double MATING_SIGMA_;
+    static double ADAPTIVE_T_SIGMA_;
+    static double ADAPTIVE_L_SIGMA_;
     static double MU_LOCUS_;
     static double MU_NEUTRAL_;
-    constexpr static size_t NUM_LOCI_ = 8;  // per trait
 
+    constexpr static size_t NUM_LOCI_ = 8;  // per trait
     constexpr static unsigned long FULL_BITS = wtl::pow<NUM_LOCI_>(2) - 1;
     constexpr static unsigned long HALF_BITS = wtl::pow<NUM_LOCI_ / 2>(2) - 1;
     constexpr static double INV_NUM_LOCI_ = 0.5 / NUM_LOCI_;
@@ -103,6 +106,7 @@ class Individual {
     bool survive(const double effective_population_size) const;
 
     double mating_preference(const Individual& male) const;
+    size_t poisson_offsprings() const;
     std::vector<Loci> gametogenesis() const;
 
     std::string str() const;

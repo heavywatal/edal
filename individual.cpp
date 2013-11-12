@@ -10,10 +10,14 @@
 #include "cxxwtils/iostr.hpp"
 #include "cxxwtils/prandom.hpp"
 
+size_t Individual::CARRYING_CAPACITY = 60;
 size_t Individual::AVG_NUM_OFFSPINRGS_ = 4;
-double Individual::STRENGTH_OF_MATING_PREFERENCE_ = 0.05;
-double Individual::MU_LOCUS_ = 1e-5;
-double Individual::MU_NEUTRAL_ = 1e-5;
+double Individual::HABITAT_SIGMA_ = 0.2;
+double Individual::MATING_SIGMA_ = 0.2;
+double Individual::ADAPTIVE_T_SIGMA_ = 1.0;
+double Individual::ADAPTIVE_L_SIGMA_ = 1.0;
+double Individual::MU_LOCUS_ = 1e-4;
+double Individual::MU_NEUTRAL_ = 1e-4;
 
 constexpr size_t Individual::NUM_LOCI_;
 constexpr unsigned long Individual::FULL_BITS;
@@ -25,7 +29,11 @@ boost::program_options::options_description& Individual::opt_description() {
     static po::options_description desc{"Individual"};
     desc.add_options()
         ("birth_rate,b", po::value<size_t>(&AVG_NUM_OFFSPINRGS_)->default_value(AVG_NUM_OFFSPINRGS_))
-        ("m", po::value<double>(&STRENGTH_OF_MATING_PREFERENCE_)->default_value(STRENGTH_OF_MATING_PREFERENCE_))
+        ("carrying_capacity,K", po::value<size_t>(&CARRYING_CAPACITY)->default_value(CARRYING_CAPACITY))
+        ("habitat_s,p", po::value<double>(&HABITAT_SIGMA_)->default_value(HABITAT_SIGMA_))
+        ("mating_s,s", po::value<double>(&MATING_SIGMA_)->default_value(MATING_SIGMA_))
+        ("adaptive_t_s,t", po::value<double>(&ADAPTIVE_T_SIGMA_)->default_value(ADAPTIVE_T_SIGMA_))
+        ("adaptive_l_s,l", po::value<double>(&ADAPTIVE_L_SIGMA_)->default_value(ADAPTIVE_L_SIGMA_))
         ("mu_locus,u", po::value<double>(&MU_LOCUS_)->default_value(MU_LOCUS_))
         ("mu_neutral,n", po::value<double>(&MU_NEUTRAL_)->default_value(MU_NEUTRAL_))
     ;
@@ -61,26 +69,15 @@ inline double abundance(const double height, const double diameter) {
     h_exponent -= mean_height;
     h_exponent /= sd_height;
     h_exponent *= h_exponent;
-    h_exponent *= -2;
+    h_exponent *= -0.5;
     double theta_u = 1.0;
     theta_u /= (c0 - c1 * height);
+    double d_exponent = -diameter;
+    d_exponent *= theta_u;
     double result = k;
-    result *= std::exp(h_exponent);
-    result *= std::exp(theta_u * diameter);
+    result *= std::exp(h_exponent + d_exponent);
     result *= theta_u;
     return result;
-}
-
-inline double preference_impl(const double habitat_preference,
-                              const double env_characterstic) {
-    constexpr double sigma_p = 0.2;
-
-    double exponent = habitat_preference;
-    exponent -= env_characterstic;
-    exponent /= sigma_p;
-    exponent *= exponent;
-    exponent /= -2.0;
-    return std::exp(exponent);
 }
 
 } // namespace
@@ -109,11 +106,18 @@ Individual::Individual(const std::vector<size_t>& values): genotype_{{}, {}} {
 }
 
 double Individual::habitat_preference(const double height, const double diameter) const {
-    double result = preference_impl(phenotype_[trait::height_preference], height);
-    result *= preference_impl(phenotype_[trait::diameter_preference], diameter);
-    return result;
+    auto impl = [](const double ind_preference,
+                   const double env_characterstics) {
+        double exponent = ind_preference;
+        exponent -= env_characterstics;
+        exponent /= HABITAT_SIGMA_;
+        exponent *= exponent;
+        return exponent *= -0.5;
+    };
+    double exponent = impl(phenotype_[trait::height_preference], height);
+    exponent += impl(phenotype_[trait::diameter_preference], diameter);
+    return std::exp(exponent);
 }
-
 
 double Individual::denom_() const {
     return integral([this](const double height, const double diameter)->double {
@@ -131,24 +135,21 @@ double Individual::sqrt_denom_2_() const {
 }
 
 double Individual::fitness(const double height, const double diameter) const {
-    constexpr double sigma_h = 1.0;
-    constexpr double sigma_d = 1.0;
-    double lhs = phenotype_[trait::toepad_size];
-    lhs -= height;
-    lhs /= sigma_h;
-    lhs *= lhs;
-    double rhs = phenotype_[trait::limb_length];
-    rhs -= diameter;
-    rhs /= sigma_d;
-    rhs *= rhs;
-    double exponent = lhs + rhs;
+    auto impl = [](const double x, const double mu, const double sigma) {
+        double exponent = x;
+        exponent -= mu;
+        exponent /= sigma;
+        exponent *= exponent;
+        return exponent;
+    };
+    double exponent = impl(phenotype_[trait::toepad_size], height, ADAPTIVE_T_SIGMA_);
+    exponent += impl(phenotype_[trait::limb_length], diameter, ADAPTIVE_L_SIGMA_);
     exponent *= -0.5;
     return std::exp(exponent);
 }
 
 double Individual::effective_carrying_capacity() const {
-    constexpr size_t max_carrying_capacity = 30;
-    double result = max_carrying_capacity;
+    double result = CARRYING_CAPACITY;
     result /= denominator_;
     result *= integral([this](const double height, const double diameter)->double {
         double result = fitness(height, diameter);
@@ -173,8 +174,9 @@ double Individual::effective_num_competitors(const Individual& opponent) const {
 bool Individual::survive(const double effective_population_size) const {
     double denom = AVG_NUM_OFFSPINRGS_;
     denom -= 1.0;
-    denom *= effective_population_size;
+    denom *= effective_population_size;  // ^ alpha for crowding strength
     denom /= effective_carrying_capacity_;
+    denom += 1.0;
     return prandom().bernoulli(1.0 / denom);
 }
 
@@ -193,14 +195,18 @@ double Individual::mating_preference(const Individual& male) const {
         exponent -= 1.0;
         exponent += male.phenotype_[trait::male_trait];
     }
-    exponent *= exponent;
-    double true_choosiness = (2 * choosiness - 1);
-    true_choosiness *= true_choosiness;
+    double true_choosiness = choosiness;
+    true_choosiness *= 2.0;
+    true_choosiness -= 1.0;
     exponent *= true_choosiness;
-    exponent /= STRENGTH_OF_MATING_PREFERENCE_;
-    exponent /= STRENGTH_OF_MATING_PREFERENCE_;
-    exponent /= -2.0;
+    exponent /= MATING_SIGMA_;
+    exponent *= exponent;
+    exponent *= -0.5;
     return std::exp(exponent);
+}
+
+size_t Individual::poisson_offsprings() const {
+    return prandom().poisson(AVG_NUM_OFFSPINRGS_);
 }
 
 std::vector<Individual::Loci> Individual::mutate(std::vector<Individual::Loci> haplotype) {

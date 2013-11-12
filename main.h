@@ -25,6 +25,7 @@ namespace fs = boost::filesystem;
 size_t num_rows = 8;
 size_t num_cols = 8;
 size_t initial_patch_size = 20;
+size_t observation_period = 1000;
 double migration_rate = 1e-1;
 
 unsigned int seed_ = std::random_device{}();
@@ -63,6 +64,7 @@ inline void check_flags(int argc, char* argv[]) {HERE;
                 ->default_value((TMP_DIR / wtl::strftime("out%Y%m%d")).string()))
             ("row", po::value<size_t>(&num_rows)->default_value(num_rows))
             ("col", po::value<size_t>(&num_cols)->default_value(num_cols))
+            ("time,T", po::value<size_t>(&observation_period)->default_value(observation_period))
             ("migration_rate,m", po::value<double>(&migration_rate)->default_value(migration_rate))
             ("seed", po::value<unsigned int>(&seed_)->default_value(seed_))
             ;
@@ -165,14 +167,13 @@ inline void run() {HERE;
 
     matrix.assign(num_rows, std::vector<Patch>(num_cols));
     matrix[0][0] = Patch(initial_patch_size);
-    const size_t n = 100;
-    for (size_t i=0; i<n; ++i) {
+    for (size_t i=0; i<observation_period; ++i) {
         std::cout << "T = " << i << std::endl;
         print_matrix(matrix, [](const Patch& p) {return p.size();});
         std::cout << std::endl;
         life_cycle();
     }
-    std::cout << "T = " << n << std::endl;
+    std::cout << "T = " << observation_period << std::endl;
     print_matrix(matrix, [](const Patch& p) {return p.size();});
     std::cout << std::endl;
     for (const auto& row: matrix) {

@@ -23,7 +23,7 @@ void Patch::append(const Individual& ind) {
 std::vector<Individual> Patch::mate_and_reproduce() const {
     std::vector<Individual> offsprings;
     if (males_.empty()) {return offsprings;}
-    offsprings.reserve(females_.size() * Individual::AVG_NUM_OFFSPINRGS_ + 8);
+    offsprings.reserve(females_.size() * 8);
     for (const auto& mother: females_) {
         std::vector<double> prefs;
         prefs.reserve(males_.size());
@@ -36,7 +36,7 @@ std::vector<Individual> Patch::mate_and_reproduce() const {
         size_t father_i = 0;
         while (upper_bounds[father_i] < dart) {++father_i;}
         const Individual& father = males_[father_i];
-        const size_t num_children = prandom().poisson(Individual::AVG_NUM_OFFSPINRGS_);
+        const size_t num_children = mother.poisson_offsprings();
         for (size_t i=0; i<num_children; ++i) {
             offsprings.push_back(Individual(mother.gametogenesis(), father.gametogenesis()));
         }
