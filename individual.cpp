@@ -126,6 +126,17 @@ double Individual::denom_() const {
     });
 }
 
+double Individual::denom_new() const {
+    constexpr size_t alpha = 1.0;
+    constexpr size_t h0 = 1.0;
+    constexpr size_t h1 = 1.0;
+    double a = 8 * std::pow(-1, 2 * alpha + 1) * std::pow(4, -alpha) * wtl::pow<3>(alpha) * h1 * phenotype_[trait::toepad_size];
+    double b = 60 * std::pow(-1, 2 * alpha + 1) * std::pow(4, -alpha) * wtl::pow<2>(alpha) * h1 * wtl::pow<2>(phenotype_[trait::toepad_size]);
+    double c = 60 * std::pow(-1, 2 * alpha + 1) * std::pow(4, -alpha) * wtl::pow<2>(alpha) * h0 * wtl::pow<2>(phenotype_[trait::limb_length]);
+    double z = (a + b + c) * std::sqrt(M_PI);
+    return z /= -12;
+}
+
 double Individual::sqrt_denom_2_() const {
     return std::sqrt(integral([this](const double height, const double diameter)->double {
         double result = habitat_preference(height, diameter);

@@ -126,6 +126,7 @@ class Individual {
     };
     double habitat_preference(const double height, const double diameter) const;
     double denom_() const;
+    double denom_new() const;
     double sqrt_denom_2_() const;
     double fitness(const double height, const double diameter) const;
 
