@@ -125,6 +125,7 @@ gz.hpp \
 os.hpp \
 algorithm.hpp \
 prandom.hpp \
+multiprocessing.hpp \
 )
 
 open:

@@ -14,6 +14,7 @@ namespace fs = boost::filesystem;
 #include "cxxwtils/getopt.hpp"
 #include "cxxwtils/prandom.hpp"
 #include "cxxwtils/os.hpp"
+#include "cxxwtils/multiprocessing.hpp"
 
 #include "individual.h"
 #include "patch.h"
@@ -99,30 +100,47 @@ inline std::pair<size_t, size_t> migrate(const size_t row_orig, const size_t col
       case 6: --row;        break;
       case 7: --row; ++col; break;
     }
-    if (row > 7 | col > 7) {row = row_orig; col = col_orig;}
+    if ((row > 7) | (col > 7)) {row = row_orig; col = col_orig;}
     return {row, col};
 }
 
 inline void life_cycle() {
     std::vector<std::vector<Patch> > next_generation(matrix);
-    for (size_t row=0; row<num_rows; ++row) {
-        for (size_t col=0; col<num_cols; ++col) {
-            auto offsprings = matrix[row][col].mate_and_reproduce();
-            for (const auto& child: offsprings) {
+    wtl::Semaphore sem(4);
+    std::mutex mtx;
+    auto patch_task = [&](const size_t row, const size_t col) {
+        auto offsprings = matrix[row][col].mate_and_reproduce();
+        for (const auto& child: offsprings) {
                 if (prandom().bernoulli(migration_rate)) {
                     auto new_coords = migrate(row, col);
+                    std::lock_guard<std::mutex> lck(mtx);
                     next_generation[new_coords.first][new_coords.second].append(child);
                 } else {
+                    std::lock_guard<std::mutex> lck(mtx);
                     next_generation[row][col].append(child);
                 }
-            }
+        }
+        sem.unlock();
+    };
+    std::vector<std::thread> threads;
+    for (size_t row=0; row<num_rows; ++row) {
+        for (size_t col=0; col<num_cols; ++col) {
+            sem.lock();
+            threads.emplace_back(patch_task, row, col);
         }
     }
-    for (auto& row: next_generation) {
-        for (auto& patch: row) {
-            patch.viability_selection();
+    for (auto& th: threads) {th.join();}
+    threads.clear();
+    for (size_t row=0; row<num_rows; ++row) {
+        for (size_t col=0; col<num_cols; ++col) {
+            sem.lock();
+            threads.emplace_back([row, col, &sem, &next_generation] {
+                next_generation[row][col].viability_selection();
+                sem.unlock();
+            });
         }
     }
+    for (auto& th: threads) {th.join();}
     matrix.swap(next_generation);
 }
 
@@ -147,7 +165,7 @@ inline void run() {HERE;
 
     matrix.assign(num_rows, std::vector<Patch>(num_cols));
     matrix[0][0] = Patch(initial_patch_size);
-    const size_t n = 20;
+    const size_t n = 100;
     for (size_t i=0; i<n; ++i) {
         std::cout << "T = " << i << std::endl;
         print_matrix(matrix, [](const Patch& p) {return p.size();});
