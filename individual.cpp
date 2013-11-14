@@ -119,17 +119,35 @@ double Individual::habitat_preference(const double height, const double diameter
     return std::exp(exponent);
 }
 
-double Individual::denom_() const {
+double Individual::denom_numerical() const {
     return integral([this](const double height, const double diameter)->double {
         double result = habitat_preference(height, diameter);
         return result *= abundance(height, diameter);
     });
 }
 
-double Individual::denom_new() const {
-    constexpr size_t alpha = 1.0;
-    constexpr size_t h0 = 1.0;
-    constexpr size_t h1 = 1.0;
+double Individual::denom_mathematica() const {
+    constexpr double a = 2.5;
+    constexpr double h0 = 0.5;
+    constexpr double h1 = 0.5;
+    const double y0 = phenotype_[trait::toepad_size];
+    const double y1 = phenotype_[trait::limb_length];
+    double z = -12;
+    z += 6 * h0;
+    z += h1;
+    z += a * (-24 + h1 + 6 * h0 * wtl::pow<2>(1 - 2 * y0) - 8 * h1 * y1 + 24 * h1 * wtl::pow<2>(y1));
+    z += 4 * (3 * h0 * (-1 + y0) * y0 + h1 * y1 * (-1 + 3 * y1));
+    z *= std::sqrt(M_PI);
+    z *= std::tgamma(a);
+    z /= std::tgamma(a + 3 / 2);
+    z *= std::pow(2, -2 * (a + 1));
+    return z /= -3;
+}
+
+double Individual::denom_maple() const {
+    constexpr double alpha = 2.5;
+    constexpr double h0 = 0.5;
+    constexpr double h1 = 0.5;
     const double y0 = phenotype_[trait::toepad_size];
     const double y1 = phenotype_[trait::limb_length];
     const double minus1_2a = std::pow(-1, 2 * alpha);
@@ -169,7 +187,7 @@ double Individual::denom_new() const {
     z *= std::sqrt(M_PI);
     z *= std::tgamma(alpha - 2);
     z /= std::tgamma(alpha + 3 / 2);
-    return z /= -12;
+    return z /= 12;  // TODO: wrong sign?
 }
 
 double Individual::sqrt_denom_2_() const {
@@ -297,5 +315,8 @@ void individual_unit_test() {
     Individual ind;
     std::cerr << ind.gametogenesis().at(0) << std::endl;
     std::cerr << ind.effective_carrying_capacity() << std::endl;
+    std::cerr << ind.denom_() << std::endl;
+    std::cerr << ind.denom_maple() << std::endl;
+    std::cerr << ind.denom_mathematica() << std::endl;
     Individual offspring(ind.gametogenesis(), ind.gametogenesis());
 }

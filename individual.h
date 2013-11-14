@@ -125,8 +125,10 @@ class Individual {
         return output;
     };
     double habitat_preference(const double height, const double diameter) const;
-    double denom_() const;
-    double denom_new() const;
+    double denom_numerical() const;
+    double denom_mathematica() const;
+    double denom_maple() const;
+    double denom_() const {return denom_mathematica();}
     double sqrt_denom_2_() const;
     double fitness(const double height, const double diameter) const;
 
