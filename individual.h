@@ -69,10 +69,13 @@ class Individual {
   private:
     static size_t CARRYING_CAPACITY;
     static size_t AVG_NUM_OFFSPINRGS_;
-    static double HABITAT_SIGMA_;
+    static double HEIGHT_PREFERENCE_;
+    static double DIAMETER_PREFERENCE_;
     static double MATING_SIGMA_;
-    static double ADAPTIVE_T_SIGMA_;
-    static double ADAPTIVE_L_SIGMA_;
+    static double TOEPAD_SELECTION_;
+    static double LIMB_SELECTION_;
+    static double HEIGHT_COMPETITION_;
+    static double DIAMETER_COMPETITION_;
     static double MU_LOCUS_;
     static double MU_NEUTRAL_;
 
@@ -90,20 +93,23 @@ class Individual {
         {HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS},
         {HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS}},
         phenotype_(init_phenotype()),
-        denominator_{denom_()}, sqrt_denominator_2_{sqrt_denom_2_()},
+        denominator_{denom_()}, //sqrt_denominator_2_{sqrt_denom_2_()},
         effective_carrying_capacity_{effective_carrying_capacity()} {}
 
     Individual(const std::vector<Loci>& egg, const std::vector<Loci>& sperm):
-        genotype_{egg, sperm}, phenotype_(init_phenotype()),
-        denominator_{denom_()}, sqrt_denominator_2_{sqrt_denom_2_()},
+        genotype_{egg, sperm},
+        phenotype_(init_phenotype()),
+        denominator_{denom_()}, //sqrt_denominator_2_{sqrt_denom_2_()},
         effective_carrying_capacity_{effective_carrying_capacity()} {}
 
     Individual(const std::vector<size_t>&);
 
     double effective_carrying_capacity() const;
-    double effective_num_competitors(const Individual&) const;
+    double habitat_overlap(const Individual& other) const {
+        return habitat_overlap_v3(other);
+    }
 
-    bool survive(const double effective_population_size) const;
+    bool survive(const double effective_num_competitors) const;
 
     double mating_preference(const Individual& male) const;
     size_t poisson_offsprings() const;
@@ -125,6 +131,8 @@ class Individual {
         return output;
     };
     double habitat_preference(const double height, const double diameter) const;
+    double habitat_overlap_v2(const Individual&) const;
+    double habitat_overlap_v3(const Individual&) const;
     double denom_numerical() const;
     double denom_mathematica() const;
     double denom_maple() const;
@@ -142,7 +150,7 @@ class Individual {
     std::pair<std::vector<Loci>, std::vector<Loci> > genotype_;
     std::vector<double> phenotype_;
     double denominator_;
-    double sqrt_denominator_2_;
+//    double sqrt_denominator_2_;
     double effective_carrying_capacity_;
 };
 

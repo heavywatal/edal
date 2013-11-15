@@ -48,10 +48,10 @@ double Patch::effective_num_competitors_f(const size_t index) const {
     double n = 0;
     for (size_t i=0; i<females_.size(); ++i) {
         if (i==index) continue;
-        n += females_[index].effective_num_competitors(females_[i]);
+        n += females_[index].habitat_overlap(females_[i]);
     }
     for (const auto& ind: males_) {
-        n += females_[index].effective_num_competitors(ind);
+        n += females_[index].habitat_overlap(ind);
     }
     return n;
 }
@@ -59,11 +59,11 @@ double Patch::effective_num_competitors_f(const size_t index) const {
 double Patch::effective_num_competitors_m(const size_t index) const {
     double n = 0;
     for (const auto& ind: females_) {
-        n += males_[index].effective_num_competitors(ind);
+        n += males_[index].habitat_overlap(ind);
     }
     for (size_t i=0; i<males_.size(); ++i) {
         if (i==index) continue;
-        n += males_[index].effective_num_competitors(males_[i]);
+        n += males_[index].habitat_overlap(males_[i]);
     }
     return n;
 }
