@@ -29,8 +29,7 @@ class Patch {
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   private:
 
-    double effective_num_competitors_f(const size_t index) const;
-    double effective_num_competitors_m(const size_t index) const;
+    double effective_num_competitors(const Individual&) const;
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
     // data member

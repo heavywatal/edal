@@ -44,45 +44,30 @@ std::vector<Individual> Patch::mate_and_reproduce() const {
     return offsprings;
 }
 
-double Patch::effective_num_competitors_f(const size_t index) const {
+double Patch::effective_num_competitors(const Individual& focal) const {
     double n = 0;
-    for (size_t i=0; i<females_.size(); ++i) {
-        if (i==index) continue;
-        n += females_[index].habitat_overlap(females_[i]);
-    }
-    for (const auto& ind: males_) {
-        n += females_[index].habitat_overlap(ind);
-    }
-    return n;
-}
-
-double Patch::effective_num_competitors_m(const size_t index) const {
-    double n = 0;
-    for (const auto& ind: females_) {
-        n += males_[index].habitat_overlap(ind);
-    }
-    for (size_t i=0; i<males_.size(); ++i) {
-        if (i==index) continue;
-        n += males_[index].habitat_overlap(males_[i]);
-    }
+    auto impl = [&] (const std::vector<Individual>& members) {
+        for (const auto& ind: members) {
+            n += focal.habitat_overlap(ind);
+        }
+    };
+    impl(females_);
+    impl(males_);
     return n;
 }
 
 void Patch::viability_selection() {
-    std::vector<Individual> survivors;
-    for (size_t i=0; i<females_.size(); ++i) {
-        if (females_[i].survive(effective_num_competitors_f(i))) {
-            survivors.push_back(females_[i]);
+    auto impl = [this] (std::vector<Individual>* members) {
+        std::vector<Individual> survivors;
+        for (const auto& ind: *members) {
+            if (ind.survive(effective_num_competitors(ind))) {
+                survivors.push_back(ind);
+            }
         }
-    }
-    females_.swap(survivors);
-    survivors.clear();
-    for (size_t i=0; i<males_.size(); ++i) {
-        if (males_[i].survive(effective_num_competitors_m(i))) {
-            survivors.push_back(males_[i]);
-        }
-    }
-    males_.swap(survivors);
+        members->swap(survivors);
+    };
+    impl(&females_);
+    impl(&males_);
 }
 
 std::string Patch::str() const {

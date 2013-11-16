@@ -11,7 +11,7 @@
 #include "cxxwtils/iostr.hpp"
 #include "cxxwtils/prandom.hpp"
 
-size_t Individual::CARRYING_CAPACITY = 1000;
+size_t Individual::CARRYING_CAPACITY = 20;
 size_t Individual::AVG_NUM_OFFSPINRGS_ = 4;
 double Individual::HEIGHT_PREFERENCE_ = 0.5;
 double Individual::DIAMETER_PREFERENCE_ = 0.5;
@@ -164,7 +164,7 @@ double Individual::denom_numerical() const {
     });
 }
 
-double Individual::denom_mathematica() const {
+double Individual::denom_mathematica_original() const {
     const double a = height_alpha;
     const double h0 = HEIGHT_PREFERENCE_;
     const double h1 = DIAMETER_PREFERENCE_;
@@ -184,6 +184,43 @@ double Individual::denom_mathematica() const {
     z *= std::tgamma(2 * a);
     z /= std::tgamma(a);
     return z;
+}
+
+double Individual::denom_mathematica() const {
+    const double a = height_alpha;
+    const double h0 = HEIGHT_PREFERENCE_;
+    const double h1 = DIAMETER_PREFERENCE_;
+    const double y0 = phenotype_[trait::height_preference];
+    const double y1 = phenotype_[trait::diameter_preference];
+    double d = 12*(
+             15* wtl::pow<2>(-1 + h0*wtl::pow<2>(y0))
+             + 5*h1*(-1 + h0*wtl::pow<2>(y0))*(1 - 4*y1 + 6*wtl::pow<2>(y1))
+             + wtl::pow<2>(h1)*(1 - 6*y1 + 15*wtl::pow<2>(y1) - 20*wtl::pow<3>(y1) + 15*wtl::pow<4>(y1))
+         );
+    d += wtl::pow<2>(a)*(
+            240 + 15*wtl::pow<2>(h0)*wtl::pow<4>(1 - 2*y0)
+            - 20*h1*(1 - 8*y1 + 24*wtl::pow<2>(y1))
+            + 5*h0*wtl::pow<2>(1 - 2*y0)*(-24 + h1 - 8*h1*y1 + 24*h1*wtl::pow<2>(y1))
+            + wtl::pow<2>(h1)*(1 - 12*y1 + 60*wtl::pow<2>(y1) - 160*wtl::pow<3>(y1) + 240*wtl::pow<4>(y1))
+         );
+    d += a*(
+            480 + 15*wtl::pow<2>(h0)*wtl::pow<2>(1 - 2*y0)*(3 - 4*y0 + 8*wtl::pow<2>(y0))
+            - 10*h1*(7 - 40*y1 + 96*wtl::pow<2>(y1))
+            + wtl::pow<2>(h1)*(7 - 60*y1 + 210*wtl::pow<2>(y1) - 400*wtl::pow<3>(y1) + 480*wtl::pow<4>(y1))
+            + 5*h0*(
+                -12*(3 - 12*y0 + 16*wtl::pow<2>(y0))
+                + h1*(1 - 8*y1 + 36*wtl::pow<2>(y1)
+                    - 8*y0*(1 - 6*y1 + 18*wtl::pow<2>(y1))
+                    + 2*wtl::pow<2>(y0)*(7 - 40*y1 + 96*wtl::pow<2>(y1))
+                )
+            )
+        );
+    d *= std::tgamma(a);
+    d *= std::tgamma(1 + a);
+    d /= 120;
+    d /= (3 + 2*a);
+    d /= std::tgamma(2 + 2*a);
+    return d;
 }
 
 double Individual::denom_maple() const {
@@ -243,7 +280,7 @@ double Individual::sqrt_denom_2_() const {
 }
 
 
-double Individual::habitat_preference(const double height, const double diameter) const {
+double Individual::habitat_preference_v2(const double height, const double diameter) const {
     auto impl = [](const double ind_preference,
                    const double env_characterstics,
                    const double habitat_pref_strength) {
@@ -255,6 +292,21 @@ double Individual::habitat_preference(const double height, const double diameter
     double exponent = impl(phenotype_[trait::height_preference], height, HEIGHT_PREFERENCE_);
     exponent += impl(phenotype_[trait::diameter_preference], diameter, DIAMETER_PREFERENCE_);
     return std::exp(exponent);
+}
+
+double Individual::habitat_preference_v3(const double height, const double diameter) const {
+    auto impl = [](const double ind_preference,
+                   const double env_characterstics,
+                   const double habitat_pref_strength) {
+        double x = ind_preference;
+        x -= env_characterstics;
+        x *= x;
+        return x *= habitat_pref_strength;
+    };
+    double x = 1.0;
+    x -= impl(phenotype_[trait::height_preference], height, HEIGHT_PREFERENCE_);
+    x -= impl(phenotype_[trait::diameter_preference], diameter, DIAMETER_PREFERENCE_);
+    return x;
 }
 
 double Individual::habitat_overlap_v2(const Individual& other) const {

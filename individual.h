@@ -130,11 +130,16 @@ class Individual {
         }
         return output;
     };
-    double habitat_preference(const double height, const double diameter) const;
+    double habitat_preference_v2(const double height, const double diameter) const;
+    double habitat_preference_v3(const double height, const double diameter) const;
+    double habitat_preference(const double height, const double diameter) const {
+        return habitat_preference_v3(height, diameter);
+    }
     double habitat_overlap_v2(const Individual&) const;
     double habitat_overlap_v3(const Individual&) const;
     double denom_numerical() const;
     double denom_mathematica() const;
+    double denom_mathematica_original() const;
     double denom_maple() const;
     double denom_() const {return denom_mathematica();}
     double sqrt_denom_2_() const;
