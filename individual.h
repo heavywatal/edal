@@ -139,7 +139,6 @@ class Individual {
     double habitat_overlap_v3(const Individual&) const;
     double denom_numerical() const;
     double denom_mathematica() const;
-    double denom_mathematica_original() const;
     double denom_maple() const;
     double denom_() const {return denom_mathematica();}
     double sqrt_denom_2_() const;

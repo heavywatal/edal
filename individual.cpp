@@ -11,7 +11,7 @@
 #include "cxxwtils/iostr.hpp"
 #include "cxxwtils/prandom.hpp"
 
-size_t Individual::CARRYING_CAPACITY = 20;
+size_t Individual::CARRYING_CAPACITY = 160;
 size_t Individual::AVG_NUM_OFFSPINRGS_ = 4;
 double Individual::HEIGHT_PREFERENCE_ = 0.5;
 double Individual::DIAMETER_PREFERENCE_ = 0.5;
@@ -48,19 +48,42 @@ boost::program_options::options_description& Individual::opt_description() {
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 namespace {
 
+constexpr size_t precision = 40;
+constexpr double height_alpha = 2.0;
+
 template <class Func> inline
-double integral(Func func) {
-    constexpr int precision = 50;
+double multiple_integral_square(Func func) {
     constexpr double delta = 1.0 / precision;
     double result = 0.0;
-    for (size_t i=0; i<=precision; ++i) {
-        for (size_t j=0; j<=precision; ++j) {
-            result += func(i * delta, j * delta);
+    for (double xi=0.5 * delta; xi<1.0; xi+=delta) {
+        for (double xj=0.5 * delta; xj<1.0; xj+=delta) {
+            result += func(xi, xj);
         }
     }
     result *= delta;
     result *= delta;
     return result;
+}
+
+
+template <class Func> inline
+double multiple_integral_triangle(Func func) {
+    constexpr double delta = 1.0 / precision;
+    double result = 0.0;
+    for (double xi=0.5 * delta; xi<1.0; xi+=delta) {
+        const double upper = 1.0-xi;
+        for (double xj=0.5 * delta; xj<upper; xj+=delta) {
+            result += func(xi, xj);
+        }
+    }
+    result *= delta;
+    result *= delta;
+    return result;
+}
+
+template <class Func> inline
+double multiple_integral(Func func) {
+    return multiple_integral_triangle(func);
 }
 
 inline double abundance_v2(const double height, const double diameter) {
@@ -85,20 +108,16 @@ inline double abundance_v2(const double height, const double diameter) {
     return result;
 }
 
-constexpr double height_alpha = 2.0;
-
 inline double pdf_beta(const double height, const double diameter) {
     static_cast<void>(diameter);
-    double result = std::pow(height * (1 - height), height_alpha - 1);
-    result *= std::pow(4, height_alpha - 1);
+    double result = std::pow(4 * height * (1 - height), height_alpha - 1);
     return result;
 }
 
 inline double pdf_triangle(const double height, const double diameter) {
     if (height == 1.0 || 1.0 - height < diameter) {return 0.0;}
-    double result = (1.0 - height - diameter);
-    result /= (1.0 - height);
-    return result;
+    double result = 1.0 - height - diameter;
+    return result /= (1.0 - height);
 }
 
 inline double abundance_v3(const double height, const double diameter) {
@@ -158,32 +177,10 @@ Individual::Individual(const std::vector<size_t>& values): genotype_{{}, {}} {
 }
 
 double Individual::denom_numerical() const {
-    return integral([this](const double height, const double diameter)->double {
+    return multiple_integral([this](const double height, const double diameter) {
         double result = habitat_preference(height, diameter);
         return result *= abundance(height, diameter);
     });
-}
-
-double Individual::denom_mathematica_original() const {
-    const double a = height_alpha;
-    const double h0 = HEIGHT_PREFERENCE_;
-    const double h1 = DIAMETER_PREFERENCE_;
-    const double y0 = phenotype_[trait::height_preference];
-    const double y1 = phenotype_[trait::diameter_preference];
-    double z = -12;
-    z += 6 * h0;
-    z += h1;
-    z += a * (-24 + h1 + 6 * h0 * wtl::pow<2>(1 - 2 * y0)
-              - 8 * h1 * y1 + 24 * h1 * wtl::pow<2>(y1));
-    z += 4 * (3 * h0 * (-1 + y0) * y0 + h1 * y1 * (-1 + 3 * y1));
-    z *= std::sqrt(M_PI);
-    z *= std::pow(2, -2 * (a + 1));
-    z /= -3;
-    z /= std::tgamma(a + 3 / 2);
-    //z *= std::tgamma(a);
-    z *= std::tgamma(2 * a);
-    z /= std::tgamma(a);
-    return z;
 }
 
 double Individual::denom_mathematica() const {
@@ -192,34 +189,25 @@ double Individual::denom_mathematica() const {
     const double h1 = DIAMETER_PREFERENCE_;
     const double y0 = phenotype_[trait::height_preference];
     const double y1 = phenotype_[trait::diameter_preference];
-    double d = 12*(
-             15* wtl::pow<2>(-1 + h0*wtl::pow<2>(y0))
-             + 5*h1*(-1 + h0*wtl::pow<2>(y0))*(1 - 4*y1 + 6*wtl::pow<2>(y1))
-             + wtl::pow<2>(h1)*(1 - 6*y1 + 15*wtl::pow<2>(y1) - 20*wtl::pow<3>(y1) + 15*wtl::pow<4>(y1))
-         );
-    d += wtl::pow<2>(a)*(
-            240 + 15*wtl::pow<2>(h0)*wtl::pow<4>(1 - 2*y0)
-            - 20*h1*(1 - 8*y1 + 24*wtl::pow<2>(y1))
-            + 5*h0*wtl::pow<2>(1 - 2*y0)*(-24 + h1 - 8*h1*y1 + 24*h1*wtl::pow<2>(y1))
-            + wtl::pow<2>(h1)*(1 - 12*y1 + 60*wtl::pow<2>(y1) - 160*wtl::pow<3>(y1) + 240*wtl::pow<4>(y1))
-         );
-    d += a*(
-            480 + 15*wtl::pow<2>(h0)*wtl::pow<2>(1 - 2*y0)*(3 - 4*y0 + 8*wtl::pow<2>(y0))
-            - 10*h1*(7 - 40*y1 + 96*wtl::pow<2>(y1))
-            + wtl::pow<2>(h1)*(7 - 60*y1 + 210*wtl::pow<2>(y1) - 400*wtl::pow<3>(y1) + 480*wtl::pow<4>(y1))
-            + 5*h0*(
-                -12*(3 - 12*y0 + 16*wtl::pow<2>(y0))
-                + h1*(1 - 8*y1 + 36*wtl::pow<2>(y1)
-                    - 8*y0*(1 - 6*y1 + 18*wtl::pow<2>(y1))
-                    + 2*wtl::pow<2>(y0)*(7 - 40*y1 + 96*wtl::pow<2>(y1))
-                )
-            )
-        );
+//    double d = -12;
+//    d += 6 * h0;
+//    d += h1;
+//    d += a * (-24 + h1 + 6 * h0 * wtl::pow<2>(1 - 2 * y0)
+//              - 8 * h1 * y1 + 24 * h1 * wtl::pow<2>(y1));
+//    d += 4 * (3 * h0 * (-1 + y0) * y0 + h1 * y1 * (-1 + 3 * y1));
+//    d *= std::sqrt(M_PI);
+//    d *= std::pow(2, -2 * (a + 1));
+//    d /= -3;
+//    d /= std::tgamma(a + 3 / 2);
+//    //d *= std::tgamma(a);
+//    d *= std::tgamma(2 * a);
+//    d /= std::tgamma(a);
+    double d = 2*(-6 + h1 + 6*h0*wtl::pow<2>(y0) - 4*h1*y1 + 6*h1*wtl::pow<2>(y1));
+    d += a*(-24 + h1 + 6*h0*wtl::pow<2>(1 - 2*y0) - 8*h1*y1 + 24*h1*wtl::pow<2>(y1));
+    d *= -std::sqrt(M_PI);
     d *= std::tgamma(a);
-    d *= std::tgamma(1 + a);
-    d /= 120;
-    d /= (3 + 2*a);
-    d /= std::tgamma(2 + 2*a);
+    d /= 192;
+    d /= std::tgamma(1.5 + a);
     return d;
 }
 
@@ -272,7 +260,7 @@ double Individual::denom_maple() const {
 }
 
 double Individual::sqrt_denom_2_() const {
-    return std::sqrt(integral([this](const double height, const double diameter)->double {
+    return std::sqrt(multiple_integral([this](const double height, const double diameter)->double {
         double result = habitat_preference(height, diameter);
         result *= result;
         return result *= abundance(height, diameter);
@@ -310,7 +298,7 @@ double Individual::habitat_preference_v3(const double height, const double diame
 }
 
 double Individual::habitat_overlap_v2(const Individual& other) const {
-    double n = integral([this, &other](const double height, const double diameter) {
+    double n = multiple_integral([this, &other](const double height, const double diameter) {
         double result = habitat_preference(height, diameter);
         result *= other.habitat_preference(height, diameter);
         return result *= abundance(height, diameter);
@@ -351,7 +339,7 @@ double Individual::fitness(const double height, const double diameter) const {
 double Individual::effective_carrying_capacity() const {
     double result = CARRYING_CAPACITY;
     result /= denominator_;
-    result *= integral([this](const double height, const double diameter)->double {
+    result *= multiple_integral([this](const double height, const double diameter) {
         double result = fitness(height, diameter);
         result *= habitat_preference(height, diameter);
         result *= abundance(height, diameter);
@@ -456,10 +444,10 @@ void individual_unit_test() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
     Individual ind;
     std::cerr << ind.gametogenesis().at(0) << std::endl;
-    std::cerr << ind.effective_carrying_capacity() << std::endl;
-    std::cerr << ind.denom_numerical() << std::endl;
-    std::cerr << ind.denom_maple() << std::endl;
-    std::cerr << ind.denom_mathematica() << std::endl;
+    std::cerr << "Ke: " << ind.effective_carrying_capacity() << std::endl;
+    std::cerr << "DI numer: " << ind.denom_numerical() << std::endl;
+    std::cerr << "DI mathe: " << ind.denom_mathematica() << std::endl;
+    std::cerr << "DI maple: " << ind.denom_maple() << std::endl;
     Individual offspring(ind.gametogenesis(), ind.gametogenesis());
     wtl::Fout{"ignore/abundance_v2.csv"} << resource_abundance_test(abundance_v2);
     wtl::Fout{"ignore/abundance_beta.csv"} << resource_abundance_test(pdf_beta);

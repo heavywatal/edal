@@ -91,7 +91,7 @@ void patch_unit_test() {
         for (const auto& child: patch.mate_and_reproduce()) {
             patch.append(child);
         }
-        std::cerr << patch.size() << std::endl;
+        std::cerr << patch.size() << " -> ";
         patch.viability_selection();
         std::cerr << patch.size() << std::endl;
     }
