@@ -48,43 +48,8 @@ boost::program_options::options_description& Individual::opt_description() {
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 namespace {
 
-constexpr size_t precision = 40;
+constexpr size_t precision = 32;
 constexpr double height_alpha = 2.0;
-
-template <class Func> inline
-double multiple_integral_square(Func func) {
-    constexpr double delta = 1.0 / precision;
-    double result = 0.0;
-    for (double xi=0.5 * delta; xi<1.0; xi+=delta) {
-        for (double xj=0.5 * delta; xj<1.0; xj+=delta) {
-            result += func(xi, xj);
-        }
-    }
-    result *= delta;
-    result *= delta;
-    return result;
-}
-
-
-template <class Func> inline
-double multiple_integral_triangle(Func func) {
-    constexpr double delta = 1.0 / precision;
-    double result = 0.0;
-    for (double xi=0.5 * delta; xi<1.0; xi+=delta) {
-        const double upper = 1.0-xi;
-        for (double xj=0.5 * delta; xj<upper; xj+=delta) {
-            result += func(xi, xj);
-        }
-    }
-    result *= delta;
-    result *= delta;
-    return result;
-}
-
-template <class Func> inline
-double multiple_integral(Func func) {
-    return multiple_integral_triangle(func);
-}
 
 inline double abundance_v2(const double height, const double diameter) {
     constexpr double mean_height = 0.5;
@@ -177,10 +142,12 @@ Individual::Individual(const std::vector<size_t>& values): genotype_{{}, {}} {
 }
 
 double Individual::denom_numerical() const {
-    return multiple_integral([this](const double height, const double diameter) {
-        double result = habitat_preference(height, diameter);
-        return result *= abundance(height, diameter);
-    });
+    return wtl::integrate([this](const double height) {
+        return wtl::integrate([this, height](const double diameter) {
+            double result = habitat_preference(height, diameter);
+            return result *= abundance(height, diameter);
+        }, 0.0, 1.0 - height, precision);
+    }, 0.0, 1.0, precision);
 }
 
 double Individual::denom_mathematica() const {
@@ -189,19 +156,6 @@ double Individual::denom_mathematica() const {
     const double h1 = DIAMETER_PREFERENCE_;
     const double y0 = phenotype_[trait::height_preference];
     const double y1 = phenotype_[trait::diameter_preference];
-//    double d = -12;
-//    d += 6 * h0;
-//    d += h1;
-//    d += a * (-24 + h1 + 6 * h0 * wtl::pow<2>(1 - 2 * y0)
-//              - 8 * h1 * y1 + 24 * h1 * wtl::pow<2>(y1));
-//    d += 4 * (3 * h0 * (-1 + y0) * y0 + h1 * y1 * (-1 + 3 * y1));
-//    d *= std::sqrt(M_PI);
-//    d *= std::pow(2, -2 * (a + 1));
-//    d /= -3;
-//    d /= std::tgamma(a + 3 / 2);
-//    //d *= std::tgamma(a);
-//    d *= std::tgamma(2 * a);
-//    d /= std::tgamma(a);
     double d = 2*(-6 + h1 + 6*h0*wtl::pow<2>(y0) - 4*h1*y1 + 6*h1*wtl::pow<2>(y1));
     d += a*(-24 + h1 + 6*h0*wtl::pow<2>(1 - 2*y0) - 8*h1*y1 + 24*h1*wtl::pow<2>(y1));
     d *= -std::sqrt(M_PI);
@@ -260,11 +214,13 @@ double Individual::denom_maple() const {
 }
 
 double Individual::sqrt_denom_2_() const {
-    return std::sqrt(multiple_integral([this](const double height, const double diameter)->double {
-        double result = habitat_preference(height, diameter);
-        result *= result;
-        return result *= abundance(height, diameter);
-    }));
+    return wtl::integrate([this](const double height) {
+        return wtl::integrate([this, height](const double diameter) {
+            double result = habitat_preference(height, diameter);
+            result *= result;
+            return result *= abundance(height, diameter);
+        }, 0.0, 1.0 - height, precision);
+    }, 0.0, 1.0, precision);
 }
 
 
@@ -298,11 +254,13 @@ double Individual::habitat_preference_v3(const double height, const double diame
 }
 
 double Individual::habitat_overlap_v2(const Individual& other) const {
-    double n = multiple_integral([this, &other](const double height, const double diameter) {
-        double result = habitat_preference(height, diameter);
-        result *= other.habitat_preference(height, diameter);
-        return result *= abundance(height, diameter);
-    });
+    double n = wtl::integrate([this, &other](const double height) {
+        return wtl::integrate([this, &other, height](const double diameter) {
+            double result = habitat_preference(height, diameter);
+            result *= other.habitat_preference(height, diameter);
+            return result *= abundance(height, diameter);
+        }, 0.0, 1.0 - height, precision);
+    }, 0.0, 1.0, precision);
 //    n /= sqrt_denominator_2_;
 //    n /= other.sqrt_denominator_2_;
     return n;
@@ -339,12 +297,14 @@ double Individual::fitness(const double height, const double diameter) const {
 double Individual::effective_carrying_capacity() const {
     double result = CARRYING_CAPACITY;
     result /= denominator_;
-    result *= multiple_integral([this](const double height, const double diameter) {
-        double result = fitness(height, diameter);
-        result *= habitat_preference(height, diameter);
-        result *= abundance(height, diameter);
-        return result;
-    });
+    result *= wtl::integrate([this](const double height) {
+        return wtl::integrate([this, height](const double diameter) {
+            double result = fitness(height, diameter);
+            result *= habitat_preference(height, diameter);
+            result *= abundance(height, diameter);
+            return result;
+        }, 0.0, 1.0 - height, precision);
+    }, 0.0, 1.0, precision);
     return result;
 }
 
@@ -443,6 +403,7 @@ std::string resource_abundance_test(Func func) {
 void individual_unit_test() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
     Individual ind;
+    std::cerr.precision(15);
     std::cerr << ind.gametogenesis().at(0) << std::endl;
     std::cerr << "Ke: " << ind.effective_carrying_capacity() << std::endl;
     std::cerr << "DI numer: " << ind.denom_numerical() << std::endl;
