@@ -5,7 +5,6 @@
 #include <iostream>
 #include <sstream>
 
-#include <boost/math/distributions.hpp>
 #include <boost/program_options.hpp>
 
 #include "cxxwtils/iostr.hpp"
@@ -51,70 +50,23 @@ namespace {
 constexpr size_t precision = 32;
 constexpr double height_alpha = 2.0;
 
-inline double abundance_v2(const double height, const double diameter) {
-    constexpr double mean_height = 0.5;
-    constexpr double sd_height = 0.4;
-    constexpr double c0 = 2.0;
-    constexpr double c1 = c0 - 1.0;
-    constexpr double k = 1.0;
-
-    double h_exponent = height;
-    h_exponent -= mean_height;
-    h_exponent /= sd_height;
-    h_exponent *= h_exponent;
-    h_exponent *= -0.5;
-    double theta_u = 1.0;
-    theta_u /= (c0 - c1 * height);
-    double d_exponent = -diameter;
-    d_exponent *= theta_u;
-    double result = k;
-    result *= std::exp(h_exponent + d_exponent);
-    result *= theta_u;
-    return result;
-}
-
 inline double pdf_beta(const double height, const double diameter) {
     static_cast<void>(diameter);
-    double result = std::pow(4 * height * (1 - height), height_alpha - 1);
-    return result;
+    static const double k = std::tgamma(2 * height_alpha) / wtl::pow<2>(std::tgamma(height_alpha));
+    double result = std::pow(height * (1 - height), height_alpha - 1);
+    return result *= k;
 }
 
 inline double pdf_triangle(const double height, const double diameter) {
     if (height == 1.0 || 1.0 - height < diameter) {return 0.0;}
     double result = 1.0 - height - diameter;
-    return result /= (1.0 - height);
-}
-
-inline double abundance_v3(const double height, const double diameter) {
-    return pdf_beta(height, diameter) * pdf_triangle(height, diameter);
+    result /= wtl::pow<2>(1.0 - height);
+    return result *= 2.0;
 }
 
 inline double abundance(const double height, const double diameter) {
-    return abundance_v3(height, diameter);
+    return pdf_beta(height, diameter) * pdf_triangle(height, diameter);
 }
-
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
-// slow...
-//inline double pdf_beta_boost(const double height, const double diameter) {
-//    static_cast<void>(diameter);
-//    static boost::math::beta_distribution<> beta(height_alpha, height_alpha);
-//    static const double normalizer = 1.0 / boost::math::pdf(beta, 0.5);
-//    double p = boost::math::pdf(beta, height);
-//    return p *= normalizer;
-//}
-//
-//inline double pdf_triangle_boost(const double height, const double diameter) {
-//    if (height == 1.0) {return 0.0;}
-//    boost::math::triangular_distribution<> tri(0, 0, 1 - height);
-//    const double normalizer = (1.0 - height) / 2.0;
-//    double p = boost::math::pdf(tri, diameter);
-//    return p *= normalizer;
-//}
-//
-//inline double abundance_v3_boost(const double height, const double diameter) {
-//    return pdf_beta_boost(height, diameter) * pdf_triangle_boost(height, diameter);
-//}
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
 } // namespace
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
@@ -156,14 +108,14 @@ double Individual::denom_mathematica() const {
     const double h1 = DIAMETER_PREFERENCE_;
     const double y0 = phenotype_[trait::height_preference];
     const double y1 = phenotype_[trait::diameter_preference];
-    double d = 2*(-6 + h1 + 6*h0*wtl::pow<2>(y0) - 4*h1*y1 + 6*h1*wtl::pow<2>(y1));
-    d += a*(-24 + h1 + 6*h0*wtl::pow<2>(1 - 2*y0) - 8*h1*y1 + 24*h1*wtl::pow<2>(y1));
-    d *= -std::sqrt(M_PI);
-    d *= std::tgamma(a);
-    d /= 192;
-    d /= std::tgamma(1.5 + a);
+    double d = 12;
+    d -= 6*h0*(1 + 2*(-1 + y0)*y0);
+    d += h1*(-1 + 4*(1 - 3*y1)*y1);
+    d -= a*(-24 + h1 + 6*h0*wtl::pow<2>(1 - 2*y0) - 8*h1*y1 + 24*h1*wtl::pow<2>(y1));
+    d /= (12 + 24*a);
     return d;
 }
+
 
 double Individual::denom_maple() const {
     const double alpha = height_alpha;
@@ -410,8 +362,7 @@ void individual_unit_test() {
     std::cerr << "DI mathe: " << ind.denom_mathematica() << std::endl;
     std::cerr << "DI maple: " << ind.denom_maple() << std::endl;
     Individual offspring(ind.gametogenesis(), ind.gametogenesis());
-    wtl::Fout{"ignore/abundance_v2.csv"} << resource_abundance_test(abundance_v2);
     wtl::Fout{"ignore/abundance_beta.csv"} << resource_abundance_test(pdf_beta);
     wtl::Fout{"ignore/abundance_triangle.csv"} << resource_abundance_test(pdf_triangle);
-    wtl::Fout{"ignore/abundance_v3.csv"} << resource_abundance_test(abundance_v3);
+    wtl::Fout{"ignore/abundance_v3.csv"} << resource_abundance_test(abundance);
 }
