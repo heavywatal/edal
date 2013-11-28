@@ -21,6 +21,7 @@ class Patch {
 
     void append(const Individual&);
     size_t size() const {return females_.size() + males_.size();}
+    bool empty() const {return females_.empty() && males_.empty();}
     std::string str() const;
 
     std::vector<Individual> mate_and_reproduce() const;

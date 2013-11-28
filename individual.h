@@ -92,6 +92,7 @@ class Individual {
     std::vector<Loci> gametogenesis() const;
 
     std::string str() const;
+    static std::string header();
 
     static boost::program_options::options_description& opt_description();
 
@@ -99,7 +100,7 @@ class Individual {
   private:
 
     std::vector<double> init_phenotype() const {
-        const size_t n(trait::size);
+        constexpr size_t n = trait::size;
         std::vector<double> output(n);
         for (size_t i=0; i<n; ++i) {
             output[i] = (genotype_.first[i].count() + genotype_.second[i].count()) * INV_NUM_LOCI_;

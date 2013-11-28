@@ -30,6 +30,7 @@ double migration_rate = 1e-1;
 
 unsigned int seed_ = std::random_device{}();
 std::string label_;
+std::string config_string_;
 
 const char* HOME_ = std::getenv("HOME");
 const fs::path HOME_DIR{HOME_};
@@ -41,7 +42,7 @@ fs::path LOAD_DIR;
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 // data members
 
-std::vector<std::vector<Patch> > matrix;
+std::vector<std::vector<Patch> > population;
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 // functions
@@ -78,9 +79,10 @@ inline void check_flags(int argc, char* argv[]) {HERE;
     TOP_DIR = fs::path(vm["top_dir"].as<std::string>());
     prandom().seed(seed_); // TODO: want to read seed?
     vm.notify();
+    config_string_ = flags_into_string(description, vm);
     if (vm["verbose"].as<bool>()) {
         std::cout << description << std::endl;
-        std::cout << flags_into_string(description, vm) << std::endl;
+        std::cout << config_string_ << std::endl;
     }
     if (vm["test"].as<bool>()) {
         test();
@@ -107,11 +109,11 @@ inline std::pair<size_t, size_t> migrate(const size_t row_orig, const size_t col
 }
 
 inline void life_cycle() {
-    std::vector<std::vector<Patch> > next_generation(matrix);
+    std::vector<std::vector<Patch> > next_generation(population);
     wtl::Semaphore sem(4);
     std::mutex mtx;
     auto patch_task = [&](const size_t row, const size_t col) {
-        auto offsprings = matrix[row][col].mate_and_reproduce();
+        auto offsprings = population[row][col].mate_and_reproduce();
         for (const auto& child: offsprings) {
                 if (prandom().bernoulli(migration_rate)) {
                     auto new_coords = migrate(row, col);
@@ -143,19 +145,20 @@ inline void life_cycle() {
         }
     }
     for (auto& th: threads) {th.join();}
-    matrix.swap(next_generation);
+    population.swap(next_generation);
 }
 
 template <class Vec2D, class Func> inline
-void print_matrix(const Vec2D& m, Func func) {
+std::string str_population(const Vec2D& m, Func func,
+                      const std::string sep_col=" ", const std::string sep_row="\n") {
     std::ostringstream ost;
     for (const auto& row: m) {
         for (const auto& cell: row) {
-            ost << func(cell) << " ";
+            ost << func(cell) << sep_col;
         }
-        ost << "\n";
+        ost << sep_row;
     }
-    std::cout << ost.str();
+    return ost.str();
 }
 
 inline void run() {HERE;
@@ -164,23 +167,29 @@ inline void run() {HERE;
     pid_at_host << ::getpid() << "@" << wtl::gethostname();
     WORK_DIR = TMP_DIR / (now + "_" + label_ + "_" + pid_at_host.str());
     derr(WORK_DIR << std::endl);
+    const fs::path job_dir = TOP_DIR / (label_ + "_" + now + "_" + pid_at_host.str());
+    fs::create_directory(WORK_DIR);
+    wtl::cd(WORK_DIR.string());
+    wtl::Fout{"program_options.conf"} << config_string_;
 
-    matrix.assign(num_rows, std::vector<Patch>(num_cols));
-    matrix[0][0] = Patch(initial_patch_size);
+    population.assign(num_rows, std::vector<Patch>(num_cols));
+    population[0][0] = Patch(initial_patch_size);
     for (size_t i=0; i<observation_period; ++i) {
         std::cout << "T = " << i << std::endl;
-        print_matrix(matrix, [](const Patch& p) {return p.size();});
+        std::cout << str_population(population, [](const Patch& p) {return p.size();});
         std::cout << std::endl;
         life_cycle();
     }
     std::cout << "T = " << observation_period << std::endl;
-    print_matrix(matrix, [](const Patch& p) {return p.size();});
+    std::cout << str_population(population, [](const Patch& p) {return p.size();});
     std::cout << std::endl;
-    for (const auto& row: matrix) {
-        for (const auto& patch: row) {
-            std::cout << patch;
-        }
-    }
+    wtl::Fout{"population.csv"}
+        << Individual::header()
+        << str_population(population, [](const Patch& p) {return p;}, "", "");
+
+    derr(job_dir << std::endl);
+    fs::create_directory(TOP_DIR);
+    fs::rename(WORK_DIR, job_dir);
 }
 
 #endif /* MAIN_H_ */

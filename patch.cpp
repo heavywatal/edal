@@ -71,12 +71,13 @@ void Patch::viability_selection() {
 }
 
 std::string Patch::str() const {
+    if (empty()) return "";
     std::ostringstream ost;
     for (const auto& ind: females_) {
-        ost << ind.str() << "\n";
+        ost << ind << "\n";
     }
     for (const auto& ind: males_) {
-        ost << ind.str() << "\n";
+        ost << ind << "\n";
     }
     return ost.str();
 }

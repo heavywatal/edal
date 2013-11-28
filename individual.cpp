@@ -27,12 +27,18 @@ constexpr unsigned long Individual::FULL_BITS;
 constexpr unsigned long Individual::HALF_BITS;
 constexpr double Individual::INV_NUM_LOCI_;
 
+namespace {
+constexpr size_t PRECISION = 32;
+double HEIGHT_ALPHA = 2.0;
+}
+
 boost::program_options::options_description& Individual::opt_description() {
     namespace po = boost::program_options;
     static po::options_description desc{"Individual"};
     desc.add_options()
-        ("birth_rate,b", po::value<size_t>(&AVG_NUM_OFFSPINRGS_)->default_value(AVG_NUM_OFFSPINRGS_))
         ("carrying_capacity,K", po::value<size_t>(&CARRYING_CAPACITY)->default_value(CARRYING_CAPACITY))
+        ("birth_rate,b", po::value<size_t>(&AVG_NUM_OFFSPINRGS_)->default_value(AVG_NUM_OFFSPINRGS_))
+        ("HEIGHT_ALPHA,a", po::value<double>(&HEIGHT_ALPHA)->default_value(HEIGHT_ALPHA))
         ("height_pref", po::value<double>(&HEIGHT_PREFERENCE_)->default_value(HEIGHT_PREFERENCE_))
         ("diameter_pref", po::value<double>(&DIAMETER_PREFERENCE_)->default_value(DIAMETER_PREFERENCE_))
         ("mating_s,s", po::value<double>(&MATING_SIGMA_)->default_value(MATING_SIGMA_))
@@ -45,15 +51,13 @@ boost::program_options::options_description& Individual::opt_description() {
 }
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
-namespace {
 
-constexpr size_t precision = 32;
-constexpr double height_alpha = 2.0;
+namespace {
 
 inline double pdf_beta(const double height, const double diameter) {
     static_cast<void>(diameter);
-    static const double k = std::tgamma(2 * height_alpha) / wtl::pow<2>(std::tgamma(height_alpha));
-    double result = std::pow(height * (1 - height), height_alpha - 1);
+    static const double k = std::tgamma(2 * HEIGHT_ALPHA) / wtl::pow<2>(std::tgamma(HEIGHT_ALPHA));
+    double result = std::pow(height * (1 - height), HEIGHT_ALPHA - 1);
     return result *= k;
 }
 
@@ -98,12 +102,12 @@ double Individual::denom_numerical() const {
         return wtl::integrate([this, height](const double diameter) {
             double result = habitat_preference(height, diameter);
             return result *= abundance(height, diameter);
-        }, 0.0, 1.0 - height, precision);
-    }, 0.0, 1.0, precision);
+        }, 0.0, 1.0 - height, PRECISION);
+    }, 0.0, 1.0, PRECISION);
 }
 
 double Individual::denom_mathematica() const {
-    const double a = height_alpha;
+    const double a = HEIGHT_ALPHA;
     const double h0 = HEIGHT_PREFERENCE_;
     const double h1 = DIAMETER_PREFERENCE_;
     const double y0 = phenotype_[trait::height_preference];
@@ -118,7 +122,7 @@ double Individual::denom_mathematica() const {
 
 
 double Individual::denom_maple() const {
-    const double alpha = height_alpha;
+    const double alpha = HEIGHT_ALPHA;
     const double h0 = HEIGHT_PREFERENCE_;
     const double h1 = DIAMETER_PREFERENCE_;
     const double y0 = phenotype_[trait::height_preference];
@@ -171,8 +175,8 @@ double Individual::sqrt_denom_2_() const {
             double result = habitat_preference(height, diameter);
             result *= result;
             return result *= abundance(height, diameter);
-        }, 0.0, 1.0 - height, precision);
-    }, 0.0, 1.0, precision);
+        }, 0.0, 1.0 - height, PRECISION);
+    }, 0.0, 1.0, PRECISION);
 }
 
 
@@ -211,8 +215,8 @@ double Individual::habitat_overlap_v2(const Individual& other) const {
             double result = habitat_preference(height, diameter);
             result *= other.habitat_preference(height, diameter);
             return result *= abundance(height, diameter);
-        }, 0.0, 1.0 - height, precision);
-    }, 0.0, 1.0, precision);
+        }, 0.0, 1.0 - height, PRECISION);
+    }, 0.0, 1.0, PRECISION);
 //    n /= sqrt_denominator_2_;
 //    n /= other.sqrt_denominator_2_;
     return n;
@@ -255,8 +259,8 @@ double Individual::effective_carrying_capacity() const {
             result *= habitat_preference(height, diameter);
             result *= abundance(height, diameter);
             return result;
-        }, 0.0, 1.0 - height, precision);
-    }, 0.0, 1.0, precision);
+        }, 0.0, 1.0 - height, PRECISION);
+    }, 0.0, 1.0, PRECISION);
     return result;
 }
 
@@ -326,10 +330,32 @@ std::vector<Individual::Loci> Individual::gametogenesis() const {
 
 std::string Individual::str() const {
     std::ostringstream ost;
-    std::string sep{","};
+    const std::string sep{","};
     ost << wtl::str_join(genotype_.first, sep) << sep;
     ost << wtl::str_join(genotype_.second, sep) << sep;
     ost << wtl::str_join(phenotype_, sep);
+    return ost.str();
+}
+
+std::string Individual::header() {
+    std::vector<std::string> names{
+    "toepad", "limb",
+    "height_pref", "diameter_pref",
+    "male", "female", "choosiness",
+    "neutral"};
+    std::ostringstream ost;
+    const std::string sep(",");
+    for (const auto& s: names) {
+        ost << s << "_L" << sep;
+    }
+    for (const auto& s: names) {
+        ost << s << "_R" << sep;
+    }
+    for (const auto& s: names) {
+        ost << s << "_P";
+        if (s == "neutral") {ost << "\n";}
+        else {ost << sep;}
+    }
     return ost.str();
 }
 
@@ -356,7 +382,9 @@ void individual_unit_test() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
     Individual ind;
     std::cerr.precision(15);
-    std::cerr << ind.gametogenesis().at(0) << std::endl;
+    std::cerr << Individual::header();
+    std::cerr << ind << std::endl;
+    std::cerr << ind.gametogenesis() << std::endl;
     std::cerr << "Ke: " << ind.effective_carrying_capacity() << std::endl;
     std::cerr << "DI numer: " << ind.denom_numerical() << std::endl;
     std::cerr << "DI mathe: " << ind.denom_mathematica() << std::endl;
