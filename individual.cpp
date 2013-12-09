@@ -29,7 +29,7 @@ constexpr double Individual::INV_NUM_LOCI_;
 
 namespace {
 constexpr size_t PRECISION = 32;
-double HEIGHT_ALPHA = 2.0;
+double HEIGHT_ALPHA = 3.0;
 }
 
 boost::program_options::options_description& Individual::opt_description() {
