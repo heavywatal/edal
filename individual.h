@@ -80,13 +80,20 @@ class Individual {
 
     Individual(const std::vector<size_t>&);
 
+    // K_e(I) in formula
     double effective_carrying_capacity() const;
+
+    // C(I, J) in formula
     double habitat_overlap(const Individual& other) const {
         return habitat_overlap_v3(other);
     }
+    double habitat_overlap_v2(const Individual&) const;
+    double habitat_overlap_v3(const Individual&) const;
 
+    // w(I) in formula
     bool survive(const double effective_num_competitors) const;
 
+    // ψ(I, I') [Psi] in formula
     double mating_preference(const Individual& male) const;
     size_t poisson_offsprings() const;
     std::vector<Loci> gametogenesis() const;
@@ -107,18 +114,22 @@ class Individual {
         }
         return output;
     };
+
+    // Ξ(I, u, v) [Xi] in formula
     double habitat_preference_v2(const double height, const double diameter) const;
     double habitat_preference_v3(const double height, const double diameter) const;
     double habitat_preference(const double height, const double diameter) const {
         return habitat_preference_v3(height, diameter);
     }
-    double habitat_overlap_v2(const Individual&) const;
-    double habitat_overlap_v3(const Individual&) const;
+
+    // D_I in formula
     double denom_numerical() const;
     double denom_mathematica() const;
     double denom_maple() const;
     double denom_() const {return denom_mathematica();}
     double sqrt_denom_2_() const;
+
+    // W(I, u, v) in formula
     double fitness(const double height, const double diameter) const;
 
     static Loci recombination(const Loci&, const Loci&);

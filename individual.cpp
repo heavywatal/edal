@@ -38,14 +38,16 @@ boost::program_options::options_description& Individual::opt_description() {
     desc.add_options()
         ("carrying_capacity,K", po::value<size_t>(&CARRYING_CAPACITY)->default_value(CARRYING_CAPACITY))
         ("birth_rate,b", po::value<size_t>(&AVG_NUM_OFFSPINRGS_)->default_value(AVG_NUM_OFFSPINRGS_))
-        ("HEIGHT_ALPHA,a", po::value<double>(&HEIGHT_ALPHA)->default_value(HEIGHT_ALPHA))
         ("height_pref", po::value<double>(&HEIGHT_PREFERENCE_)->default_value(HEIGHT_PREFERENCE_))
         ("diameter_pref", po::value<double>(&DIAMETER_PREFERENCE_)->default_value(DIAMETER_PREFERENCE_))
-        ("mating_s,s", po::value<double>(&MATING_SIGMA_)->default_value(MATING_SIGMA_))
-        ("toepad_s,t", po::value<double>(&TOEPAD_SELECTION_)->default_value(TOEPAD_SELECTION_))
-        ("limb_s,l", po::value<double>(&LIMB_SELECTION_)->default_value(LIMB_SELECTION_))
+        ("mating_sigma,s", po::value<double>(&MATING_SIGMA_)->default_value(MATING_SIGMA_))
+        ("toepad_sel,t", po::value<double>(&TOEPAD_SELECTION_)->default_value(TOEPAD_SELECTION_))
+        ("limb_sel,l", po::value<double>(&LIMB_SELECTION_)->default_value(LIMB_SELECTION_))
+        ("height_compe", po::value<double>(&HEIGHT_COMPETITION_)->default_value(HEIGHT_COMPETITION_))
+        ("diameter_compe", po::value<double>(&DIAMETER_COMPETITION_)->default_value(DIAMETER_COMPETITION_))
         ("mu_locus,u", po::value<double>(&MU_LOCUS_)->default_value(MU_LOCUS_))
         ("mu_neutral,n", po::value<double>(&MU_NEUTRAL_)->default_value(MU_NEUTRAL_))
+        ("HEIGHT_ALPHA,a", po::value<double>(&HEIGHT_ALPHA)->default_value(HEIGHT_ALPHA))
     ;
     return desc;
 }

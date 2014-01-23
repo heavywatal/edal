@@ -72,13 +72,13 @@ inline void check_flags(int argc, char* argv[]) {HERE;
     description.add(Individual::opt_description());
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, description), vm);
+    po::notify(vm);
     if (vm["help"].as<bool>()) {
         description.print(std::cout);
         exit(0);
     }
     TOP_DIR = fs::path(vm["top_dir"].as<std::string>());
     prandom().seed(seed_); // TODO: want to read seed?
-    vm.notify();
     config_string_ = flags_into_string(description, vm);
     if (vm["verbose"].as<bool>()) {
         std::cout << description << std::endl;
