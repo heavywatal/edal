@@ -14,6 +14,7 @@ namespace fs = boost::filesystem;
 #include "cxxwtils/getopt.hpp"
 #include "cxxwtils/prandom.hpp"
 #include "cxxwtils/os.hpp"
+#include "cxxwtils/gz.hpp"
 #include "cxxwtils/multiprocessing.hpp"
 
 #include "individual.h"
@@ -50,13 +51,7 @@ std::vector<std::vector<Patch> > population;
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 // functions
 
-
-inline void test() {HERE;
-    individual_unit_test();
-    patch_unit_test();
-}
-
-inline void check_flags(int argc, char* argv[]) {HERE;
+inline boost::program_options::options_description opt_description() {HERE;
     namespace po = boost::program_options;
     po::options_description description("Operation");
     description.add_options()
@@ -74,20 +69,37 @@ inline void check_flags(int argc, char* argv[]) {HERE;
         ("migration_rate,m", po::value<double>(&MIGRATION_RATE)->default_value(MIGRATION_RATE))
         ("seed", po::value<unsigned int>(&SEED)->default_value(SEED))
     ;
+    return description;
+}
+
+inline void test() {HERE;
+    individual_unit_test();
+    patch_unit_test();
+}
+
+inline void check_flags(int argc, char* argv[]) {HERE;
+    std::vector<std::string> arguments(argv, argv + argc);
+    std::cout << wtl::str_join(arguments, " ") << std::endl;
+    std::cout << wtl::iso8601datetime() << std::endl;
+
+    namespace po = boost::program_options;
+    po::options_description description;
+    description.add(opt_description());
     description.add(Individual::opt_description());
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, description), vm);
     po::notify(vm);
+
     if (vm["help"].as<bool>()) {
         description.print(std::cout);
         exit(0);
     }
     TOP_DIR = fs::path(vm["top_dir"].as<std::string>());
-    prandom().seed(SEED); // TODO: want to read seed?
     CONFIG_STRING = flags_into_string(description, vm);
-    std::vector<std::string> arguments(argv, argv + argc);
-    std::cout << wtl::str_join(arguments) << std::endl;
-    std::cout << CONFIG_STRING << std::endl;
+    prandom().seed(SEED); // TODO: want to read seed?
+    if (VERBOSE) {
+        std::cout << CONFIG_STRING << std::endl;
+    }
     if (vm["test"].as<bool>()) {
         test();
         exit(0);
@@ -191,13 +203,14 @@ inline void run() {HERE;
             << str_population(population, [](const Patch& p) {return p.size();})
             << std::endl;
     }
-    wtl::Fout{"population.csv"}
+    wtl::gzip{wtl::Fout{"population.csv.gz"}}
         << Individual::header()
         << str_population(population, [](const Patch& p) {return p;}, "", "");
 
     derr(job_dir << std::endl);
     fs::create_directory(TOP_DIR);
     fs::rename(WORK_DIR, job_dir);
+    std::cout << wtl::iso8601datetime() << std::endl;
 }
 
 #endif /* MAIN_H_ */
