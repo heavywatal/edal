@@ -39,6 +39,7 @@ fs::path WORK_DIR;
 fs::path TOP_DIR;
 fs::path LOAD_DIR;
 
+size_t PPN = 4;
 bool VERBOSE = false;
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
@@ -63,6 +64,7 @@ inline void check_flags(int argc, char* argv[]) {HERE;
         ("verbose,v", po::value<bool>(&VERBOSE)
             ->default_value(VERBOSE)->implicit_value(true), "verbose output")
         ("test", po::value<bool>()->default_value(false)->implicit_value(true))
+        ("ppn", po::value<size_t>(&PPN)->default_value(PPN))
         ("label", po::value<std::string>(&LABEL)->default_value("default"))
         ("top_dir", po::value<std::string>()
             ->default_value((TMP_DIR / wtl::strftime("out%Y%m%d")).string()))
@@ -112,7 +114,7 @@ inline std::pair<size_t, size_t> migrate(const size_t row_orig, const size_t col
 
 inline void life_cycle() {
     std::vector<std::vector<Patch> > next_generation(population);
-    wtl::Semaphore sem(4);
+    wtl::Semaphore sem(PPN);
     std::mutex mtx;
     auto patch_task = [&](const size_t row, const size_t col) {
         auto offsprings = population[row][col].mate_and_reproduce();
