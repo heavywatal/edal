@@ -47,11 +47,11 @@ class Individual {
     static size_t AVG_NUM_OFFSPINRGS_;
     static double HEIGHT_PREFERENCE_;
     static double DIAMETER_PREFERENCE_;
-    static double MATING_SIGMA_;
-    static double TOEPAD_SELECTION_;
-    static double LIMB_SELECTION_;
     static double HEIGHT_COMPETITION_;
     static double DIAMETER_COMPETITION_;
+    static double TOEPAD_SELECTION_;
+    static double LIMB_SELECTION_;
+    static double MATING_SIGMA_;
     static double MU_LOCUS_;
     static double MU_NEUTRAL_;
 

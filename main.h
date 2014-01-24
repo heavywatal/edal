@@ -22,15 +22,15 @@ namespace fs = boost::filesystem;
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 // parameters
 
-size_t num_rows = 8;
-size_t num_cols = 8;
-size_t initial_patch_size = 20;
-size_t observation_period = 1000;
-double migration_rate = 1e-1;
+size_t NUM_ROWS = 8;
+size_t NUM_COLS = 8;
+size_t INITIAL_PATCH_SIZE = 40;
+size_t OBSERVATION_PERIOD = 1000;
+double MIGRATION_RATE = 1e-1;
 
-unsigned int seed_ = std::random_device{}();
-std::string label_;
-std::string config_string_;
+unsigned int SEED = std::random_device{}();
+std::string LABEL;
+std::string CONFIG_STRING;
 
 const char* HOME_ = std::getenv("HOME");
 const fs::path HOME_DIR{HOME_};
@@ -38,6 +38,8 @@ const fs::path TMP_DIR{HOME_DIR / "tmp"};
 fs::path WORK_DIR;
 fs::path TOP_DIR;
 fs::path LOAD_DIR;
+
+bool VERBOSE = false;
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 // data members
@@ -57,18 +59,19 @@ inline void check_flags(int argc, char* argv[]) {HERE;
     namespace po = boost::program_options;
     po::options_description description("Operation");
     description.add_options()
-            ("help,h", po::value<bool>()->default_value(false)->implicit_value(true), "produce help")
-            ("verbose,v", po::value<bool>()->default_value(false)->implicit_value(true), "verbose output")
-            ("test", po::value<bool>()->default_value(false)->implicit_value(true))
-            ("label", po::value<std::string>(&label_)->default_value("default"))
-            ("top_dir", po::value<std::string>()
-                ->default_value((TMP_DIR / wtl::strftime("out%Y%m%d")).string()))
-            ("row", po::value<size_t>(&num_rows)->default_value(num_rows))
-            ("col", po::value<size_t>(&num_cols)->default_value(num_cols))
-            ("time,T", po::value<size_t>(&observation_period)->default_value(observation_period))
-            ("migration_rate,m", po::value<double>(&migration_rate)->default_value(migration_rate))
-            ("seed", po::value<unsigned int>(&seed_)->default_value(seed_))
-            ;
+        ("help,h", po::value<bool>()->default_value(false)->implicit_value(true), "produce help")
+        ("verbose,v", po::value<bool>(&VERBOSE)
+            ->default_value(VERBOSE)->implicit_value(true), "verbose output")
+        ("test", po::value<bool>()->default_value(false)->implicit_value(true))
+        ("label", po::value<std::string>(&LABEL)->default_value("default"))
+        ("top_dir", po::value<std::string>()
+            ->default_value((TMP_DIR / wtl::strftime("out%Y%m%d")).string()))
+        ("row", po::value<size_t>(&NUM_ROWS)->default_value(NUM_ROWS))
+        ("col", po::value<size_t>(&NUM_COLS)->default_value(NUM_COLS))
+        ("time,T", po::value<size_t>(&OBSERVATION_PERIOD)->default_value(OBSERVATION_PERIOD))
+        ("migration_rate,m", po::value<double>(&MIGRATION_RATE)->default_value(MIGRATION_RATE))
+        ("seed", po::value<unsigned int>(&SEED)->default_value(SEED))
+    ;
     description.add(Individual::opt_description());
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, description), vm);
@@ -78,12 +81,11 @@ inline void check_flags(int argc, char* argv[]) {HERE;
         exit(0);
     }
     TOP_DIR = fs::path(vm["top_dir"].as<std::string>());
-    prandom().seed(seed_); // TODO: want to read seed?
-    config_string_ = flags_into_string(description, vm);
-    if (vm["verbose"].as<bool>()) {
-        std::cout << description << std::endl;
-        std::cout << config_string_ << std::endl;
-    }
+    prandom().seed(SEED); // TODO: want to read seed?
+    CONFIG_STRING = flags_into_string(description, vm);
+    std::vector<std::string> arguments(argv, argv + argc);
+    std::cout << wtl::str_join(arguments) << std::endl;
+    std::cout << CONFIG_STRING << std::endl;
     if (vm["test"].as<bool>()) {
         test();
         exit(0);
@@ -115,7 +117,7 @@ inline void life_cycle() {
     auto patch_task = [&](const size_t row, const size_t col) {
         auto offsprings = population[row][col].mate_and_reproduce();
         for (const auto& child: offsprings) {
-                if (prandom().bernoulli(migration_rate)) {
+                if (prandom().bernoulli(MIGRATION_RATE)) {
                     auto new_coords = migrate(row, col);
                     std::lock_guard<std::mutex> lck(mtx);
                     next_generation[new_coords.first][new_coords.second].append(child);
@@ -127,16 +129,16 @@ inline void life_cycle() {
         sem.unlock();
     };
     std::vector<std::thread> threads;
-    for (size_t row=0; row<num_rows; ++row) {
-        for (size_t col=0; col<num_cols; ++col) {
+    for (size_t row=0; row<NUM_ROWS; ++row) {
+        for (size_t col=0; col<NUM_COLS; ++col) {
             sem.lock();
             threads.emplace_back(patch_task, row, col);
         }
     }
     for (auto& th: threads) {th.join();}
     threads.clear();
-    for (size_t row=0; row<num_rows; ++row) {
-        for (size_t col=0; col<num_cols; ++col) {
+    for (size_t row=0; row<NUM_ROWS; ++row) {
+        for (size_t col=0; col<NUM_COLS; ++col) {
             sem.lock();
             threads.emplace_back([row, col, &sem, &next_generation] {
                 next_generation[row][col].viability_selection();
@@ -165,24 +167,28 @@ inline void run() {HERE;
     const std::string now(wtl::strftime("%Y%m%d_%H%M%S"));
     std::ostringstream pid_at_host;
     pid_at_host << ::getpid() << "@" << wtl::gethostname();
-    WORK_DIR = TMP_DIR / (now + "_" + label_ + "_" + pid_at_host.str());
+    WORK_DIR = TMP_DIR / (now + "_" + LABEL + "_" + pid_at_host.str());
     derr(WORK_DIR << std::endl);
-    const fs::path job_dir = TOP_DIR / (label_ + "_" + now + "_" + pid_at_host.str());
+    const fs::path job_dir = TOP_DIR / (LABEL + "_" + now + "_" + pid_at_host.str());
     fs::create_directory(WORK_DIR);
     wtl::cd(WORK_DIR.string());
-    wtl::Fout{"program_options.conf"} << config_string_;
+    wtl::Fout{"program_options.conf"} << CONFIG_STRING;
 
-    population.assign(num_rows, std::vector<Patch>(num_cols));
-    population[0][0] = Patch(initial_patch_size);
-    for (size_t i=0; i<observation_period; ++i) {
-        std::cout << "T = " << i << std::endl;
-        std::cout << str_population(population, [](const Patch& p) {return p.size();});
-        std::cout << std::endl;
+    population.assign(NUM_ROWS, std::vector<Patch>(NUM_COLS));
+    population[0][0] = Patch(INITIAL_PATCH_SIZE);
+    for (size_t i=0; i<OBSERVATION_PERIOD; ++i) {
+        if (VERBOSE) {
+            std::cout << "T = " << i << "\n"
+                << str_population(population, [](const Patch& p) {return p.size();})
+                << std::endl;
+        }
         life_cycle();
     }
-    std::cout << "T = " << observation_period << std::endl;
-    std::cout << str_population(population, [](const Patch& p) {return p.size();});
-    std::cout << std::endl;
+    if (VERBOSE) {
+        std::cout << "T = " << OBSERVATION_PERIOD << "\n"
+            << str_population(population, [](const Patch& p) {return p.size();})
+            << std::endl;
+    }
     wtl::Fout{"population.csv"}
         << Individual::header()
         << str_population(population, [](const Patch& p) {return p;}, "", "");

@@ -14,11 +14,11 @@ size_t Individual::CARRYING_CAPACITY = 160;
 size_t Individual::AVG_NUM_OFFSPINRGS_ = 4;
 double Individual::HEIGHT_PREFERENCE_ = 0.5;
 double Individual::DIAMETER_PREFERENCE_ = 0.5;
-double Individual::MATING_SIGMA_ = 0.2;
-double Individual::TOEPAD_SELECTION_ = 0.5;
-double Individual::LIMB_SELECTION_ = 0.5;
 double Individual::HEIGHT_COMPETITION_ = 0.5;
 double Individual::DIAMETER_COMPETITION_ = 0.5;
+double Individual::TOEPAD_SELECTION_ = 0.5;
+double Individual::LIMB_SELECTION_ = 0.5;
+double Individual::MATING_SIGMA_ = 0.2;
 double Individual::MU_LOCUS_ = 1e-4;
 double Individual::MU_NEUTRAL_ = 1e-4;
 
@@ -28,8 +28,8 @@ constexpr unsigned long Individual::HALF_BITS;
 constexpr double Individual::INV_NUM_LOCI_;
 
 namespace {
-constexpr size_t PRECISION = 32;
-double HEIGHT_ALPHA = 3.0;
+constexpr size_t NUM_STEPS = 32;
+double BETA_PARAM = 3.0;
 }
 
 boost::program_options::options_description& Individual::opt_description() {
@@ -38,16 +38,16 @@ boost::program_options::options_description& Individual::opt_description() {
     desc.add_options()
         ("carrying_capacity,K", po::value<size_t>(&CARRYING_CAPACITY)->default_value(CARRYING_CAPACITY))
         ("birth_rate,b", po::value<size_t>(&AVG_NUM_OFFSPINRGS_)->default_value(AVG_NUM_OFFSPINRGS_))
-        ("height_pref", po::value<double>(&HEIGHT_PREFERENCE_)->default_value(HEIGHT_PREFERENCE_))
-        ("diameter_pref", po::value<double>(&DIAMETER_PREFERENCE_)->default_value(DIAMETER_PREFERENCE_))
-        ("mating_sigma,s", po::value<double>(&MATING_SIGMA_)->default_value(MATING_SIGMA_))
-        ("toepad_sel,t", po::value<double>(&TOEPAD_SELECTION_)->default_value(TOEPAD_SELECTION_))
-        ("limb_sel,l", po::value<double>(&LIMB_SELECTION_)->default_value(LIMB_SELECTION_))
-        ("height_compe", po::value<double>(&HEIGHT_COMPETITION_)->default_value(HEIGHT_COMPETITION_))
-        ("diameter_compe", po::value<double>(&DIAMETER_COMPETITION_)->default_value(DIAMETER_COMPETITION_))
+        ("height_pref,p", po::value<double>(&HEIGHT_PREFERENCE_)->default_value(HEIGHT_PREFERENCE_))
+        ("diameter_pref,P", po::value<double>(&DIAMETER_PREFERENCE_)->default_value(DIAMETER_PREFERENCE_))
+        ("height_compe,c", po::value<double>(&HEIGHT_COMPETITION_)->default_value(HEIGHT_COMPETITION_))
+        ("diameter_compe,C", po::value<double>(&DIAMETER_COMPETITION_)->default_value(DIAMETER_COMPETITION_))
+        ("toepad_select,s", po::value<double>(&TOEPAD_SELECTION_)->default_value(TOEPAD_SELECTION_))
+        ("limb_select,S", po::value<double>(&LIMB_SELECTION_)->default_value(LIMB_SELECTION_))
+        ("mating_sigma,f", po::value<double>(&MATING_SIGMA_)->default_value(MATING_SIGMA_))
         ("mu_locus,u", po::value<double>(&MU_LOCUS_)->default_value(MU_LOCUS_))
-        ("mu_neutral,n", po::value<double>(&MU_NEUTRAL_)->default_value(MU_NEUTRAL_))
-        ("HEIGHT_ALPHA,a", po::value<double>(&HEIGHT_ALPHA)->default_value(HEIGHT_ALPHA))
+        ("mu_neutral,U", po::value<double>(&MU_NEUTRAL_)->default_value(MU_NEUTRAL_))
+        ("beta_param,a", po::value<double>(&BETA_PARAM)->default_value(BETA_PARAM))
     ;
     return desc;
 }
@@ -58,8 +58,8 @@ namespace {
 
 inline double pdf_beta(const double height, const double diameter) {
     static_cast<void>(diameter);
-    static const double k = std::tgamma(2 * HEIGHT_ALPHA) / wtl::pow<2>(std::tgamma(HEIGHT_ALPHA));
-    double result = std::pow(height * (1 - height), HEIGHT_ALPHA - 1);
+    static const double k = std::tgamma(2 * BETA_PARAM) / wtl::pow<2>(std::tgamma(BETA_PARAM));
+    double result = std::pow(height * (1 - height), BETA_PARAM - 1);
     return result *= k;
 }
 
@@ -104,12 +104,12 @@ double Individual::denom_numerical() const {
         return wtl::integrate([this, height](const double diameter) {
             double result = habitat_preference(height, diameter);
             return result *= abundance(height, diameter);
-        }, 0.0, 1.0 - height, PRECISION);
-    }, 0.0, 1.0, PRECISION);
+        }, 0.0, 1.0 - height, NUM_STEPS);
+    }, 0.0, 1.0, NUM_STEPS);
 }
 
 double Individual::denom_mathematica() const {
-    const double a = HEIGHT_ALPHA;
+    const double a = BETA_PARAM;
     const double h0 = HEIGHT_PREFERENCE_;
     const double h1 = DIAMETER_PREFERENCE_;
     const double y0 = phenotype_[trait::height_preference];
@@ -124,7 +124,7 @@ double Individual::denom_mathematica() const {
 
 
 double Individual::denom_maple() const {
-    const double alpha = HEIGHT_ALPHA;
+    const double alpha = BETA_PARAM;
     const double h0 = HEIGHT_PREFERENCE_;
     const double h1 = DIAMETER_PREFERENCE_;
     const double y0 = phenotype_[trait::height_preference];
@@ -177,8 +177,8 @@ double Individual::sqrt_denom_2_() const {
             double result = habitat_preference(height, diameter);
             result *= result;
             return result *= abundance(height, diameter);
-        }, 0.0, 1.0 - height, PRECISION);
-    }, 0.0, 1.0, PRECISION);
+        }, 0.0, 1.0 - height, NUM_STEPS);
+    }, 0.0, 1.0, NUM_STEPS);
 }
 
 
@@ -217,8 +217,8 @@ double Individual::habitat_overlap_v2(const Individual& other) const {
             double result = habitat_preference(height, diameter);
             result *= other.habitat_preference(height, diameter);
             return result *= abundance(height, diameter);
-        }, 0.0, 1.0 - height, PRECISION);
-    }, 0.0, 1.0, PRECISION);
+        }, 0.0, 1.0 - height, NUM_STEPS);
+    }, 0.0, 1.0, NUM_STEPS);
 //    n /= sqrt_denominator_2_;
 //    n /= other.sqrt_denominator_2_;
     return n;
@@ -261,8 +261,8 @@ double Individual::effective_carrying_capacity() const {
             result *= habitat_preference(height, diameter);
             result *= abundance(height, diameter);
             return result;
-        }, 0.0, 1.0 - height, PRECISION);
-    }, 0.0, 1.0, PRECISION);
+        }, 0.0, 1.0 - height, NUM_STEPS);
+    }, 0.0, 1.0, NUM_STEPS);
     return result;
 }
 
