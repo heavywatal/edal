@@ -20,7 +20,7 @@ def param20140124():
     params.update(C=[0.2, 0.4, 0.6, 0.8])
     params.update(s=[0.2, 0.4, 0.6, 0.8])
     params.update(S=[0.2, 0.4, 0.6, 0.8])
-    params.update(f=[0.2, 0.4, 0.6, 0.8])
+    params.update(f=[0.1, 0.2, 0.3, 0.4])
     for (key, vals) in params.items():
         for value in vals:
             var_args = ['-{}{}'.format(key, value)]
