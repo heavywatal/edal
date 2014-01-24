@@ -61,7 +61,7 @@ clean:
 	${RM} ${OBJS} ${PROGRAM}
 
 run:
-	./${PROGRAM}
+	@./${PROGRAM}
 
 test:
 	./${PROGRAM} --test
