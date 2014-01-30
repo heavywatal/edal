@@ -12,7 +12,6 @@ import torque
 
 
 def param20140124():
-    ret = []
     params = dict()
     params.update(p=[0.2, 0.4, 0.6, 0.8])
     params.update(P=[0.2, 0.4, 0.6, 0.8])
@@ -21,6 +20,30 @@ def param20140124():
     params.update(s=[0.2, 0.4, 0.6, 0.8])
     params.update(S=[0.2, 0.4, 0.6, 0.8])
     params.update(f=[0.1, 0.2, 0.3, 0.4])
+    return sequential(params)
+
+
+def param20140130():
+    params = dict()
+    params.update(p=[0.2, 0.4, 0.6, 0.8])
+    params.update(c=[0.2, 0.4, 0.6, 0.8])
+    params.update(s=[0.1, 0.2, 0.3, 0.4])
+    return upperlower(params) + sequential(dict(f=[0.05, 0.1, 0.15, 0.2]))
+
+
+def upperlower(params):
+    ret = []
+    for (key, vals) in params.items():
+        for value in vals:
+            var_args = ['-{}{}'.format(key, value)]
+            var_args.append('-{}{}'.format(key.upper(), value))
+            var_args.append('--label=' + make_label(var_args))
+            ret.append(var_args)
+    return ret
+
+
+def sequential(params):
+    ret = []
     for (key, vals) in params.items():
         for value in vals:
             var_args = ['-{}{}'.format(key, value)]
@@ -52,7 +75,7 @@ if __name__ == '__main__':
     constargs.append('--ppn={}'.format(args.ppn))
     constargs.append('-T50000')
 
-    args_list = param20140124()
+    args_list = param20140130()
     commands = [constargs + x for x in args_list] * args.repeat
 
     qargs = dict()
