@@ -1,10 +1,11 @@
 library(plyr)
 library(dplyr)
+library(stringr)
 library(reshape2)
 library(ggplot2)
 
 library(doMC)
-doMC::registerDoMC(4)
+doMC::registerDoMC(parallel::detectCores())
 
 #########1#########2#########3#########4#########5#########6#########7#########
 
