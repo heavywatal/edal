@@ -1,5 +1,7 @@
 library(ggplot2)
+library(reshape2)
 library(plyr)
+library(dplyr)
 setwd('ignore')
 
 #########1#########2#########3#########4#########5#########6#########7#########
@@ -41,4 +43,41 @@ plot(u, exp(-theta(u, 10, 9)), ylim=c(0, 1))
 
 plot(u, exp(-1 / theta(u, 2, 1)) / theta(u, 2, 1), ylim=c(0, 1))
 plot(u, exp(-1 / theta(u, 10, 9)) / theta(u, 10, 9), ylim=c(0, 1))
+
+#########1#########2#########3#########4#########5#########6#########7#########
+## Ke: effective number of competitoes
+
+.filename = 'ke.csv'
+.tbl = read.csv(.filename)
+
+.p = ggplot(dplyr::filter(.tbl, height_pref==median(height_pref), diameter_pref==median(height_pref)),
+            aes(x=toepad, y=limb))
+.p = .p + geom_tile(aes(fill=Ke))
+.p
+
+.p = ggplot(dplyr::filter(.tbl, toepad==median(toepad), limb==median(limb)),
+            aes(x=height_pref, y=diameter_pref))
+.p = .p + geom_tile(aes(fill=Ke))
+.p
+
+.p = ggplot(dplyr::filter(.tbl, toepad==median(toepad), limb==1),
+            aes(x=height_pref, y=diameter_pref))
+.p = .p + geom_tile(aes(fill=Ke))
+.p
+
+.p = ggplot(.tbl, aes(x=height_pref, y=diameter_pref))
+.p = .p + geom_tile(aes(fill=Ke))
+.p = .p + facet_grid(limb ~ toepad)
+.p = .p + theme(panel.grid=element_blank(), panel.background=element_blank())
+.p = .p + theme(axis.ticks=element_blank())
+.p
+ggsave('ke.pdf', .p, width=16, height=16)
+
+.p = ggplot(.tbl, aes(x=toepad, y=limb))
+.p = .p + geom_tile(aes(fill=Ke))
+.p = .p + facet_grid(diameter_pref ~ height_pref)
+.p = .p + theme(panel.grid=element_blank(), panel.background=element_blank())
+.p = .p + theme(axis.ticks=element_blank())
+.p
+ggsave('ke2.pdf', .p, width=16, height=16)
 

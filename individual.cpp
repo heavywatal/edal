@@ -395,4 +395,23 @@ void individual_unit_test() {
     wtl::Fout{"ignore/abundance_beta.csv"} << resource_abundance_test(pdf_beta);
     wtl::Fout{"ignore/abundance_triangle.csv"} << resource_abundance_test(pdf_triangle);
     wtl::Fout{"ignore/abundance_v3.csv"} << resource_abundance_test(abundance);
+
+    const size_t max_trait = Individual::NUM_LOCI_ * 2;
+    const size_t half = max_trait / 2;
+    std::ostringstream ost;
+    std::string sep(",");
+    for (size_t toe=0; toe<=max_trait; ++toe) {
+        for (size_t limb=0; limb<=max_trait; ++limb) {
+            for (size_t hpref=0; hpref<=max_trait; ++hpref) {
+                for (size_t dpref=0; dpref<=max_trait; ++dpref) {
+                    Individual ind(std::vector<size_t>{toe, limb, hpref, dpref, half, half, half, half});
+                    ost << toe << sep << limb << sep << hpref << sep << dpref << sep
+                        << ind.effective_carrying_capacity_ << "\n";
+                }
+            }
+        }
+    }
+    wtl::Fout{"ignore/ke.csv"}
+        << "toepad,limb,height_pref,diameter_pref,Ke\n"
+        << ost.str();
 }
