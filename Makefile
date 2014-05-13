@@ -27,7 +27,7 @@ CC := $(CXX)
 CPPFLAGS := -Wall -Wextra -Wno-unused-parameter -fno-strict-aliasing -iquote ${INCLUDEDIR} ${CPPDBG}
 CXXFLAGS := -std=c++11 -O3 ${CXXDBG}
 LDFLAGS := -L${HOME}/local/lib -L/usr/local/lib
-LDLIBS := -lsfmt -lboost_program_options -lboost_serialization -lboost_system -lboost_filesystem -lboost_iostreams -lboost_regex -lz
+LDLIBS := -lsfmt -lboost_program_options -lboost_filesystem -lboost_system -lboost_iostreams -lz
 TARGET_ARCH := -march=core2 -m64 -msse -msse2 -msse3
 
 ifneq (,$(filter $(CXX), ${GXX}))
