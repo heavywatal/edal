@@ -28,21 +28,21 @@ setwd('ignore')
 
 .p = ggplot(.tbl, aes(x=height_pref, y=diameter_pref))
 .p = .p + geom_tile(aes(fill=Ke))
-.p = .p + facet_grid(limb ~ toepad)
+.p = .p + facet_grid(limb ~ toepad, as.table=FALSE)
 .p = .p + theme(panel.grid=element_blank(), panel.background=element_blank())
 .p = .p + theme(axis.ticks=element_blank())
 .p = .p + theme(axis.text=element_blank())
 .p
-ggsave('ke.pdf', .p, width=16, height=16)
+ggsave('ke_group_by_morph.pdf', .p, width=16, height=16)
 
 .p = ggplot(.tbl, aes(x=toepad, y=limb))
 .p = .p + geom_tile(aes(fill=Ke))
-.p = .p + facet_grid(diameter_pref ~ height_pref)
+.p = .p + facet_grid(diameter_pref ~ height_pref, as.table=FALSE)
 .p = .p + theme(panel.grid=element_blank(), panel.background=element_blank())
 .p = .p + theme(axis.ticks=element_blank())
 .p = .p + theme(axis.text=element_blank())
 .p
-ggsave('ke2.pdf', .p, width=16, height=16)
+ggsave('ke_group_by_preference.pdf', .p, width=16, height=16)
 
 plyr::mlply(unique(.tbl[, c('height_pref', 'diameter_pref')]),
     function(height_pref, diameter_pref){

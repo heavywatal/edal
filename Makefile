@@ -14,7 +14,7 @@ vpath %.cpp ${SRCDIR}
 
 
 ## Options
-GXX := g++-4.8
+GXX := g++-4.9
 UNAME := $(shell uname)
 ifeq (${UNAME}, Darwin)
   CXX := clang++
