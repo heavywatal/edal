@@ -1,4 +1,7 @@
 // -*- mode: c++; coding: utf-8 -*-
+/** @file patch.cpp
+    @brief Implementation of Patch class
+*/
 #include "patch.h"
 
 #include <cmath>

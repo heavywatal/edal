@@ -1,4 +1,7 @@
 // -*- mode: c++; coding: utf-8 -*-
+/** @file main.cpp
+    @brief Only main() function
+*/
 #include <cstdlib> // EXIT_SUCCESS, EXIT_FAILURE
 #include <iostream> // cstdio, string
 

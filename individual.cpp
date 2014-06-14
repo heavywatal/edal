@@ -1,5 +1,8 @@
 // -*- mode: c++; coding: utf-8 -*-
 #include "individual.h"
+/** @file individual.cpp
+    @brief Implementation of Individual class
+*/
 
 #include <cmath>
 #include <iostream>
@@ -95,7 +98,6 @@ Individual::Individual(const std::vector<size_t>& values): genotype_{{}, {}} {
     }
     phenotype_ = init_phenotype();
     denominator_ = denom_();
-//    sqrt_denominator_2_ = sqrt_denom_2_();
     effective_carrying_capacity_ = effective_carrying_capacity();
 }
 
@@ -171,16 +173,6 @@ double Individual::denom_maple() const {
     return z /= 12;  // TODO: wrong sign?
 }
 
-double Individual::sqrt_denom_2_() const {
-    return wtl::integrate([this](const double height) {
-        return wtl::integrate([this, height](const double diameter) {
-            double result = habitat_preference(height, diameter);
-            result *= result;
-            return result *= abundance(height, diameter);
-        }, 0.0, 1.0 - height, NUM_STEPS);
-    }, 0.0, 1.0, NUM_STEPS);
-}
-
 
 double Individual::habitat_preference_v2(const double height, const double diameter) const {
     auto impl = [](const double ind_preference,
@@ -219,8 +211,6 @@ double Individual::habitat_overlap_v2(const Individual& other) const {
             return result *= abundance(height, diameter);
         }, 0.0, 1.0 - height, NUM_STEPS);
     }, 0.0, 1.0, NUM_STEPS);
-//    n /= sqrt_denominator_2_;
-//    n /= other.sqrt_denominator_2_;
     return n;
 }
 

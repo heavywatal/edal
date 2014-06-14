@@ -1,4 +1,7 @@
 // -*- mode: c++; coding: utf-8 -*-
+/** @file individual.h
+    @brief Interface of Individual class
+*/
 #pragma once
 #ifndef INDIVIDUAL_H_
 #define INDIVIDUAL_H_
@@ -41,25 +44,50 @@ enum {
 } // namespace trait
 
 class Individual {
-    // parameters
   private:
+    //! \f$k\f$ in \f$F(u,v)\f$
     static size_t CARRYING_CAPACITY;
+
+    //! \f$b\f$ in \f$w(I)\f$
     static size_t AVG_NUM_OFFSPINRGS_;
+
+    //! \f$h_0\f$ in \f$\Xi(y_0,y_1|u,v)\f$
     static double HEIGHT_PREFERENCE_;
+
+    //! \f$h_1\f$ in \f$\Xi(y_0,y_1|u,v)\f$
     static double DIAMETER_PREFERENCE_;
+
+    //! \f$c_0\f$ in \f$C(I,J)\f$
     static double HEIGHT_COMPETITION_;
+
+    //! \f$c_1\f$ in \f$C(I,J)\f$
     static double DIAMETER_COMPETITION_;
+
+    //! \f$s_0\f$ in \f$W(x_0,x_1|u,v)\f$
     static double TOEPAD_SELECTION_;
+
+    //! \f$s_1\f$ in \f$W(x_0,x_1|u,v)\f$
     static double LIMB_SELECTION_;
+
+    //! \f$\sigma_a\f$ in \f$\Psi()\f$
     static double MATING_SIGMA_;
+
+    //! Mutation rate per locus per generation
+    /** Mutations occur at equal rates across all loci;
+        the probabilities of forward and backward mutations are equal.
+    */
     static double MU_LOCUS_;
+
+    //! Unused yet
     static double MU_NEUTRAL_;
 
-    constexpr static size_t NUM_LOCI_ = 8;  // per trait
+    //! The number of loci per trait
+    constexpr static size_t NUM_LOCI_ = 8;
     constexpr static unsigned long FULL_BITS = wtl::pow<NUM_LOCI_>(2) - 1;
     constexpr static unsigned long HALF_BITS = wtl::pow<NUM_LOCI_ / 2>(2) - 1;
     constexpr static double INV_NUM_LOCI_ = 0.5 / NUM_LOCI_;
 
+    //! typedef for diallelic loci of a trait
     typedef std::bitset<NUM_LOCI_> Loci;
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
@@ -69,46 +97,46 @@ class Individual {
         {HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS},
         {HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS}},
         phenotype_(init_phenotype()),
-        denominator_{denom_()}, //sqrt_denominator_2_{sqrt_denom_2_()},
+        denominator_{denom_()},
         effective_carrying_capacity_{effective_carrying_capacity()} {}
 
     Individual(const std::vector<Loci>& egg, const std::vector<Loci>& sperm):
         genotype_{egg, sperm},
         phenotype_(init_phenotype()),
-        denominator_{denom_()}, //sqrt_denominator_2_{sqrt_denom_2_()},
+        denominator_{denom_()},
         effective_carrying_capacity_{effective_carrying_capacity()} {}
 
     Individual(const std::vector<size_t>&);
 
-    //! K_e(I)
+    //! \f$K_e(I)\f$
     double effective_carrying_capacity() const;
 
-    //! C(I, J)
+    //! \f$C(I, J)\f$
     /** @param other individual to interact
-        @return C(I, J)
+        @return \f$C(I, J)\f$
     */
     double habitat_overlap(const Individual& other) const {
         return habitat_overlap_v3(other);
     }
 
-    //! C(I, J) in anolis_v2
+    //! \f$C(I, J)\f$ in anolis_v2
     double habitat_overlap_v2(const Individual&) const;
 
-    //! C(I, J) in anolis_v3
+    //! \f$C(I, J)\f$ in anolis_v3
     double habitat_overlap_v3(const Individual&) const;
 
-    //! w(I)
+    //! \f$w(I)\f$
     bool survive(const double effective_num_competitors) const;
 
-    //! ψ(I, I') [Psi]
+    //! \f$\Psi(I, I')\f$
     double mating_preference(const Individual& male) const;
 
-    //! generate poisson random number with lambda = AVG_NUM_OFFSPINRGS_
+    //! generates poisson random number with lambda = AVG_NUM_OFFSPINRGS_
     /** return the number of offsprings
     */
     size_t poisson_offsprings() const;
 
-    //! generate with recombination
+    //! Gametogenesis with free recombination among loci
     /** return a gamete
     */
     std::vector<Loci> gametogenesis() const;
@@ -118,15 +146,16 @@ class Individual {
     */
     std::string str() const;
 
-    //! the header correspongs to str()
+    //! The header correspongs to str()
     static std::string header();
 
+    //! Program options for this class
     static boost::program_options::options_description& opt_description();
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   private:
 
-    //! calculate phenotypic values from genotype
+    //! calculates phenotypic values from genotype
     /** @return phenotypic values
     */
     std::vector<double> init_phenotype() const {
@@ -138,39 +167,37 @@ class Individual {
         return output;
     };
 
-    //! Ξ(I, u, v) [Xi] anolis_v2
+    //! \f$\Xi(I, u, v)\f$ anolis_v2
     double habitat_preference_v2(const double height, const double diameter) const;
 
-    //! Ξ(I, u, v) [Xi] anolis_v3
+    //! \f$\Xi(I, u, v)\f$ anolis_v3
     double habitat_preference_v3(const double height, const double diameter) const;
 
-    //! Ξ(I, u, v) [Xi]
+    //! \f$\Xi(I, u, v)\f$
     /** @param height habitat environment
         @param diameter habitat environment
-        @return Ξ(I, u, v)
+        @return \f$\Xi(I, u, v)\f$
     */
     double habitat_preference(const double height, const double diameter) const {
         return habitat_preference_v3(height, diameter);
     }
 
-    //! D_I numerical computation (slow)
+    //! \f$D_I\f$ numerical computation (slow)
     double denom_numerical() const;
 
-    //! D_I analytical computation by Mathematica (fast)
+    //! \f$D_I\f$ analytical computation by Mathematica (fast)
     double denom_mathematica() const;
 
-    //! D_I analytical computation by Maple
+    //! \f$D_I\f$ analytical computation by Maple
     //! @bug something wrong
     double denom_maple() const;
 
-    //! D_I
-    /** @return D_I
+    //! \f$D_I\f$
+    /** @return \f$D_I\f$
     */
     double denom_() const {return denom_mathematica();}
 
-    double sqrt_denom_2_() const;
-
-    //! W(I, u, v)
+    //! \f$W(I, u, v)\f$
     /** @param height habitat environmant
         @param diameter habitat environment
     */
@@ -181,22 +208,30 @@ class Individual {
         @param rhs right arm of a chromosome
         @return haplotype after recombination
     */
-    static Loci recombination(const Loci&, const Loci&);
-    
-    //! poisson process with lambda = MU_LOCUS_ * NUM_LOCI_ * trait::size
+    static Loci recombination(const Loci& lhs, const Loci& rhs);
+
+    //! poisson process with \f$\lambda\f$ = MU_LOCUS_ * NUM_LOCI_ * trait::size
     /** @param haplotype (call-by-value)
         @return mutated haplotype
     */
-    static std::vector<Loci> mutate(std::vector<Loci>);
+    static std::vector<Loci> mutate(std::vector<Loci> haplotype);
 
+    //! unit test for the class
     friend void individual_unit_test();
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
-    // data member (genotype)
+    // data member
+
+    //! Unlinked diallelic loci with equal effects
     std::pair<std::vector<Loci>, std::vector<Loci> > genotype_;
+
+    //! All traits are scaled to be between 0 and 1
     std::vector<double> phenotype_;
+
+    //! \f$D_I\f$ can be calculated at birth
     double denominator_;
-//    double sqrt_denominator_2_;
+
+    //! \f$K_e(I)\f$ can be calculated at birth
     double effective_carrying_capacity_;
 };
 

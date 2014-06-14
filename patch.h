@@ -1,4 +1,7 @@
 // -*- mode: c++; coding: utf-8 -*-
+/** @file patch.h
+    @brief Interface of Patch class
+*/
 #pragma once
 #ifndef PATCH_H_
 #define PATCH_H_
@@ -43,20 +46,23 @@ class Patch {
     */
     std::vector<Individual> mate_and_reproduce() const;
 
-    //! Some individuals die depending on N_e(I)
+    //! Some individuals die depending on \f$N_e(I)\f$
     void viability_selection();
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   private:
 
-    //! calculate N_e(I)
+    //! calculate \f$N_e(I)\f$
     //! @param focal individual
-    //! @return N_e of the focal individual
+    //! @return \f$N_e\f$ of the focal individual
     double effective_num_competitors(const Individual&) const;
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
     // data member
+    //! female individuals
     std::vector<Individual> females_;
+
+    //! male individuals
     std::vector<Individual> males_;
 };
 

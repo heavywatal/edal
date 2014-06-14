@@ -1,4 +1,7 @@
 // -*- mode: c++; coding: utf-8 -*-
+/** @file main.h
+    @brief Simulation functions
+*/
 #pragma once
 #ifndef MAIN_H_
 #define MAIN_H_
@@ -23,12 +26,22 @@ namespace fs = boost::filesystem;
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 // parameters
 
+//! The number of patches on Y axis
 size_t NUM_ROWS = 8;
+
+//! The number of patches on X axis
 size_t NUM_COLS = 8;
+
+//! The number of individuals in an original patch
 size_t INITIAL_PATCH_SIZE = 40;
+
+//! The number of generations to observe
 size_t OBSERVATION_PERIOD = 1000;
+
+//! Migration rate per generation
 double MIGRATION_RATE = 1e-1;
 
+//! Seed for random number generator
 unsigned int SEED = std::random_device{}();
 std::string LABEL;
 std::string CONFIG_STRING;
@@ -40,12 +53,14 @@ fs::path WORK_DIR;
 fs::path TOP_DIR;
 fs::path LOAD_DIR;
 
+//! The number of CPU cores to use
 size_t PPN = 4;
 bool VERBOSE = false;
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 // data members
 
+//! Two-dimensional matrix of Patch
 std::vector<std::vector<Patch> > population;
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
