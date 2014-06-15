@@ -2,10 +2,9 @@
 /** @file main.cpp
     @brief Only main() function
 */
-#include <cstdlib> // EXIT_SUCCESS, EXIT_FAILURE
-#include <iostream> // cstdio, string
+#include <iostream>
 
-#include "main.h"
+#include "simulation.h"
 
 int main(int argc, char* argv[]) {
     std::ios::sync_with_stdio(false);
@@ -13,10 +12,8 @@ int main(int argc, char* argv[]) {
     std::cout.precision(16);
     std::cerr.precision(6);
 
-    check_flags(argc, argv);
-    run();
-    return EXIT_SUCCESS;
-
-    return EXIT_FAILURE;
+    Simulation simulation(argc, argv);
+    simulation.run();
+    return 0;
 }
 
