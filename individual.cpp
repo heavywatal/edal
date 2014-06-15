@@ -1,8 +1,8 @@
 // -*- mode: c++; coding: utf-8 -*-
-#include "individual.h"
-/** @file individual.cpp
+/*! @file individual.cpp
     @brief Implementation of Individual class
 */
+#include "individual.h"
 
 #include <cmath>
 #include <iostream>
@@ -97,11 +97,11 @@ Individual::Individual(const std::vector<size_t>& values): genotype_{{}, {}} {
         genotype_.second.push_back(HALF_BITS);
     }
     phenotype_ = init_phenotype();
-    denominator_ = denom_();
+    denominator_ = calc_denom();
     effective_carrying_capacity_ = effective_carrying_capacity();
 }
 
-double Individual::denom_numerical() const {
+double Individual::calc_denom_numerical() const {
     return wtl::integrate([this](const double height) {
         return wtl::integrate([this, height](const double diameter) {
             double result = habitat_preference(height, diameter);
@@ -110,7 +110,7 @@ double Individual::denom_numerical() const {
     }, 0.0, 1.0, NUM_STEPS);
 }
 
-double Individual::denom_mathematica() const {
+double Individual::calc_denom_mathematica() const {
     const double a = BETA_PARAM;
     const double h0 = HEIGHT_PREFERENCE_;
     const double h1 = DIAMETER_PREFERENCE_;
@@ -125,7 +125,7 @@ double Individual::denom_mathematica() const {
 }
 
 
-double Individual::denom_maple() const {
+double Individual::calc_denom_maple() const {
     const double alpha = BETA_PARAM;
     const double h0 = HEIGHT_PREFERENCE_;
     const double h1 = DIAMETER_PREFERENCE_;
@@ -188,7 +188,7 @@ double Individual::habitat_preference_v2(const double height, const double diame
     return std::exp(exponent);
 }
 
-double Individual::habitat_preference_v3(const double height, const double diameter) const {
+double Individual::habitat_preference(const double height, const double diameter) const {
     auto impl = [](const double ind_preference,
                    const double env_characterstics,
                    const double habitat_pref_strength) {
@@ -214,7 +214,7 @@ double Individual::habitat_overlap_v2(const Individual& other) const {
     return n;
 }
 
-double Individual::habitat_overlap_v3(const Individual& other) const {
+double Individual::habitat_overlap(const Individual& other) const {
     auto impl = [](const double yi, const double yj, const double c) {
         double exponent = yi;
         exponent -= yj;
@@ -256,13 +256,13 @@ double Individual::effective_carrying_capacity() const {
     return result;
 }
 
-bool Individual::survive(const double effective_num_competitors) const {
+double Individual::survival_probability(const double effective_num_competitors) const {
     double denom = AVG_NUM_OFFSPINRGS_;
     denom -= 1.0;
     denom *= effective_num_competitors;  // ^ alpha for crowding strength
     denom /= effective_carrying_capacity_;
     denom += 1.0;
-    return prandom().bernoulli(1.0 / denom);
+    return 1.0 / denom;
 }
 
 double Individual::mating_preference(const Individual& male) const {
@@ -287,7 +287,7 @@ double Individual::mating_preference(const Individual& male) const {
     exponent /= MATING_SIGMA_;
     exponent *= exponent;
     exponent *= -0.5;
-    return std::exp(exponent) * habitat_overlap(male);
+    return std::exp(exponent);
 }
 
 size_t Individual::poisson_offsprings() const {
@@ -378,9 +378,9 @@ void individual_unit_test() {
     std::cerr << ind << std::endl;
     std::cerr << ind.gametogenesis() << std::endl;
     std::cerr << "Ke: " << ind.effective_carrying_capacity() << std::endl;
-    std::cerr << "DI numer: " << ind.denom_numerical() << std::endl;
-    std::cerr << "DI mathe: " << ind.denom_mathematica() << std::endl;
-    std::cerr << "DI maple: " << ind.denom_maple() << std::endl;
+    std::cerr << "DI numer: " << ind.calc_denom_numerical() << std::endl;
+    std::cerr << "DI mathe: " << ind.calc_denom_mathematica() << std::endl;
+    std::cerr << "DI maple: " << ind.calc_denom_maple() << std::endl;
     Individual offspring(ind.gametogenesis(), ind.gametogenesis());
     wtl::Fout{"ignore/abundance_beta.csv"} << resource_abundance_test(pdf_beta);
     wtl::Fout{"ignore/abundance_triangle.csv"} << resource_abundance_test(pdf_triangle);

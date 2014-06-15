@@ -1,5 +1,5 @@
 // -*- mode: c++; coding: utf-8 -*-
-/** @file patch.cpp
+/*! @file patch.cpp
     @brief Implementation of Patch class
 */
 #include "patch.h"
@@ -31,7 +31,7 @@ std::vector<Individual> Patch::mate_and_reproduce() const {
         std::vector<double> prefs;
         prefs.reserve(males_.size());
         for (const auto& male: males_) {
-            prefs.push_back(mother.mating_preference(male));
+            prefs.push_back(mother.mating_probability(male));
         }
         std::vector<double> upper_bounds(males_.size());
         std::partial_sum(prefs.begin(), prefs.end(), upper_bounds.begin());
@@ -63,7 +63,7 @@ void Patch::viability_selection() {
     auto impl = [this] (std::vector<Individual>* members) {
         std::vector<Individual> survivors;
         for (const auto& ind: *members) {
-            if (ind.survive(effective_num_competitors(ind))) {
+            if (prandom().bernoulli(ind.survival_probability(effective_num_competitors(ind)))) {
                 survivors.push_back(ind);
             }
         }

@@ -1,11 +1,12 @@
 // -*- mode: c++; coding: utf-8 -*-
-/** @file main.cpp
-    @brief Only main() function
+/*! @file main.cpp
+    @brief Only defines tiny main()
 */
 #include <iostream>
 
 #include "simulation.h"
 
+//! Just instantiate and run Simulation
 int main(int argc, char* argv[]) {
     std::ios::sync_with_stdio(false);
     std::cin.tie(0);

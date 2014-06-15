@@ -1,5 +1,5 @@
 // -*- mode: c++; coding: utf-8 -*-
-/** @file simulation.cpp
+/*! @file simulation.cpp
     @brief Inplementation of Simulation class
 */
 #include "simulation.h"
@@ -36,6 +36,7 @@ boost::program_options::options_description& Simulation::opt_description() {HERE
     return description;
 }
 
+//! Unit test for each class
 inline void test() {HERE;
     individual_unit_test();
     patch_unit_test();
@@ -112,7 +113,7 @@ void Simulation::life_cycle() {
         auto offsprings = population[row][col].mate_and_reproduce();
         for (const auto& child: offsprings) {
                 if (prandom().bernoulli(MIGRATION_RATE)) {
-                    auto new_coords = migrate(row, col);
+                    auto new_coords = choose_destination(row, col);
                     std::lock_guard<std::mutex> lck(mtx);
                     next_generation[new_coords.first][new_coords.second].append(child);
                 } else {
@@ -144,7 +145,7 @@ void Simulation::life_cycle() {
     population.swap(next_generation);
 }
 
-std::pair<size_t, size_t> Simulation::migrate(const size_t row_orig, const size_t col_orig) {
+std::pair<size_t, size_t> Simulation::choose_destination(const size_t row_orig, const size_t col_orig) {
     size_t row = row_orig;
     size_t col = col_orig;
     switch (prandom().randrange(8)) {
