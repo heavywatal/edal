@@ -67,31 +67,34 @@ class Individual {
     /*! @addtogroup biol_param
         @{*/
 
-    //! \f$k\f$ in \f$F(u,v)\f$
-    static size_t CARRYING_CAPACITY;
+    //! \f$ \alpha \f$ of Beta distribution in \f$ F(u,v) \f$
+    static double BETA_PARAM_;
 
-    //! \f$b\f$ in \f$w(I)\f$
+    //! Coefficient for \f$ K_e(I)\f$ --- **NOT FOUND in anolis_v3.pdf**
+    static size_t CARRYING_CAPACITY_;
+
+    //! \f$ b \f$ in \f$ w(I) \f$
     static size_t AVG_NUM_OFFSPINRGS_;
 
-    //! \f$h_0\f$ in \f$\Xi(y_0,y_1|u,v)\f$
+    //! \f$ h_0 \f$ in \f$ \Xi(y_0,y_1|u,v) \f$
     static double HEIGHT_PREFERENCE_;
 
-    //! \f$h_1\f$ in \f$\Xi(y_0,y_1|u,v)\f$
+    //! \f$ h_1 \f$ in \f$ \Xi(y_0,y_1|u,v) \f$
     static double DIAMETER_PREFERENCE_;
 
-    //! \f$c_0\f$ in \f$C(I,J)\f$
+    //! \f$ c_0 \f$ in \f$ C(I,J) \f$
     static double HEIGHT_COMPETITION_;
 
-    //! \f$c_1\f$ in \f$C(I,J)\f$
+    //! \f$ c_1 \f$ in \f$ C(I,J) \f$
     static double DIAMETER_COMPETITION_;
 
-    //! \f$s_0\f$ in \f$W(x_0,x_1|u,v)\f$
+    //! \f$ s_0 \f$ in \f$ W(x_0,x_1|u,v) \f$
     static double TOEPAD_SELECTION_;
 
-    //! \f$s_1\f$ in \f$W(x_0,x_1|u,v)\f$
+    //! \f$ s_1\f$ in \f$ W(x_0,x_1|u,v) \f$
     static double LIMB_SELECTION_;
 
-    //! \f$\sigma_a\f$ in \f$\Psi(f,c|m)\f$
+    //! \f$ \sigma_a \f$ in \f$ \Psi(f,c|m) \f$
     static double MATING_SIGMA_;
 
     //! Mutation rate per locus per generation
@@ -117,6 +120,9 @@ class Individual {
 
     //! Compile-time constant value used in init_phenotype()
     constexpr static double INV_NUM_LOCI_ = 0.5 / NUM_LOCI_;
+
+    //! Precision of numerical integration
+    constexpr static size_t NUM_STEPS_ = 32;
 
     //! typedef for diallelic loci of a trait
     typedef std::bitset<NUM_LOCI_> Loci;
@@ -215,7 +221,10 @@ class Individual {
     //! The header correspongs to str()
     static std::string header();
 
-    //! Program options for this class
+    //! Symbols for the program options can be different from those in equations
+    /*! @ingroup biol_param
+        @return Program options description
+    */
     static boost::program_options::options_description& opt_description();
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
@@ -305,6 +314,7 @@ class Individual {
         return output;
     };
 
+    friend double pdf_beta(const double height, const double diameter);
     friend void individual_unit_test();
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////

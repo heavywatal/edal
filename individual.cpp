@@ -13,7 +13,8 @@
 #include "cxxwtils/iostr.hpp"
 #include "cxxwtils/prandom.hpp"
 
-size_t Individual::CARRYING_CAPACITY = 160;
+double Individual::BETA_PARAM_ = 3.0;
+size_t Individual::CARRYING_CAPACITY_ = 160;
 size_t Individual::AVG_NUM_OFFSPINRGS_ = 4;
 double Individual::HEIGHT_PREFERENCE_ = 0.5;
 double Individual::DIAMETER_PREFERENCE_ = 0.5;
@@ -30,16 +31,12 @@ constexpr unsigned long Individual::FULL_BITS;
 constexpr unsigned long Individual::HALF_BITS;
 constexpr double Individual::INV_NUM_LOCI_;
 
-namespace {
-constexpr size_t NUM_STEPS = 32;
-double BETA_PARAM = 3.0;
-}
-
 boost::program_options::options_description& Individual::opt_description() {
     namespace po = boost::program_options;
     static po::options_description desc{"Individual"};
     desc.add_options()
-        ("carrying_capacity,K", po::value<size_t>(&CARRYING_CAPACITY)->default_value(CARRYING_CAPACITY))
+        ("beta_param,a", po::value<double>(&BETA_PARAM_)->default_value(BETA_PARAM_))
+        ("carrying_capacity,K", po::value<size_t>(&CARRYING_CAPACITY_)->default_value(CARRYING_CAPACITY_))
         ("birth_rate,b", po::value<size_t>(&AVG_NUM_OFFSPINRGS_)->default_value(AVG_NUM_OFFSPINRGS_))
         ("height_pref,p", po::value<double>(&HEIGHT_PREFERENCE_)->default_value(HEIGHT_PREFERENCE_))
         ("diameter_pref,P", po::value<double>(&DIAMETER_PREFERENCE_)->default_value(DIAMETER_PREFERENCE_))
@@ -50,22 +47,23 @@ boost::program_options::options_description& Individual::opt_description() {
         ("mating_sigma,f", po::value<double>(&MATING_SIGMA_)->default_value(MATING_SIGMA_))
         ("mu_locus,u", po::value<double>(&MU_LOCUS_)->default_value(MU_LOCUS_))
         ("mu_neutral,U", po::value<double>(&MU_NEUTRAL_)->default_value(MU_NEUTRAL_))
-        ("beta_param,a", po::value<double>(&BETA_PARAM)->default_value(BETA_PARAM))
     ;
     return desc;
 }
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
-namespace {
-
+//! Beta distribution function for resource abundance
 inline double pdf_beta(const double height, const double diameter) {
     static_cast<void>(diameter);
-    static const double k = std::tgamma(2 * BETA_PARAM) / wtl::pow<2>(std::tgamma(BETA_PARAM));
-    double result = std::pow(height * (1 - height), BETA_PARAM - 1);
+    static const double k =
+        std::tgamma(2 * Individual::BETA_PARAM_)
+        / wtl::pow<2>(std::tgamma(Individual::BETA_PARAM_));
+    double result = std::pow(height * (1 - height), Individual::BETA_PARAM_ - 1);
     return result *= k;
 }
 
+//! Triangular distribution function for resource abundance
 inline double pdf_triangle(const double height, const double diameter) {
     if (height == 1.0 || 1.0 - height < diameter) {return 0.0;}
     double result = 1.0 - height - diameter;
@@ -73,11 +71,11 @@ inline double pdf_triangle(const double height, const double diameter) {
     return result *= 2.0;
 }
 
+//! Product Beta(u, v) Tri(u, v)
 inline double abundance(const double height, const double diameter) {
     return pdf_beta(height, diameter) * pdf_triangle(height, diameter);
 }
 
-} // namespace
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
 Individual::Individual(const std::vector<size_t>& values): genotype_{{}, {}} {
@@ -106,12 +104,12 @@ double Individual::calc_denom_numerical() const {
         return wtl::integrate([this, height](const double diameter) {
             double result = habitat_preference(height, diameter);
             return result *= abundance(height, diameter);
-        }, 0.0, 1.0 - height, NUM_STEPS);
-    }, 0.0, 1.0, NUM_STEPS);
+        }, 0.0, 1.0 - height, NUM_STEPS_);
+    }, 0.0, 1.0, NUM_STEPS_);
 }
 
 double Individual::calc_denom_mathematica() const {
-    const double a = BETA_PARAM;
+    const double a = BETA_PARAM_;
     const double h0 = HEIGHT_PREFERENCE_;
     const double h1 = DIAMETER_PREFERENCE_;
     const double y0 = phenotype_[trait::height_preference];
@@ -126,7 +124,7 @@ double Individual::calc_denom_mathematica() const {
 
 
 double Individual::calc_denom_maple() const {
-    const double alpha = BETA_PARAM;
+    const double alpha = BETA_PARAM_;
     const double h0 = HEIGHT_PREFERENCE_;
     const double h1 = DIAMETER_PREFERENCE_;
     const double y0 = phenotype_[trait::height_preference];
@@ -209,8 +207,8 @@ double Individual::habitat_overlap_v2(const Individual& other) const {
             double result = habitat_preference(height, diameter);
             result *= other.habitat_preference(height, diameter);
             return result *= abundance(height, diameter);
-        }, 0.0, 1.0 - height, NUM_STEPS);
-    }, 0.0, 1.0, NUM_STEPS);
+        }, 0.0, 1.0 - height, NUM_STEPS_);
+    }, 0.0, 1.0, NUM_STEPS_);
     return n;
 }
 
@@ -243,7 +241,7 @@ double Individual::fitness(const double height, const double diameter) const {
 }
 
 double Individual::effective_carrying_capacity() const {
-    double result = CARRYING_CAPACITY;
+    double result = CARRYING_CAPACITY_;
     result /= denominator_;
     result *= wtl::integrate([this](const double height) {
         return wtl::integrate([this, height](const double diameter) {
@@ -251,8 +249,8 @@ double Individual::effective_carrying_capacity() const {
             result *= habitat_preference(height, diameter);
             result *= abundance(height, diameter);
             return result;
-        }, 0.0, 1.0 - height, NUM_STEPS);
-    }, 0.0, 1.0, NUM_STEPS);
+        }, 0.0, 1.0 - height, NUM_STEPS_);
+    }, 0.0, 1.0, NUM_STEPS_);
     return result;
 }
 
