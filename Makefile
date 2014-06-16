@@ -92,6 +92,16 @@ instruments: release
 	@echo $(shell gdate +%F_%T)
 	instruments -t "/Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/Resources/templates/Time Profiler.tracetemplate" -D ~/tmp/profile$(shell gdate +%F_%T) ${PROGRAM}
 
+
+.PHONY: doxygen sync
+doxygen:
+	$(RM) -r html/*
+	doxygen
+
+sync:
+	rsync -auv --delete html/ meme:~/Default/edal
+
+
 ${OBJDIR}/%.o: | ${OBJDIR}
 	$(COMPILE.cpp) ${OUTPUT_OPTION} $<
 
