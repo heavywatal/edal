@@ -221,10 +221,6 @@ class Individual {
     //! The header correspongs to str()
     static std::string header();
 
-    //! Symbols for the program options can be different from those in equations
-    /*! @ingroup biol_param
-        @return Program options description
-    */
     static boost::program_options::options_description& opt_description();
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////

@@ -127,10 +127,6 @@ class Simulation {
     /** @} biol_proc */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
-    //! Symbols for the program options can be different from those in equations
-    /*! @ingroup biol_param
-        @return Program options description
-    */
     boost::program_options::options_description& opt_description();
 
     //! apply function for each patch and concatenate output into a string

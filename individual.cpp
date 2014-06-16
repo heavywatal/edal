@@ -31,6 +31,25 @@ constexpr unsigned long Individual::FULL_BITS;
 constexpr unsigned long Individual::HALF_BITS;
 constexpr double Individual::INV_NUM_LOCI_;
 
+//! Symbols for the program options can be different from those in equations
+/*! @ingroup biol_param
+    @return Program options description
+
+    Command line option      | Symbol           | Variable
+    ------------------------ | ---------------- | ------------------------------
+    `-a,--beta_param`        | \f$ \alpha \f$   | Individual::BETA_PARAM_
+    `-K,--carrying_capacity` | -                | Individual::CARRYING_CAPACITY_
+    `-b,--birth_rate`        | \f$ b \f$        | Individual::AVG_NUM_OFFSPINRGS_
+    `-p,--height_pref`       | \f$ h_0 \f$      | Individual::HEIGHT_PREFERENCE_
+    `-P,--diameter_pref`     | \f$ h_1 \f$      | Individual::DIAMETER_PREFERENCE_
+    `-c,--height_compe`      | \f$ c_0 \f$      | Individual::HEIGHT_COMPETITION_
+    `-C,--diameter_compe`    | \f$ c_1 \f$      | Individual::DIAMETER_COMPETITION_
+    `-s,--toepad_select`     | \f$ s_0 \f$      | Individual::TOEPAD_SELECTION_
+    `-S,--limb_select`       | \f$ s_1 \f$      | Individual::LIMB_SELECTION_
+    `-f,--mating_sigma`      | \f$ \sigma_a \f$ | Individual::MATING_SIGMA_
+    `-u,--mu_locus`          | -                | Individual::MU_LOCUS_
+    `-U,--mu_neutral`        | -                | Individual::MU_NEUTRAL_
+*/
 boost::program_options::options_description& Individual::opt_description() {
     namespace po = boost::program_options;
     static po::options_description desc{"Individual"};

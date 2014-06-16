@@ -16,6 +16,16 @@
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 // functions
 
+//! Symbols for the program options can be different from those in equations
+/*! @ingroup biol_param
+    @return Program options description
+
+    Command line option    | Symbol    | Variable
+    ---------------------- | --------- | ------------------------------
+    `-m,--migration_rate`  | \f$ m \f$ | Simulation::MIGRATION_RATE
+    `--row,--col`          | -         | Simulation::NUM_COLS, Simulation::NUM_ROWS
+    `-T,--time`            | -         | Simulation::OBSERVATION_PERIOD
+*/
 boost::program_options::options_description& Simulation::opt_description() {HERE;
     namespace po = boost::program_options;
     static po::options_description description("Simulation");
