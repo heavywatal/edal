@@ -20,11 +20,10 @@
 /*! @ingroup biol_param
     @return Program options description
 
-    Command line option    | Symbol    | Variable
-    ---------------------- | --------- | ------------------------------
-    `-m,--migration_rate`  | \f$ m \f$ | Simulation::MIGRATION_RATE
-    `--row,--col`          | -         | Simulation::NUM_COLS, Simulation::NUM_ROWS
-    `-T,--time`            | -         | Simulation::OBSERVATION_PERIOD
+    Command line option | Symbol   | Variable
+    ------------------- | -------- | ------------------------------
+    `--row,--col`       | -        | Simulation::NUM_COLS, Simulation::NUM_ROWS
+    `-T,--time`         | -        | Simulation::OBSERVATION_PERIOD
 */
 boost::program_options::options_description& Simulation::opt_description() {HERE;
     namespace po = boost::program_options;
@@ -40,7 +39,6 @@ boost::program_options::options_description& Simulation::opt_description() {HERE
         ("row", po::value<size_t>(&NUM_ROWS)->default_value(NUM_ROWS))
         ("col", po::value<size_t>(&NUM_COLS)->default_value(NUM_COLS))
         ("time,T", po::value<size_t>(&OBSERVATION_PERIOD)->default_value(OBSERVATION_PERIOD))
-        ("migration_rate,m", po::value<double>(&MIGRATION_RATE)->default_value(MIGRATION_RATE))
         ("seed", po::value<unsigned int>(&SEED)->default_value(SEED))
     ;
     return description;
@@ -122,7 +120,7 @@ void Simulation::life_cycle() {
     auto patch_task = [&](const size_t row, const size_t col) {
         auto offsprings = population[row][col].mate_and_reproduce();
         for (const auto& child: offsprings) {
-                if (prandom().bernoulli(MIGRATION_RATE)) {
+                if (child.is_migrating()) {
                     auto new_coords = choose_destination(row, col);
                     std::lock_guard<std::mutex> lck(mtx);
                     next_generation[new_coords.first][new_coords.second].append(child);

@@ -11,6 +11,7 @@
 #include <string>
 
 #include "cxxwtils/algorithm.hpp"
+#include "cxxwtils/prandom.hpp"
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
@@ -105,6 +106,9 @@ class Individual {
 
     //! Unused yet
     static double MU_NEUTRAL_;
+
+    //! Migration rate \f$ m \f$ per generation
+    static double MIGRATION_RATE_;
 
     //! The number of loci per trait
     constexpr static size_t NUM_LOCI_ = 8;
@@ -209,6 +213,13 @@ class Individual {
         @return a gamete
     */
     std::vector<Loci> gametogenesis() const;
+
+    //! Bernoulli trial whether migrating or not
+    /*! @ingroup life_cycle
+    */
+    bool is_migrating() const {
+        return prandom().bernoulli(MIGRATION_RATE_);
+    }
 
     /** @} biol_proc */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////

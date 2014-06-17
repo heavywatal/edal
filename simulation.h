@@ -52,9 +52,6 @@ class Simulation {
     //! The number of generations to observe
     size_t OBSERVATION_PERIOD = 1000;
 
-    //! Migration rate per generation
-    double MIGRATION_RATE = 1e-1;
-
     /** @} endgroup */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
@@ -101,14 +98,14 @@ class Simulation {
 
     /*! @brief One step forward
 
-        There are two options.
-        (1) viability selection → dispersal → mating and offspring production,
-        and (2) dispersal → viability selection → mating and offspring production.
-        [Q: which one is more appropriate for lizards?
-        Jonathan: I think dispersal before selection is more appropriate,
-        although we actually know little about dispersal;
-        still, the best bet is that it occurs when they are young.]
-        So, we consider the second option only.
+        > There are two options.
+        > (1) viability selection → dispersal → mating and offspring production,
+        > and (2) dispersal → viability selection → mating and offspring production.
+        > [Q: which one is more appropriate for lizards?
+        > Jonathan: I think dispersal before selection is more appropriate,
+        > although we actually know little about dispersal;
+        > still, the best bet is that it occurs when they are young.]
+        > So, we consider the second option only.
     */
     void life_cycle();
 
@@ -117,10 +114,10 @@ class Simulation {
         @param col_orig Original X position
         @return new position (row, col)
 
-        With probability \f$ m > 0 \f$, each offspring becomes a "migrant."
-        Each migrant goes to one of the 8 neighboring patches.
-        For patches at the boundary,
-        the probability \f$ m \f$ is reduced according to the number of neighbors they have.
+        > With probability \f$ m > 0 \f$, each offspring becomes a "migrant."
+        > Each migrant goes to one of the 8 neighboring patches.
+        > For patches at the boundary,
+        > the probability \f$ m \f$ is reduced according to the number of neighbors they have.
     */
     std::pair<size_t, size_t> choose_destination(const size_t row_orig, const size_t col_orig);
 
