@@ -168,7 +168,7 @@ std::pair<size_t, size_t> Simulation::choose_destination(const size_t row_orig, 
       case 6: --row;        break;
       case 7: --row; ++col; break;
     }
-    if ((row > 7) | (col > 7)) {  // i.e. 8 or -1
+    if ((row >= NUM_ROWS) | (col >= NUM_COLS)) {  // including -1 in size_t
         row = row_orig; col = col_orig;
     }
     return {row, col};

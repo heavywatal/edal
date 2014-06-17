@@ -123,7 +123,8 @@ individual.h \
 individual.cpp \
 patch.h \
 patch.cpp \
-main.h \
+simulation.h \
+simulation.cpp \
 main.cpp \
 )
 
