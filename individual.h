@@ -135,18 +135,14 @@ class Individual {
   public:
 
     //! Default constructor for original individuals
-    Individual(): genotype_{
+    Individual(): Individual{
         {HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS},
-        {HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS}},
-        phenotype_(init_phenotype()),
-        denominator_{calc_denom()},
-        effective_carrying_capacity_{effective_carrying_capacity()} {}
+        {HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS}} {}
 
     //! Constructor for sexual reproduction
     Individual(const std::vector<Loci>& egg, const std::vector<Loci>& sperm):
         genotype_{egg, sperm},
         phenotype_(init_phenotype()),
-        denominator_{calc_denom()},
         effective_carrying_capacity_{effective_carrying_capacity()} {}
 
     //! Initialization by phenotypic values
@@ -269,7 +265,7 @@ class Individual {
     */
     double calc_denom_maple() const;
 
-    //! \f$D_I\f$
+    //! Normalizing denominator \f$D_I\f$
     /*! @ingroup habitat_pareference
         @return \f$D_I\f$
     */
@@ -332,9 +328,6 @@ class Individual {
 
     //! All traits are scaled to be between 0 and 1
     std::vector<double> phenotype_;
-
-    //! \f$D_I\f$ can be calculated at birth
-    double denominator_;
 
     //! \f$K_e(I)\f$ can be calculated at birth
     double effective_carrying_capacity_;

@@ -116,7 +116,6 @@ Individual::Individual(const std::vector<size_t>& values): genotype_{{}, {}} {
         genotype_.second.push_back(HALF_BITS);
     }
     phenotype_ = init_phenotype();
-    denominator_ = calc_denom();
     effective_carrying_capacity_ = effective_carrying_capacity();
 }
 
@@ -263,7 +262,7 @@ double Individual::fitness(const double height, const double diameter) const {
 
 double Individual::effective_carrying_capacity() const {
     double result = CARRYING_CAPACITY_;
-    result /= denominator_;
+    result /= calc_denom();
     result *= wtl::integrate([this](const double height) {
         return wtl::integrate([this, height](const double diameter) {
             double result = fitness(height, diameter);
