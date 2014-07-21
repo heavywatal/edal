@@ -63,7 +63,9 @@ class Simulation {
 
     //! Seed for random number generator
     unsigned int SEED = std::random_device{}();
-    
+
+    int MODE = 0;
+
     //! Group name of this run such as altered parameter
     std::string LABEL;
 
@@ -88,10 +90,12 @@ class Simulation {
     //! Parse command arguments
     Simulation(int argc, char* argv[]);
 
-    //! Call life_cycle() repeatedly
     void run();
 
   private:
+    //! Call life_cycle() repeatedly
+    void evolve();
+
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
     /** @addtogroup life_cycle
         @{*/

@@ -11,6 +11,7 @@
 #include <boost/program_options.hpp>
 
 #include "cxxwtils/iostr.hpp"
+#include "cxxwtils/gz.hpp"
 
 double Individual::BETA_PARAM_ = 3.0;
 size_t Individual::CARRYING_CAPACITY_ = 160;
@@ -407,7 +408,7 @@ void Individual::write_resource_abundance() {
     wtl::Fout{"ignore/abundance_v3.csv"} << ::test_resource_abundance(abundance);
 }
 
-void Individual::write_possible_ke(const std::string& outfile) {
+std::string Individual::possible_ke() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
     const size_t max_trait = Individual::NUM_LOCI_ * 2;
     const size_t half = max_trait / 2;
@@ -425,7 +426,7 @@ void Individual::write_possible_ke(const std::string& outfile) {
             }
         }
     }
-    wtl::Fout{outfile} << ost.str();
+    return ost.str();
 }
 
 void Individual::unit_test() {

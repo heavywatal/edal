@@ -234,7 +234,7 @@ class Individual {
     //! Unit test for Individual
     static void unit_test();
     static void write_resource_abundance();
-    static void write_possible_ke(const std::string& outfile);
+    static std::string possible_ke();
 
     static boost::program_options::options_description& opt_description();
 

@@ -33,6 +33,7 @@ boost::program_options::options_description& Simulation::opt_description() {HERE
         ("verbose,v", po::value<bool>(&VERBOSE)
             ->default_value(VERBOSE)->implicit_value(true), "verbose output")
         ("test", po::value<int>()->default_value(0)->implicit_value(1))
+        ("mode", po::value<int>(&MODE)->default_value(MODE))
         ("ppn", po::value<size_t>(&PPN)->default_value(PPN))
         ("label", po::value<std::string>(&LABEL)->default_value("default"))
         ("top_dir", po::value<std::string>()->default_value(OUT_DIR.string()))
@@ -82,9 +83,8 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
       case 2:
         Individual::write_resource_abundance();
         exit(0);
-      case 3:
-        Individual::write_possible_ke("ignore/ke.csv");
-        exit(0);
+      default:
+        exit(1);
     }
     const std::string now(wtl::strftime("%Y%m%d_%H%M%S"));
     std::ostringstream pid_at_host;
@@ -99,6 +99,22 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
 }
 
 void Simulation::run() {HERE;
+    switch (MODE) {
+      case 0:
+        evolve();
+        break;
+      case 1:
+        wtl::gzip{wtl::Fout{"possible_ke.csv.gz"}} << Individual::possible_ke();
+        break;
+      default:
+        exit(1);
+    }
+    derr("mv results to " << OUT_DIR << std::endl);
+    fs::rename(WORK_DIR, OUT_DIR);
+    std::cout << wtl::iso8601datetime() << std::endl;
+}
+
+void Simulation::evolve() {HERE;
     population.assign(NUM_ROWS, std::vector<Patch>(NUM_COLS));
     population[0][0] = Patch(INITIAL_PATCH_SIZE);
     for (size_t i=0; i<OBSERVATION_PERIOD; ++i) {
@@ -117,9 +133,6 @@ void Simulation::run() {HERE;
     wtl::gzip{wtl::Fout{"population.csv.gz"}}
         << Individual::header()
         << str_population([](const Patch& p) {return p;}, "", "");
-    derr("mv results to " << OUT_DIR << std::endl);
-    fs::rename(WORK_DIR, OUT_DIR);
-    std::cout << wtl::iso8601datetime() << std::endl;
 }
 
 void Simulation::life_cycle() {
