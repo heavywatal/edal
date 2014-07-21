@@ -32,7 +32,7 @@ boost::program_options::options_description& Simulation::opt_description() {HERE
         ("help,h", po::value<bool>()->default_value(false)->implicit_value(true), "produce help")
         ("verbose,v", po::value<bool>(&VERBOSE)
             ->default_value(VERBOSE)->implicit_value(true), "verbose output")
-        ("test", po::value<bool>()->default_value(false)->implicit_value(true))
+        ("test", po::value<int>()->default_value(0)->implicit_value(1))
         ("ppn", po::value<size_t>(&PPN)->default_value(PPN))
         ("label", po::value<std::string>(&LABEL)->default_value("default"))
         ("top_dir", po::value<std::string>()->default_value(OUT_DIR.string()))
@@ -46,8 +46,8 @@ boost::program_options::options_description& Simulation::opt_description() {HERE
 
 //! Unit test for each class
 inline void test() {HERE;
-    individual_unit_test();
-    patch_unit_test();
+    Individual::unit_test();
+    Patch::unit_test();
 }
 
 Simulation::Simulation(int argc, char* argv[]) {HERE;
@@ -73,8 +73,17 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
     if (VERBOSE) {
         std::cout << CONFIG_STRING << std::endl;
     }
-    if (vm["test"].as<bool>()) {
+    switch (vm["test"].as<int>()) {
+      case 0:
+        break;
+      case 1:
         test();
+        exit(0);
+      case 2:
+        Individual::write_resource_abundance();
+        exit(0);
+      case 3:
+        Individual::write_possible_ke("ignore/ke.csv");
         exit(0);
     }
     const std::string now(wtl::strftime("%Y%m%d_%H%M%S"));

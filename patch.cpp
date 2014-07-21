@@ -87,7 +87,7 @@ std::string Patch::str() const {
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
-void patch_unit_test() {
+void Patch::unit_test() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
     Patch patch(20);
     std::cerr << patch.size() << std::endl;

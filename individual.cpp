@@ -369,10 +369,22 @@ std::string Individual::header() {
     return ost.str();
 }
 
+std::string Individual::str_detail() const {
+    std::ostringstream ost;
+    ost << Individual::header();
+    ost << *this << std::endl;
+    ost << gametogenesis() << std::endl;
+    ost << "Ke: " << effective_carrying_capacity_ << std::endl;
+    ost << "DI numer: " << calc_denom_numerical() << std::endl;
+    ost << "DI mathe: " << calc_denom_mathematica() << std::endl;
+    ost << "DI maple: " << calc_denom_maple() << std::endl;
+    return ost.str();
+}
+
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
 template <class Func> inline
-std::string resource_abundance_test(Func func) {
+std::string test_resource_abundance(Func func) {
     constexpr int precision = 25;
     constexpr double delta = 1.0 / precision;
     std::ostringstream ost;
@@ -388,26 +400,20 @@ std::string resource_abundance_test(Func func) {
     return ost.str();
 }
 
-void individual_unit_test() {
+void Individual::write_resource_abundance() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
-    Individual ind;
-    std::cerr.precision(15);
-    std::cerr << Individual::header();
-    std::cerr << ind << std::endl;
-    std::cerr << ind.gametogenesis() << std::endl;
-    std::cerr << "Ke: " << ind.effective_carrying_capacity() << std::endl;
-    std::cerr << "DI numer: " << ind.calc_denom_numerical() << std::endl;
-    std::cerr << "DI mathe: " << ind.calc_denom_mathematica() << std::endl;
-    std::cerr << "DI maple: " << ind.calc_denom_maple() << std::endl;
-    Individual offspring(ind.gametogenesis(), ind.gametogenesis());
-    wtl::Fout{"ignore/abundance_beta.csv"} << resource_abundance_test(pdf_beta);
-    wtl::Fout{"ignore/abundance_triangle.csv"} << resource_abundance_test(pdf_triangle);
-    wtl::Fout{"ignore/abundance_v3.csv"} << resource_abundance_test(abundance);
+    wtl::Fout{"ignore/abundance_beta.csv"} << ::test_resource_abundance(pdf_beta);
+    wtl::Fout{"ignore/abundance_triangle.csv"} << ::test_resource_abundance(pdf_triangle);
+    wtl::Fout{"ignore/abundance_v3.csv"} << ::test_resource_abundance(abundance);
+}
 
+void Individual::write_possible_ke(const std::string& outfile) {
+    std::cerr << __PRETTY_FUNCTION__ << std::endl;
     const size_t max_trait = Individual::NUM_LOCI_ * 2;
     const size_t half = max_trait / 2;
     std::ostringstream ost;
     std::string sep(",");
+    ost << "toepad,limb,height_pref,diameter_pref,Ke\n";
     for (size_t toe=0; toe<=max_trait; ++toe) {
         for (size_t limb=0; limb<=max_trait; ++limb) {
             for (size_t hpref=0; hpref<=max_trait; ++hpref) {
@@ -419,7 +425,14 @@ void individual_unit_test() {
             }
         }
     }
-    wtl::Fout{"ignore/ke.csv"}
-        << "toepad,limb,height_pref,diameter_pref,Ke\n"
-        << ost.str();
+    wtl::Fout{outfile} << ost.str();
+}
+
+void Individual::unit_test() {
+    std::cerr << __PRETTY_FUNCTION__ << std::endl;
+    std::cerr.precision(15);
+    Individual ind;
+    std::cerr << ind.str_detail();
+    Individual offspring(ind.gametogenesis(), ind.gametogenesis());
+    std::cerr << offspring << std::endl;
 }

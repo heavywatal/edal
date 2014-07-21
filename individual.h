@@ -228,6 +228,14 @@ class Individual {
     //! The header correspongs to str()
     static std::string header();
 
+    //! detailed str() for testing/debugging
+    std::string str_detail() const;
+
+    //! Unit test for Individual
+    static void unit_test();
+    static void write_resource_abundance();
+    static void write_possible_ke(const std::string& outfile);
+
     static boost::program_options::options_description& opt_description();
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
@@ -318,7 +326,6 @@ class Individual {
     };
 
     friend double pdf_beta(const double height, const double diameter);
-    friend void individual_unit_test();
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
     // data member
@@ -337,8 +344,5 @@ class Individual {
 inline std::ostream& operator<< (std::ostream& ost, const Individual& ind) {
     return ost << ind.str();
 }
-
-//! Unit test for Individual
-extern void individual_unit_test();
 
 #endif /* INDIVIDUAL_H_ */

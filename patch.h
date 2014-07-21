@@ -60,6 +60,9 @@ class Patch {
     */
     void viability_selection();
 
+    //! Unit test for Patch
+    static void unit_test();
+
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   private:
 
@@ -83,8 +86,5 @@ class Patch {
 inline std::ostream& operator<< (std::ostream& ost, const Patch& patch) {
     return ost << patch.str();
 }
-
-//! Unit test for Patch
-extern void patch_unit_test();
 
 #endif /* PATCH_H_ */
