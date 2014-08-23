@@ -14,15 +14,8 @@ vpath %.cpp ${SRCDIR}
 
 
 ## Options
-GXX := g++-4.9
-UNAME := $(shell uname)
-ifeq (${UNAME}, Darwin)
-  CXX := clang++
-#/usr/local/openmpi/bin/mpic++
-else
-  CXX := ${GXX}
-endif
-
+CXX_ARRAY := clang++ g++-4.9 g++-4.8 g++
+CXX := $(firstword $(foreach x,${CXX_ARRAY},$(shell which $x)))
 CC := $(CXX)
 CPPFLAGS := -Wall -Wextra -Wno-unused-parameter -fno-strict-aliasing -iquote ${INCLUDEDIR} ${CPPDBG}
 CXXFLAGS := -std=c++11 -O3 ${CXXDBG}
@@ -38,7 +31,7 @@ else
   CPPFLAGS += -isystem /usr/local/boost-clang/include -isystem /usr/local/include/c++/v1 -ftemplate-depth=512
   CXXFLAGS += -stdlib=libc++
   LDFLAGS += -L/usr/local/boost-clang/lib 
-  ifeq (${UNAME}, Linux)
+  ifeq ($(shell uname), Linux)
     CPPFLAGS += -ftemplate-depth=512
     LDLIBS += -lpthread -lsupc++
   endif
