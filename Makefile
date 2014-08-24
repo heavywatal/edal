@@ -14,10 +14,11 @@ vpath %.cpp ${SRCDIR}
 
 
 ## Options
-CXX_ARRAY := clang++ g++-4.9 g++-4.8 g++
+GXX := $(firstword $(foreach x,g++-4.9 g++-4.8 g++,$(shell which $x)))
+CXX_ARRAY := clang++ ${GXX}
 CXX := $(firstword $(foreach x,${CXX_ARRAY},$(shell which $x)))
 CC := $(CXX)
-CPPFLAGS := -Wall -Wextra -Wno-unused-parameter -fno-strict-aliasing -iquote ${INCLUDEDIR} ${CPPDBG}
+CPPFLAGS := -Wall -Wextra -Wno-unused-parameter -fno-strict-aliasing -iquote ${INCLUDEDIR} ${CPPDBG} -ftemplate-depth=512
 CXXFLAGS := -std=c++11 -O3 ${CXXDBG}
 LDFLAGS := -L${HOME}/local/lib -L/usr/local/lib
 LDLIBS := -lsfmt -lboost_program_options -lboost_filesystem -lboost_system -lboost_iostreams -lz
@@ -28,11 +29,10 @@ ifneq (,$(filter $(CXX), ${GXX}))
   CPPFLAGS += -pthread -isystem /usr/local/boost-gcc/include -D_GLIBCXX_USE_NANOSLEEP
   LDFLAGS += -L/usr/local/boost-gcc/lib -static-libstdc++
 else
-  CPPFLAGS += -isystem /usr/local/boost-clang/include -isystem /usr/local/include/c++/v1 -ftemplate-depth=512
+  CPPFLAGS += -isystem /usr/local/boost-clang/include
   CXXFLAGS += -stdlib=libc++
   LDFLAGS += -L/usr/local/boost-clang/lib 
   ifeq ($(shell uname), Linux)
-    CPPFLAGS += -ftemplate-depth=512
     LDLIBS += -lpthread -lsupc++
   endif
 endif
