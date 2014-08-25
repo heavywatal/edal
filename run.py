@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 """
@@ -66,11 +66,13 @@ if __name__ == '__main__':
     parser.add_argument('-q', '--queue',
                         choices=['low', 'batch', 'high'], default='batch')
     parser.add_argument('-r', '--repeat', type=int, default=1)
+    parser.add_argument('--mode', type=int, default=0)
     parser.add_argument('outfile', nargs='?', default=sys.stdout)
     args = parser.parse_args()
 
     program = os.path.join(os.path.dirname(__file__), 'a.out')
     constargs = [program]
+    constargs.append('--mode={}'.format(args.mode))
     constargs.append('--top_dir=' + os.getcwd())
     constargs.append('--ppn={}'.format(args.ppn))
     constargs.append('-T50000')
