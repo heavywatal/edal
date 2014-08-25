@@ -1,7 +1,9 @@
-library(ggplot2)
-library(reshape2)
 library(plyr)
 library(dplyr)
+library(stringr)
+library(tidyr)
+library(pipeR)
+library(ggplot2)
 setwd('ignore')
 
 #########1#########2#########3#########4#########5#########6#########7#########

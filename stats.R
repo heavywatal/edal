@@ -1,11 +1,12 @@
 library(plyr)
 library(dplyr)
 library(stringr)
-library(reshape2)
+library(tidyr)
+library(pipeR)
 library(ggplot2)
 
 library(doMC)
-doMC::registerDoMC(parallel::detectCores())
+doMC::registerDoMC(min(parallel::detectCores(), 12))
 
 #########1#########2#########3#########4#########5#########6#########7#########
 
@@ -13,7 +14,7 @@ doMC::registerDoMC(parallel::detectCores())
     h="help",
     v="verbose",
     T="time",
-    m="migration_rate",
+    a="beta_param",
     K="carrying_capacity",
     b="birth_rate",
     p="height_pref",
@@ -25,7 +26,7 @@ doMC::registerDoMC(parallel::detectCores())
     f="mating_sigma",
     u="mu_locus",
     U="mu_neutral",
-    a="beta_param"
+    m="migration_rate"
 )
 
 .traits = list(
@@ -43,13 +44,11 @@ doMC::registerDoMC(parallel::detectCores())
 .axes = matrix(names(.traits), ncol=2, byrow=TRUE)
 
 .plot = function(x, y, data) {
-    .hist_matrix = reshape2::dcast(data, get(y) ~ get(x), length)
-    .hist_matrix = plyr::rename(.hist_matrix, c('get(y)'=y))
-    .hist_list = reshape2::melt(.hist_matrix, value.name='frequency',
-                                id.vars=y, variable.name=x)
-    .hist_list[, x] = as.numeric(as.character(.hist_list[, x]))
+    .hist_list = data %>>%
+        regroup(list(as.symbol(x), as.symbol(y))) %>>%
+        tally()
     .p = ggplot(.hist_list, aes_string(x=x, y=y))
-    .p = .p + geom_tile(aes(fill=frequency))
+    .p = .p + geom_tile(aes(fill=n))
     .p = .p + scale_fill_gradient(low='white', high='darkcyan')
     .p = .p + xlim(0, 1) + ylim(0, 1)
     .p = .p + xlab(.tr[[x]]) + ylab(.tr[[y]])
@@ -64,15 +63,12 @@ doMC::registerDoMC(parallel::detectCores())
 
 .run_grob = function(.rundir) {
     cat(.rundir, '\n')
-    .raw = read.csv(file.path(.rundir, 'population.csv.gz'))
-    .hist_matrix = reshape2::dcast(.raw, toepad_P ~ limb_P, length)
-    .hist_list = reshape2::melt(.hist_matrix, value.name='frequency',
-                                id.vars='toepad_P', variable.name='limb_P')
-    .hist_list$limb_P = as.numeric(as.character(.hist_list$limb_P))
+    .raw = read.csv(file.path(.rundir, 'population.csv.gz')) %>>% (? head(.))
     .gpl = plyr::mlply(.axes, .plot, data=.raw)
     .grob = wtl::grid_grob(.gpl, 1, 4)
     .grob
 }
+.run_grob(.rundirs[1])
 
 .read_conf = function(.rundir) {
     .files = list.files(.rundir, full.names=TRUE)
@@ -83,8 +79,11 @@ doMC::registerDoMC(parallel::detectCores())
 
 #########1#########2#########3#########4#########5#########6#########7#########
 
-.topdir = getwd()
+#.topdir = getwd()
+.topdir = '~/SpiderOak Hive/anole20140130'
+setwd(.topdir)
 .rundirs = list.files(.topdir, full.names=TRUE)
+.rundirs = .rundirs[wtl::isdir(.rundirs)]
 
 .conf = plyr::ldply(.rundirs, .read_conf)
 
