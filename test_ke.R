@@ -5,6 +5,33 @@ library(tidyr)
 library(pipeR)
 library(ggplot2)
 setwd('ignore')
+#########1#########2#########3#########4#########5#########6#########7#########
+
+is.odd = function(x) x %% 2 != 0
+is.odd(-3:3)
+
+.theme_tile =
+    theme(panel.grid=element_blank())+
+    theme(panel.background=element_blank())+
+    theme(axis.ticks=element_blank())+
+    theme(axis.text=element_blank())
+
+.working_dir = '~/working/anolis20140826'
+setwd(.working_dir)
+list.files(.working_dir)
+
+.indir = list.files(.working_dir)[1]
+.raw = read.csv(file.path(.indir, 'possible_ke.csv.gz'))
+.raw %>>% (? nrow(.)) %>>% sample_n(20)
+
+.odd = .raw %>>% filter(is.odd(toepad), is.odd(limb), is.odd(height_pref), is.odd(diameter_pref))
+.odd %>>% (? nrow(.)) %>>% sample_n(20)
+
+.p = ggplot(.odd, aes(x=height_pref, y=diameter_pref))
+.p = .p + geom_tile(aes(fill=Ke))
+.p = .p + facet_grid(limb ~ toepad, as.table=FALSE)
+.p = .p + .theme_tile
+.p
 
 #########1#########2#########3#########4#########5#########6#########7#########
 ## Ke: effective number of competitoes
