@@ -1,0 +1,57 @@
+---
+title: "Test Ke"
+author: "Watal M. Iwasaki"
+date: "August 29, 2014"
+output:
+  html_document:
+    fig_caption: yes
+---
+
+```{r, eval=FALSE}
+.outdir = '~/edal/html/results'
+rmarkdown::render('~/edal/ke.Rmd', output_dir=.outdir)
+```
+
+```{r library}
+library(plyr)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(pipeR)
+library(ggplot2)
+```
+
+```{r preparation}
+is.odd = function(x) x %% 2 != 0
+
+.theme_tile =
+    theme(panel.grid=element_blank())+
+    theme(panel.background=element_blank())+
+    theme(axis.ticks=element_blank())+
+    theme(axis.text=element_blank())
+
+.working_dir = '~/working/anolis20140826'
+setwd(.working_dir)
+#list.files(.working_dir)
+```
+
+```{r plot}
+.plot = function(.indir) {
+    .raw = read.csv(file.path(.indir, 'possible_ke.csv.gz'))
+    #.raw %>>% (? nrow(.)) %>>% sample_n(20)
+    .odd = .raw %>>% filter(is.odd(toepad), is.odd(limb), is.odd(height_pref), is.odd(diameter_pref))
+#    .odd = .odd %>>% filter(toepad==7, limb==9)
+    #.odd %>>% (? nrow(.)) %>>% sample_n(20)
+    .p = ggplot(.odd, aes(x=height_pref, y=diameter_pref))
+    .p = .p + geom_tile(aes(fill=Ke))
+#    .p = .p + facet_grid(limb ~ toepad, as.table=FALSE)
+    .p = .p + labs(title=basename(.indir))
+    .p = .p + .theme_tile
+    .p
+}
+.plot(list.files(.working_dir, full.names=TRUE)[10])
+for (x in list.files(.working_dir, full.names=TRUE)) {
+    print(.plot(x))
+}
+```
+
