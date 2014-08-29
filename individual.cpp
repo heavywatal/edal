@@ -414,14 +414,15 @@ std::string Individual::possible_ke() {
     const size_t half = max_trait / 2;
     std::ostringstream ost;
     std::string sep(",");
-    ost << "toepad,limb,height_pref,diameter_pref,Ke\n";
+    ost << "toepad,limb,height_pref,diameter_pref,Ke,DI\n";
     for (size_t toe=0; toe<=max_trait; ++toe) {
         for (size_t limb=0; limb<=max_trait; ++limb) {
             for (size_t hpref=0; hpref<=max_trait; ++hpref) {
                 for (size_t dpref=0; dpref<=max_trait; ++dpref) {
                     Individual ind(std::vector<size_t>{toe, limb, hpref, dpref, half, half, half, half});
                     ost << toe << sep << limb << sep << hpref << sep << dpref << sep
-                        << ind.effective_carrying_capacity_ << "\n";
+                        << ind.effective_carrying_capacity_ << sep
+                        << ind.calc_denom() << "\n";
                 }
             }
         }

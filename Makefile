@@ -88,7 +88,7 @@ instruments: release
 
 .PHONY: doxygen sync
 doxygen:
-	$(RM) -r html/*
+	$(RM) -r html/*.html
 	doxygen
 
 sync:
@@ -121,16 +121,5 @@ simulation.cpp \
 main.cpp \
 )
 
-libsrcs := $(addprefix ${INCLUDEDIR}/cxxwtils/,\
-test.cpp \
-debug.hpp \
-iostr.hpp \
-gz.hpp \
-os.hpp \
-algorithm.hpp \
-prandom.hpp \
-multiprocessing.hpp \
-)
-
 open:
-	open -a mi ${mainsrcs} ${libsrcs}
+	open -a mi ${mainsrcs}

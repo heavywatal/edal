@@ -169,6 +169,10 @@ class Individual {
 
     //! \f$K_e(I)\f$
     /*! @ingroup natural_selection
+        \f[
+            K_e(I) = \int_0^1 \int_0^{1-u}
+                W(x_0,x_1|u,v) T(y_0,y_1|u,v) dv du
+        \f]
     */
     double effective_carrying_capacity() const;
 
@@ -267,15 +271,18 @@ class Individual {
     */
     double calc_denom_mathematica() const;
 
-    //! \f$D_I\f$ analytical computation by Maple
+    //! \f$D_I\f$ analytical computation by Maple (wrong)
     /*! @ingroup habitat_pareference
         @bug something wrong (unused)
     */
     double calc_denom_maple() const;
 
-    //! Normalizing denominator \f$D_I\f$
+    //! Normalizing denominator \f$D_I\f$ for sojourn time
     /*! @ingroup habitat_pareference
         @return \f$D_I\f$
+        \f[
+            D_I = \int_0^1 \int_0^{1-u} \Xi(y_0,y_1|u,v) F(u,v) dv du
+        \f]
     */
     double calc_denom() const {return calc_denom_mathematica();}
 
