@@ -16,7 +16,11 @@ is.odd(-3:3)
     theme(axis.ticks=element_blank())+
     theme(axis.text=element_blank())
 
+heat_colours = c('#000000', '#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000')
+scale_fill_heat = scale_fill_gradientn(colours=heat_colours)
+
 #########1#########2#########3#########4#########5#########6#########7#########
+## Ke: effective number of competitoes
 
 .working_dir = '~/working/anolis20140826'
 setwd(.working_dir)
@@ -24,7 +28,61 @@ list.files(.working_dir)
 
 .indir = list.files(.working_dir)[1]
 .raw = read.csv(file.path(.indir, 'possible_ke.csv.gz'))
-.raw %>>% (? nrow(.)) %>>% sample_n(20)
+.raw = read.csv('possible_ke.csv.gz') %>>% (? nrow(.)) %>>% (? sample_n(., 20))
+
+.tidy = .raw %>>%
+    gather(key, Ke, ends_with('Ke')) %>>% (? sample_n(., 20)) %>>%
+    mutate(normalized=ifelse(key=='Ke', 1, 0))
+
+.p = .tidy %>>%
+    filter(is.odd(toepad), is.odd(limb)) %>>%
+    mutate_each(funs(f = . / 16), toepad, limb, height_pref, diameter_pref) %>>%
+    ggplot(aes(x=height_pref, y=diameter_pref))
+.p = .p + geom_tile(aes(fill=Ke))
+.p = .p + facet_grid(limb ~ normalized + toepad, as.table=FALSE, labeller=label_both)
+.p = .p + .theme_tile + scale_fill_heat
+.p = .p + theme(strip.text=element_text(size=6))
+.p
+
+.p = .tidy %>>%
+    filter(is.odd(height_pref), is.odd(diameter_pref)) %>>%
+    mutate_each(funs(f = . / 16), toepad, limb, height_pref, diameter_pref) %>>%
+    ggplot(aes(x=toepad, y=limb))
+.p = .p + geom_tile(aes(fill=Ke))
+.p = .p + facet_grid(diameter_pref ~ normalized + height_pref, as.table=FALSE, labeller=label_both)
+.p = .p + .theme_tile + scale_fill_heat
+.p = .p + theme(strip.text=element_text(size=6))
+.p
+
+#########1#########2#########3#########4#########5#########6#########7#########
+## sojourn time
+
+.raw = read.csv('sojourn_time.csv.gz') %>>% (? sample_n(., 30))
+
+.p = .raw %>>%
+    filter(!is.na(height_pref %>>% match(seq(1, 15, 2) / 16)),
+        !is.na(diameter_pref %>>% match(seq(1, 15, 2) / 16))) %>>%
+    ggplot(aes(x=height, y=diameter))
+.p = .p + geom_tile(aes(fill=time))
+.p = .p + facet_grid(diameter_pref ~ normalized + height_pref, as.table=FALSE)
+.p = .p + scale_fill_gradientn(colours=c('#000000', '#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000'))
+.p = .p + .theme_tile
+.p
+
+.p = .raw %>>%
+    filter(!is.na(height %>>% match(seq(1, 15, 2) / 16)),
+        !is.na(diameter %>>% match(seq(1, 15, 2) / 16))) %>>%
+    ggplot(aes(x=height_pref, y=diameter_pref))
+.p = .p + geom_tile(aes(fill=time))
+.p = .p + facet_grid(diameter ~ normalized + height, as.table=FALSE)
+.p = .p + scale_fill_gradientn(colours=c('#000000', '#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000'))
+.p = .p + .theme_tile
+.p
+
+
+#########1#########2#########3#########4#########5#########6#########7#########
+#########1#########2#########3#########4#########5#########6#########7#########
+## deprecated
 
 .odd = .raw %>>% filter(is.odd(toepad), is.odd(limb), is.odd(height_pref), is.odd(diameter_pref))
 .odd %>>% (? nrow(.)) %>>% sample_n(20)
@@ -32,13 +90,13 @@ list.files(.working_dir)
 .p = ggplot(.odd, aes(x=height_pref, y=diameter_pref))
 .p = .p + geom_tile(aes(fill=Ke))
 .p = .p + facet_grid(limb ~ toepad, as.table=FALSE)
-.p = .p + .theme_tile
+.p = .p + .theme_tile + scale_fill_heat
 .p
 
 .p = ggplot(.odd, aes(x=toepad, y=limb))
 .p = .p + geom_tile(aes(fill=Ke))
 .p = .p + facet_grid(diameter_pref ~ height_pref, as.table=FALSE)
-.p = .p + .theme_tile
+.p = .p + .theme_tile + scale_fill_heat
 .p
 
 .p = .raw %>>%
@@ -56,29 +114,6 @@ list.files(.working_dir)
 .p
 
 #########1#########2#########3#########4#########5#########6#########7#########
-## sojourn time
-
-.raw = read.csv('sojourn_time.csv.gz') %>>% (? head(.))
-head(.raw)
-
-.p = .raw %>>%
-    ggplot(aes(x=height, y=diameter))
-.p = .p + geom_tile(aes(fill=time))
-.p = .p + facet_grid(diameter_pref ~ height_pref, as.table=FALSE)
-.p = .p + scale_fill_gradient2(mid='#888888', high='orangered', low='turquoise', midpoint=5)
-.p = .p + .theme_tile
-.p
-
-.p = .raw %>>%
-    filter(height==0.5, diameter==0) %>>%
-    ggplot(aes(x=height_pref, y=diameter_pref))
-.p = .p + geom_tile(aes(fill=time))
-.p = .p + facet_grid(diameter ~ height, as.table=FALSE)
-.p = .p + .theme_tile
-.p
-
-#########1#########2#########3#########4#########5#########6#########7#########
-## Ke: effective number of competitoes
 
 .filename = 'ke.csv'
 .tbl = read.csv(.filename)

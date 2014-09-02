@@ -142,8 +142,7 @@ class Individual {
     //! Constructor for sexual reproduction
     Individual(const std::vector<Loci>& egg, const std::vector<Loci>& sperm):
         genotype_{egg, sperm},
-        phenotype_(init_phenotype()),
-        effective_carrying_capacity_{effective_carrying_capacity()} {}
+        phenotype_(init_phenotype()) {}
 
     //! Initialization by phenotypic values
     Individual(const std::vector<size_t>&);
@@ -175,6 +174,12 @@ class Individual {
         \f]
     */
     double effective_carrying_capacity() const;
+
+    //! \f$K_e(I)\f$
+    /*! @ingroup natural_selection
+        The value before normalized by \f$D_I\f$
+    */
+    double effective_carrying_capacity_unnormalized() const;
 
     //! Probability of survival \f$w(I)\f$
     /*! @ingroup natural_selection
@@ -319,7 +324,7 @@ class Individual {
     static std::vector<Loci> mutate(std::vector<Loci> haplotype);
 
     //! for debugging
-    std::string sojourn_time() const;
+    std::string sojourn_time(const bool normalizing) const;
 
     /** @} biol_proc */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
@@ -346,9 +351,6 @@ class Individual {
 
     //! All traits are scaled to be between 0 and 1
     std::vector<double> phenotype_;
-
-    //! \f$K_e(I)\f$ can be calculated at birth
-    double effective_carrying_capacity_;
 };
 
 //! Stream operator for Individual

@@ -34,7 +34,7 @@ boost::program_options::options_description& Simulation::opt_description() {HERE
             ->default_value(VERBOSE)->implicit_value(true), "verbose output")
         ("test", po::value<int>()->default_value(0)->implicit_value(1))
         ("mode", po::value<int>(&MODE)->default_value(MODE))
-        ("ppn", po::value<size_t>(&PPN)->default_value(PPN))
+        ("ppn", po::value<size_t>(&PPN)->default_value(wtl::num_threads()))
         ("label", po::value<std::string>(&LABEL)->default_value("default"))
         ("top_dir", po::value<std::string>()->default_value(OUT_DIR.string()))
         ("row", po::value<size_t>(&NUM_ROWS)->default_value(NUM_ROWS))
@@ -105,8 +105,6 @@ void Simulation::run() {HERE;
         break;
       case 1:
         wtl::gzip{wtl::Fout{"possible_ke.csv.gz"}} << Individual::possible_ke();
-        break;
-      case 2:
         wtl::gzip{wtl::Fout{"sojourn_time.csv.gz"}} << Individual::test_sojourn_time();
         break;
       default:

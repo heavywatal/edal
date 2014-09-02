@@ -117,7 +117,6 @@ Individual::Individual(const std::vector<size_t>& values): genotype_{{}, {}} {
         genotype_.second.push_back(HALF_BITS);
     }
     phenotype_ = init_phenotype();
-    effective_carrying_capacity_ = effective_carrying_capacity();
 }
 
 double Individual::calc_denom_numerical() const {
@@ -261,9 +260,13 @@ double Individual::fitness(const double height, const double diameter) const {
     return std::exp(exponent);
 }
 
+
 double Individual::effective_carrying_capacity() const {
+    return effective_carrying_capacity_unnormalized() / calc_denom();
+}
+
+double Individual::effective_carrying_capacity_unnormalized() const {
     double result = CARRYING_CAPACITY_;
-//    result /= calc_denom();
     result *= wtl::integrate([this](const double height) {
         return wtl::integrate([this, height](const double diameter) {
             double result = fitness(height, diameter);
@@ -279,7 +282,7 @@ double Individual::survival_probability(const double effective_num_competitors) 
     double denom = AVG_NUM_OFFSPINRGS_;
     denom -= 1.0;
     denom *= effective_num_competitors;  // ^ alpha for crowding strength
-    denom /= effective_carrying_capacity_;
+    denom /= effective_carrying_capacity_unnormalized();
     denom += 1.0;
     return 1.0 / denom;
 }
@@ -375,7 +378,7 @@ std::string Individual::str_detail() const {
     ost << Individual::header();
     ost << *this << std::endl;
     ost << gametogenesis() << std::endl;
-    ost << "Ke: " << effective_carrying_capacity_ << std::endl;
+    ost << "Ke: " << effective_carrying_capacity() << std::endl;
     ost << "DI numer: " << calc_denom_numerical() << std::endl;
     ost << "DI mathe: " << calc_denom_mathematica() << std::endl;
     ost << "DI maple: " << calc_denom_maple() << std::endl;
@@ -414,14 +417,15 @@ std::string Individual::possible_ke() {
     constexpr size_t half = max_trait / 2;
     std::ostringstream ost;
     std::string sep(",");
-    ost << "toepad,limb,height_pref,diameter_pref,Ke,DI\n";
+    ost << "toepad,limb,height_pref,diameter_pref,Ke,unnormalized_Ke,DI\n";
     for (size_t toe=0; toe<=max_trait; ++toe) {
         for (size_t limb=0; limb<=max_trait; ++limb) {
             for (size_t hpref=0; hpref<=max_trait; ++hpref) {
                 for (size_t dpref=0; dpref<=max_trait; ++dpref) {
                     Individual ind(std::vector<size_t>{toe, limb, hpref, dpref, half, half, half, half});
                     ost << toe << sep << limb << sep << hpref << sep << dpref << sep
-                        << ind.effective_carrying_capacity_ << sep
+                        << ind.effective_carrying_capacity() << sep
+                        << ind.effective_carrying_capacity_unnormalized() << sep
                         << ind.calc_denom() << "\n";
                 }
             }
@@ -430,7 +434,7 @@ std::string Individual::possible_ke() {
     return ost.str();
 }
 
-std::string Individual::sojourn_time() const {
+std::string Individual::sojourn_time(const bool normalizing) const {
     constexpr size_t max_trait = Individual::NUM_LOCI_ * 2;
     constexpr double inv_max = 1.0 / max_trait;
     const std::string sep = ",";
@@ -442,13 +446,17 @@ std::string Individual::sojourn_time() const {
         for (size_t id=0; id<max_trait; ++id) {
             const double diameter = id * inv_max;
             double result = 1.0;
-//            result /= calc_denom();
+            if (normalizing) {
+                result /= calc_denom();
+            }
             result *= habitat_preference(height, diameter);
             result *= abundance(height, diameter);
             std::ostringstream ost;
             ost.precision(16);
             ost << preference[0] << sep << preference[1] << sep
-                << height << sep << diameter << sep << std::scientific << result;
+                << height << sep << diameter << sep
+                << std::boolalpha << normalizing << sep
+                << std::scientific << result;
             lines.push_back(ost.str());
         }
     }
@@ -461,11 +469,12 @@ std::string Individual::test_sojourn_time() {
     constexpr size_t half = max_trait / 2;
     std::ostringstream ost;
     std::string sep(",");
-    ost << "height_pref,diameter_pref,height,diameter,time\n";
+    ost << "height_pref,diameter_pref,height,diameter,normalized,time\n";
     for (size_t hpref=0; hpref<=max_trait; ++hpref) {
         for (size_t dpref=0; dpref<=max_trait; ++dpref) {
             Individual ind(std::vector<size_t>{half, half, hpref, dpref, half, half, half, half});
-            ost << ind.sojourn_time() << "\n";
+            ost << ind.sojourn_time(true) << "\n";
+            ost << ind.sojourn_time(false) << "\n";
         }
     }
     return ost.str();
