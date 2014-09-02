@@ -263,7 +263,7 @@ double Individual::fitness(const double height, const double diameter) const {
 
 double Individual::effective_carrying_capacity() const {
     double result = CARRYING_CAPACITY_;
-    result /= calc_denom();
+//    result /= calc_denom();
     result *= wtl::integrate([this](const double height) {
         return wtl::integrate([this, height](const double diameter) {
             double result = fitness(height, diameter);
@@ -410,8 +410,8 @@ void Individual::write_resource_abundance() {
 
 std::string Individual::possible_ke() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
-    const size_t max_trait = Individual::NUM_LOCI_ * 2;
-    const size_t half = max_trait / 2;
+    constexpr size_t max_trait = Individual::NUM_LOCI_ * 2;
+    constexpr size_t half = max_trait / 2;
     std::ostringstream ost;
     std::string sep(",");
     ost << "toepad,limb,height_pref,diameter_pref,Ke,DI\n";
@@ -425,6 +425,47 @@ std::string Individual::possible_ke() {
                         << ind.calc_denom() << "\n";
                 }
             }
+        }
+    }
+    return ost.str();
+}
+
+std::string Individual::sojourn_time() const {
+    constexpr size_t max_trait = Individual::NUM_LOCI_ * 2;
+    constexpr double inv_max = 1.0 / max_trait;
+    const std::string sep = ",";
+    std::vector<std::string> lines;
+    lines.reserve(max_trait * max_trait);
+    std::vector<double> preference{phenotype_.begin()+2, phenotype_.begin()+4};
+    for (size_t ih=0; ih<max_trait; ++ih) {
+        const double height = ih * inv_max;
+        for (size_t id=0; id<max_trait; ++id) {
+            const double diameter = id * inv_max;
+            double result = 1.0;
+//            result /= calc_denom();
+            result *= habitat_preference(height, diameter);
+            result *= abundance(height, diameter);
+            std::ostringstream ost;
+            ost.precision(16);
+            ost << preference[0] << sep << preference[1] << sep
+                << height << sep << diameter << sep << std::scientific << result;
+            lines.push_back(ost.str());
+        }
+    }
+    return wtl::str_join(lines, "\n");
+}
+
+std::string Individual::test_sojourn_time() {
+    std::cerr << __PRETTY_FUNCTION__ << std::endl;
+    constexpr size_t max_trait = Individual::NUM_LOCI_ * 2;
+    constexpr size_t half = max_trait / 2;
+    std::ostringstream ost;
+    std::string sep(",");
+    ost << "height_pref,diameter_pref,height,diameter,time\n";
+    for (size_t hpref=0; hpref<=max_trait; ++hpref) {
+        for (size_t dpref=0; dpref<=max_trait; ++dpref) {
+            Individual ind(std::vector<size_t>{half, half, hpref, dpref, half, half, half, half});
+            ost << ind.sojourn_time() << "\n";
         }
     }
     return ost.str();

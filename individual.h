@@ -239,6 +239,7 @@ class Individual {
     static void unit_test();
     static void write_resource_abundance();
     static std::string possible_ke();
+    static std::string test_sojourn_time();
 
     static boost::program_options::options_description& opt_description();
 
@@ -316,6 +317,9 @@ class Individual {
         @return mutated haplotype
     */
     static std::vector<Loci> mutate(std::vector<Loci> haplotype);
+
+    //! for debugging
+    std::string sojourn_time() const;
 
     /** @} biol_proc */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////

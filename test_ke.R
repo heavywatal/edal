@@ -16,6 +16,8 @@ is.odd(-3:3)
     theme(axis.ticks=element_blank())+
     theme(axis.text=element_blank())
 
+#########1#########2#########3#########4#########5#########6#########7#########
+
 .working_dir = '~/working/anolis20140826'
 setwd(.working_dir)
 list.files(.working_dir)
@@ -30,6 +32,48 @@ list.files(.working_dir)
 .p = ggplot(.odd, aes(x=height_pref, y=diameter_pref))
 .p = .p + geom_tile(aes(fill=Ke))
 .p = .p + facet_grid(limb ~ toepad, as.table=FALSE)
+.p = .p + .theme_tile
+.p
+
+.p = ggplot(.odd, aes(x=toepad, y=limb))
+.p = .p + geom_tile(aes(fill=Ke))
+.p = .p + facet_grid(diameter_pref ~ height_pref, as.table=FALSE)
+.p = .p + .theme_tile
+.p
+
+.p = .raw %>>%
+    filter(toepad==7, limb==7) %>>%
+    ggplot(aes(height_pref, Ke, group=diameter_pref, colour=diameter_pref))
+.p = .p + geom_point()
+.p = .p + geom_line()
+.p
+
+.p = .raw %>>%
+    filter(height_pref==7, diameter_pref==1) %>>%
+    ggplot(aes(toepad, Ke, group=limb, colour=limb))
+.p = .p + geom_point()
+.p = .p + geom_line()
+.p
+
+#########1#########2#########3#########4#########5#########6#########7#########
+## sojourn time
+
+.raw = read.csv('sojourn_time.csv.gz') %>>% (? head(.))
+head(.raw)
+
+.p = .raw %>>%
+    ggplot(aes(x=height, y=diameter))
+.p = .p + geom_tile(aes(fill=time))
+.p = .p + facet_grid(diameter_pref ~ height_pref, as.table=FALSE)
+.p = .p + scale_fill_gradient2(mid='#888888', high='orangered', low='turquoise', midpoint=5)
+.p = .p + .theme_tile
+.p
+
+.p = .raw %>>%
+    filter(height==0.5, diameter==0) %>>%
+    ggplot(aes(x=height_pref, y=diameter_pref))
+.p = .p + geom_tile(aes(fill=time))
+.p = .p + facet_grid(diameter ~ height, as.table=FALSE)
 .p = .p + .theme_tile
 .p
 
