@@ -59,7 +59,7 @@ doMC::registerDoMC(min(parallel::detectCores(), 12))
     .p = .p + theme(axis.title=element_text(family='Linux Libertine O'))
     .p
 }
-.run_grob(.rundirs[1])
+#.run_grob(.rundirs[1])
 
 .run_grob = function(.rundir) {
     cat(.rundir, '\n')
@@ -68,7 +68,7 @@ doMC::registerDoMC(min(parallel::detectCores(), 12))
     .grob = wtl::grid_grob(.gpl, 1, 4)
     .grob
 }
-.run_grob(.rundirs[1])
+#.run_grob(.rundirs[1])
 
 .read_conf = function(.rundir) {
     .files = list.files(.rundir, full.names=TRUE)
@@ -80,7 +80,8 @@ doMC::registerDoMC(min(parallel::detectCores(), 12))
 #########1#########2#########3#########4#########5#########6#########7#########
 
 #.topdir = getwd()
-.topdir = '~/SpiderOak Hive/anole20140130'
+#.topdir = '~/SpiderOak Hive/anole20140130'
+.topdir = '~/working/anolis20140903'
 setwd(.topdir)
 .rundirs = list.files(.topdir, full.names=TRUE)
 .rundirs = .rundirs[wtl::isdir(.rundirs)]

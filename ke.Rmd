@@ -1,13 +1,17 @@
 ---
-title: "Test Ke"
+title: "Possible Ke values in the parameter spece and phenotype space"
 author: "Watal M. Iwasaki"
-date: "August 29, 2014"
+date: "2014-09-03"
 output:
   html_document:
+    toc: true
     fig_caption: yes
 ---
 
-```{r, eval=FALSE}
+Codes
+================================================================================
+
+```{r, echo=FALSE, eval=FALSE}
 .outdir = '~/edal/html/results'
 rmarkdown::render('~/edal/ke.Rmd', output_dir=.outdir)
 ```
@@ -30,28 +34,96 @@ is.odd = function(x) x %% 2 != 0
     theme(axis.ticks=element_blank())+
     theme(axis.text=element_blank())
 
-.working_dir = '~/working/anolis20140826'
+heat_colours = c('#000000', '#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000')
+scale_fill_heat = scale_fill_gradientn(colours=heat_colours)
+
+.working_dir = '~/working/test-anolis20140903'
 setwd(.working_dir)
 #list.files(.working_dir)
+.indirs = list.files(.working_dir, full.names=TRUE)
 ```
 
-```{r plot}
+```{r plot_function}
 .plot = function(.indir) {
     .raw = read.csv(file.path(.indir, 'possible_ke.csv.gz'))
-    #.raw %>>% (? nrow(.)) %>>% sample_n(20)
-    .odd = .raw %>>% filter(is.odd(toepad), is.odd(limb), is.odd(height_pref), is.odd(diameter_pref))
-#    .odd = .odd %>>% filter(toepad==7, limb==9)
-    #.odd %>>% (? nrow(.)) %>>% sample_n(20)
-    .p = ggplot(.odd, aes(x=height_pref, y=diameter_pref))
+    .tidy = .raw %>>%
+        gather(key, Ke, ends_with('Ke')) %>>%
+        mutate(normalized=ifelse(key=='Ke', 1, 0))
+    .p = .tidy %>>%
+        filter(is.odd(toepad), is.odd(limb)) %>>%
+        mutate_each(funs(f = . / 16), toepad, limb, height_pref, diameter_pref) %>>%
+        ggplot(aes(x=height_pref, y=diameter_pref))
     .p = .p + geom_tile(aes(fill=Ke))
-#    .p = .p + facet_grid(limb ~ toepad, as.table=FALSE)
+    .p = .p + facet_grid(limb ~ normalized + toepad, as.table=FALSE, labeller=label_both)
     .p = .p + labs(title=basename(.indir))
-    .p = .p + .theme_tile
+    .p = .p + .theme_tile + scale_fill_heat
+    .p = .p + theme(strip.text=element_text(size=rel(0.6)))
     .p
 }
-.plot(list.files(.working_dir, full.names=TRUE)[10])
-for (x in list.files(.working_dir, full.names=TRUE)) {
+```
+
+
+Results
+================================================================================
+
+General remark
+--------------------------------------------------------------------------------
+
+Sojourn time in each environment (u, v) is defined in anolis_v3.pdf as follows.
+
+$$
+T(y_0,y_1|u,v) = \frac {\Xi(y_0,y_1|u,v) F(u,v)} {D_I} \\
+D_I = \iint \Xi(y_0,y_1|u,v) F(u,v) du dv
+$$
+
+The denominatior $D_I$ normalize the total time to one.
+This is reasonable.
+But $D_I$ can be considered as the matching degree between resource abundance and habitat preference.
+So I thought that deviding by $D_I$ prevented the habitat preferences from contributing to the viability.
+Following figures show the relative contribution of morphological traits and habitat preference to the effective carrying capacity ($K_e$) in various parameters.
+Each heatmap denotes $K_e$ level on varied habitat preference with a fixed morphology:
+
+```{r plot_example, echo=FALSE, fig.width=5, fig.height=4}
+    .indir = .indirs[1]
+    .raw = read.csv(file.path(.indir, 'possible_ke.csv.gz'))
+    .tidy = .raw %>>%
+        gather(key, Ke, ends_with('Ke')) %>>%
+        mutate(normalized=ifelse(key=='Ke', 1, 0))
+    .p = .tidy %>>%
+        filter(toepad==8, limb==8, normalized==0) %>>%
+        mutate_each(funs(f = . / 16), toepad, limb, height_pref, diameter_pref) %>>%
+        ggplot(aes(x=height_pref, y=diameter_pref))
+    .p = .p + geom_tile(aes(fill=Ke))
+    .p = .p + labs(title='toepad=0.5, limb=0.5, normalized=FALSE')
+    .p = .p + .theme_tile + scale_fill_heat
+    .p = .p + theme(strip.text=element_text(size=rel(0.6)))
+    .p
+```
+
+Then they are arranged in a grid with varied morphological values.
+The left and right halves are unnormalized and normalized cases, respectively.
+As you will see, $K_e$ is only dependent on mophological parameters when $T$ is normalized with $D_I$.
+
+Selection on morphology ($s_0, s_1$)
+--------------------------------------------------------------------------------
+
+The relative effect of morphological trait increases with increasing the selective pressure on morphology.
+
+```{r plot_s, echo=FALSE, fig.width=14, fig.height=8}
+for (x in .indirs[.indirs %>>% basename() %>>% str_detect('^s')]) {
     print(.plot(x))
 }
 ```
 
+--------------------------------------------------------------------------------
+
+Habitat preference ($h_0, h_1$)
+--------------------------------------------------------------------------------
+
+The relative effect of habitat preference increases with increasing the preference coefficient.
+
+```{r plot_p, echo=FALSE, fig.width=14, fig.height=8}
+for (x in .indirs[.indirs %>>% basename() %>>% str_detect('^p')]) {
+    print(.plot(x))
+}
+```

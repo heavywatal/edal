@@ -18,5 +18,5 @@ Individual::opt_description()
 Results
 --------------------------------------------------------------------------------
 
-- [Possible Ke values in the parameter space](results/ke.html)
+- [Possible Ke values in the parameter space and phenotype space](results/ke.html)
 
