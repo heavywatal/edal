@@ -1,0 +1,196 @@
+---
+title: "Simulation Result: normalizing by D_I"
+author: "Watal M. Iwasaki"
+date: "2014-09-05"
+output:
+  html_document:
+    toc: true
+    fig_caption: yes
+---
+
+Codes
+================================================================================
+
+```{r, echo=FALSE, eval=FALSE}
+.outdir = '~/edal/html/results'
+rmarkdown::render('~/edal/normalizing_time.Rmd', output_dir=.outdir)
+```
+
+```{r library}
+library(plyr)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(pipeR)
+library(ggplot2)
+library(gridExtra)
+library(doMC)
+doMC::registerDoMC(min(parallel::detectCores(), 12))
+```
+
+```{r preparation}
+is.odd = function(x) x %% 2 != 0
+
+.theme_tile =
+    theme(panel.grid=element_blank())+
+    theme(panel.background=element_blank())+
+    theme(axis.ticks=element_blank())+
+    theme(axis.text=element_blank())
+
+heat_colours = c('#000000', '#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000')
+scale_fill_heat = scale_fill_gradientn(colours=heat_colours)
+
+.working_dir = '~/SpiderOak Hive/anole20140130'
+setwd(.working_dir)
+#list.files(.working_dir)
+.indirs = list.files(.working_dir, full.names=TRUE)
+.indirs = .indirs[isdir(.indirs)]
+names(.indirs) = .indirs
+```
+
+```{r plot_function}
+.flags = list(
+    h="help",
+    v="verbose",
+    T="time",
+    a="beta_param",
+    K="carrying_capacity",
+    b="birth_rate",
+    p="height_pref",
+    P="diameter_pref",
+    c="height_compe",
+    C="diameter_compe",
+    s="toepad_select",
+    S="limb_select",
+    f="mating_sigma",
+    u="mu_locus",
+    U="mu_neutral",
+    m="migration_rate"
+)
+
+.traits = list(
+    toepad_P=expression(paste('Toepad size ', italic(x[0]))),
+    limb_P=expression(paste('Limb length ', italic(x[1]))),
+    height_pref_P=expression(paste('Height pref. ', italic(y[0]))),
+    diameter_pref_P=expression(paste('Diameter pref. ', italic(y[1]))),
+    male_P=expression(paste('Male trait ', italic(m))),
+    female_P=expression(paste('Female trait ', italic(f))),
+    choosiness_P=expression(paste('Choosiness ', italic(c))),
+    neutral_P='Neutral'
+)
+
+.tr = c(.flags, .traits)
+.axes = matrix(names(.traits), ncol=2, byrow=TRUE)
+
+.plot = function(x, y, data) {
+    .hist_list = data %>>%
+        regroup(list(as.symbol(x), as.symbol(y))) %>>%
+        tally()
+    .p = ggplot(.hist_list, aes_string(x=x, y=y))
+    .p = .p + geom_tile(aes(fill=n))
+    .p = .p + scale_fill_gradient(low='white', high='darkcyan')
+    .p = .p + xlim(0, 1) + ylim(0, 1)
+    .p = .p + xlab(.tr[[x]]) + ylab(.tr[[y]])
+    .p = .p + theme(legend.position='none')
+    .p = .p + theme(panel.background=element_rect(fill='white', colour='black'))
+    .p = .p + theme(panel.grid=element_blank())
+    .p = .p + theme(axis.text=element_blank())
+    .p
+}
+
+labeller = function(varname, value) {
+    print(varname)
+    print(value)
+    .traits[as.character(value)]
+}
+
+.plot_a_result = function(.data) {.data %>>%
+    select(ends_with('P')) %>>%
+    gather_('xkey', 'xval', .axes[,1]) %>>%
+    gather_('ykey', 'yval', .axes[,2]) %>>%
+    filter(charmatch(xkey, .axes[,1]) == charmatch(ykey, .axes[,2])) %>>%
+    group_by(xkey, ykey, xval, yval) %>>% tally() %>>%
+    ggplot(aes(xval, yval))+
+        geom_tile(aes(fill=n))+
+        scale_fill_gradient(low='#EEEEEE', high='darkcyan')+
+        facet_grid(~ xkey + ykey, labeller=labeller)+
+        coord_cartesian(c(0, 1), c(0, 1))+
+        theme(legend.position='none')+
+        theme(panel.background=element_rect(fill='white', colour='black'))+
+        theme(panel.grid=element_blank())+
+        theme(axis.title=element_blank(), axis.text=element_blank())
+}
+
+.run_grob = function(.rundir) {
+    cat(.rundir, '\n')
+    .raw = read.csv(file.path(.rundir, 'population.csv.gz'))
+    .plot_a_result(.raw)
+    #plyr::mlply(.axes, .plot, data=.raw)
+}
+#.run_grob(.indirs[1])
+
+.read_conf = function(.rundir) {
+    .conf_file = list.files(.rundir, '\\.conf$', full.names=TRUE)
+    .ret = wtl::read.conf(.conf_file)
+    dplyr::select(.ret, -help, -test, -verbose, -seed, -ppn)
+}
+#.conf = plyr::ldply(.indirs, .read_conf)
+```
+
+Results
+================================================================================
+
+```{r plot, fig.width=9, fig.height=9}
+.aggr = function(x) {
+    .label = unique(x$label)
+    print(.label)
+    .gpl = plyr::llply(x$.id, .run_grob, .parallel=TRUE)
+#    .gpl = unlist(.gpl, recursive=FALSE)
+    .grob = do.call(gridExtra::arrangeGrob, c(.gpl, list(nrow=4, ncol=1)))
+#    .grob = wtl::grid_grob(.gpl, length(x), 1)
+    print(.grob)
+    .grob
+}
+#.tbl = .conf %>>%
+#  filter(str_detect(label, '^c')) %>>%
+#    group_by(label) %>>%
+#    do(dummy=.aggr(.))
+```
+
+Comparison
+================================================================================
+
+```{r comparison}
+.data_dirs = c('~/SpiderOak Hive/anole20140130', '~/working/anolis20140903')
+.indirs = list.files(.data_dirs, full.names=TRUE)
+.indirs = .indirs[isdir(.indirs)]
+names(.indirs) = .indirs
+.conf = plyr::ldply(.indirs, .read_conf)
+
+.whole = .conf %>>%
+    mutate(normalized=str_detect(.id, 'anole20140130')) %>>%
+    group_by(normalized, label) %>>%
+    do(cbind(., replicate=seq_len(nrow(.)))) %>>%
+    rowwise() %>>%
+    do(cbind(.,
+        file.path(.$.id, 'population.csv.gz') %>>%
+        read.csv(stringsAsFactors=FALSE) %>>%
+        select(-ends_with('L'), -ends_with('R')))) %>>% ungroup()
+
+.whole %>>%
+    group_by(.id, normalized, label, replicate, height_pref_P, diameter_pref_P) %>>% tally() %>>%
+    group_by(param=substr(label, 1, 1)) %>>% do(plot=with(.,{
+    print(unique(param))
+    . %>>% ggplot(aes(height_pref_P, diameter_pref_P))+
+        geom_tile(aes(fill=n))+
+        scale_fill_gradient(low='#EEEEEE', high='darkcyan')+
+        facet_grid(label ~ normalized + replicate)+
+        #, labeller=function(varname, value) {str_extract(basename(value), '^[^_]+')})+
+        coord_cartesian(c(0, 1), c(0, 1))+
+        theme(legend.position='none')+
+        theme(panel.background=element_rect(fill='white', colour='black'))+
+        theme(panel.grid=element_blank())+
+        theme(axis.text=element_blank()) %>>% print()
+        }))
+
+```
