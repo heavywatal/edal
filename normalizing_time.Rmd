@@ -1,11 +1,10 @@
 ---
-title: "Simulation Result: normalizing by D_I"
+title: "Whether or not to normalize time by D_I"
 author: "Watal M. Iwasaki"
-date: "2014-09-05"
+date: "2014-09-18"
 output:
   html_document:
     toc: true
-    fig_caption: yes
 ---
 
 Codes
@@ -29,44 +28,11 @@ doMC::registerDoMC(min(parallel::detectCores(), 12))
 ```
 
 ```{r preparation}
-is.odd = function(x) x %% 2 != 0
-
-.theme_tile =
-    theme(panel.grid=element_blank())+
-    theme(panel.background=element_blank())+
-    theme(axis.ticks=element_blank())+
-    theme(axis.text=element_blank())
-
-heat_colours = c('#000000', '#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000')
-scale_fill_heat = scale_fill_gradientn(colours=heat_colours)
-
-.working_dir = '~/SpiderOak Hive/anole20140130'
-setwd(.working_dir)
-#list.files(.working_dir)
-.indirs = list.files(.working_dir, full.names=TRUE)
-.indirs = .indirs[isdir(.indirs)]
-names(.indirs) = .indirs
-```
-
-```{r plot_function}
-.flags = list(
-    h="help",
-    v="verbose",
-    T="time",
-    a="beta_param",
-    K="carrying_capacity",
-    b="birth_rate",
-    p="height_pref",
-    P="diameter_pref",
-    c="height_compe",
-    C="diameter_compe",
-    s="toepad_select",
-    S="limb_select",
-    f="mating_sigma",
-    u="mu_locus",
-    U="mu_neutral",
-    m="migration_rate"
-)
+.read_conf = function(.rundir) {
+    .conf_file = list.files(.rundir, '\\.conf$', full.names=TRUE)
+    wtl::read.conf(.conf_file) %>>%
+        dplyr::select(-help, -test, -verbose, -seed, -ppn)
+}
 
 .traits = list(
     toepad_P=expression(paste('Toepad size ', italic(x[0]))),
@@ -79,28 +45,19 @@ names(.indirs) = .indirs
     neutral_P='Neutral'
 )
 
-.tr = c(.flags, .traits)
+.tr = .traits
 .axes = matrix(names(.traits), ncol=2, byrow=TRUE)
 
-.plot = function(x, y, data) {
-    .hist_list = data %>>%
-        regroup(list(as.symbol(x), as.symbol(y))) %>>%
-        tally()
-    .p = ggplot(.hist_list, aes_string(x=x, y=y))
-    .p = .p + geom_tile(aes(fill=n))
-    .p = .p + scale_fill_gradient(low='white', high='darkcyan')
-    .p = .p + xlim(0, 1) + ylim(0, 1)
-    .p = .p + xlab(.tr[[x]]) + ylab(.tr[[y]])
-    .p = .p + theme(legend.position='none')
-    .p = .p + theme(panel.background=element_rect(fill='white', colour='black'))
-    .p = .p + theme(panel.grid=element_blank())
-    .p = .p + theme(axis.text=element_blank())
-    .p
-}
+theme_tile =
+    theme(panel.background=element_rect(fill='white', colour='black'))+
+    theme(panel.grid=element_blank())+
+    theme(axis.ticks=element_blank())+
+    theme(axis.text=element_blank())+
+    theme(legend.position='none')
+```
 
-labeller = function(varname, value) {
-    print(varname)
-    print(value)
+```{r plot_each_result, fig.width=9, fig.height=9, echo=FALSE, eval=FALSE}
+.labeller = function(varname, value) {
     .traits[as.character(value)]
 }
 
@@ -113,61 +70,43 @@ labeller = function(varname, value) {
     ggplot(aes(xval, yval))+
         geom_tile(aes(fill=n))+
         scale_fill_gradient(low='#EEEEEE', high='darkcyan')+
-        facet_grid(~ xkey + ykey, labeller=labeller)+
+        facet_grid(~ xkey + ykey, labeller=.labeller)+
         coord_cartesian(c(0, 1), c(0, 1))+
-        theme(legend.position='none')+
-        theme(panel.background=element_rect(fill='white', colour='black'))+
-        theme(panel.grid=element_blank())+
-        theme(axis.title=element_blank(), axis.text=element_blank())
+        theme_tile+
+        theme(axis.title=element_blank())
 }
-
-.run_grob = function(.rundir) {
-    cat(.rundir, '\n')
-    .raw = read.csv(file.path(.rundir, 'population.csv.gz'))
-    .plot_a_result(.raw)
-    #plyr::mlply(.axes, .plot, data=.raw)
-}
-#.run_grob(.indirs[1])
-
-.read_conf = function(.rundir) {
-    .conf_file = list.files(.rundir, '\\.conf$', full.names=TRUE)
-    .ret = wtl::read.conf(.conf_file)
-    dplyr::select(.ret, -help, -test, -verbose, -seed, -ppn)
-}
-#.conf = plyr::ldply(.indirs, .read_conf)
-```
-
-Results
-================================================================================
-
-```{r plot, fig.width=9, fig.height=9}
 .aggr = function(x) {
     .label = unique(x$label)
-    print(.label)
-    .gpl = plyr::llply(x$.id, .run_grob, .parallel=TRUE)
-#    .gpl = unlist(.gpl, recursive=FALSE)
+    .gpl = plyr::llply(x$.id, function(.rundir) {
+        cat(.rundir, '\n')
+        .raw = read.csv(file.path(.rundir, 'population.csv.gz'))
+        .plot_a_result(.raw)
+    }, .parallel=TRUE)
     .grob = do.call(gridExtra::arrangeGrob, c(.gpl, list(nrow=4, ncol=1)))
-#    .grob = wtl::grid_grob(.gpl, length(x), 1)
-    print(.grob)
     .grob
 }
-#.tbl = .conf %>>%
-#  filter(str_detect(label, '^c')) %>>%
-#    group_by(label) %>>%
-#    do(dummy=.aggr(.))
+
+.working_dir = '~/SpiderOak Hive/anole20140130'
+.indirs = list.files(.working_dir, full.names=TRUE)
+.indirs = .indirs[isdir(.indirs)]
+names(.indirs) = .indirs
+.conf = plyr::ldply(.indirs, .read_conf)
+
+.tbl = .conf %>>%
+    filter(str_detect(label, '^c')) %>>%
+    group_by(label) %>>%
+    do(plot=.aggr(.))
+.tbl$plot
 ```
 
-Comparison
-================================================================================
-
-```{r comparison}
+```{r plot_comparison}
 .data_dirs = c('~/SpiderOak Hive/anole20140130', '~/working/anolis20140903')
 .indirs = list.files(.data_dirs, full.names=TRUE)
 .indirs = .indirs[isdir(.indirs)]
 names(.indirs) = .indirs
 .conf = plyr::ldply(.indirs, .read_conf)
 
-.whole = .conf %>>%
+.tbl = .conf %>>%
     mutate(normalized=str_detect(.id, 'anole20140130')) %>>%
     group_by(normalized, label) %>>%
     do(cbind(., replicate=seq_len(nrow(.)))) %>>%
@@ -175,22 +114,53 @@ names(.indirs) = .indirs
     do(cbind(.,
         file.path(.$.id, 'population.csv.gz') %>>%
         read.csv(stringsAsFactors=FALSE) %>>%
-        select(-ends_with('L'), -ends_with('R')))) %>>% ungroup()
+        select(-ends_with('L'), -ends_with('R')), stringsAsFactors=FALSE)) %>>% ungroup()
 
-.whole %>>%
-    group_by(.id, normalized, label, replicate, height_pref_P, diameter_pref_P) %>>% tally() %>>%
-    group_by(param=substr(label, 1, 1)) %>>% do(plot=with(.,{
-    print(unique(param))
-    . %>>% ggplot(aes(height_pref_P, diameter_pref_P))+
+.done = .tbl %>>%
+    group_by(.id, normalized, label, replicate, height_pref_P, diameter_pref_P) %>>%
+    tally() %>>%
+    group_by(param=substr(label, 1, 1)) %>>%
+    do(plot={. %>>%
+        ggplot(aes(height_pref_P, diameter_pref_P))+
         geom_tile(aes(fill=n))+
-        scale_fill_gradient(low='#EEEEEE', high='darkcyan')+
+        scale_fill_gradient(low='#DDDDDD', high='#FF3300')+
         facet_grid(label ~ normalized + replicate)+
+        labs(x=.tr[['height_pref_P']], y=.tr[['diameter_pref_P']])+
         #, labeller=function(varname, value) {str_extract(basename(value), '^[^_]+')})+
         coord_cartesian(c(0, 1), c(0, 1))+
-        theme(legend.position='none')+
-        theme(panel.background=element_rect(fill='white', colour='black'))+
-        theme(panel.grid=element_blank())+
-        theme(axis.text=element_blank()) %>>% print()
-        }))
+        theme_tile
+    })
+```
 
+Results
+================================================================================
+
+Each heatmap denotes the frequency disturibution of habitat preferences in a population.
+Four replicates were performed for each parameter set (i.e. each row).
+The results with **normalized time** described in anolis_v3.pdf are on the right (`TRUE`) and **unnormalized** on the left (`FALSE`).
+
+In unnormalized cases, on the left, the habitat preferences of individuals are distributed near the peak of resource abundance and seem to be properly subject to selection.
+The variation within each population decreased with increasing coefficient for habitat preferences, $h_0$ and $h_1$ (from top to bottom).
+
+```{r habitat_pref, echo=FALSE, fig.width=8, fig.height=5}
+subset(.done, param=='p')$plot[[1]]
+```
+
+Other parameters did not affect the evolution of habitat preferences so much.
+Competition coefficients, $c_0$ and $c_1$, were altered:
+
+```{r competition, echo=FALSE, fig.width=8, fig.height=5}
+subset(.done, param=='c')$plot[[1]]
+```
+
+Selection coefficients for morphology, $s_0$ and $s_1$, were altered:
+
+```{r morph_selec, echo=FALSE, fig.width=8, fig.height=5}
+subset(.done, param=='s')$plot[[1]]
+```
+
+Scaling parameter $\sigma_a$ for female mating preferences was altered:
+
+```{r mating, echo=FALSE, fig.width=8, fig.height=5}
+subset(.done, param=='f')$plot[[1]]
 ```

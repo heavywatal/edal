@@ -19,4 +19,5 @@ Results
 --------------------------------------------------------------------------------
 
 - [Possible Ke values in the parameter space and phenotype space](results/ke.html)
+- [Whether or not to normalize time by D_I](results/normalizing_time.html)
 
