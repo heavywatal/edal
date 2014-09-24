@@ -71,7 +71,7 @@ class Individual {
     //! \f$ \alpha \f$ of Beta distribution in \f$ F(u,v) \f$
     static double BETA_PARAM_;
 
-    //! Coefficient for \f$ K_e(I)\f$ --- **NOT FOUND in anolis_v3.pdf**
+    //! \f$ K_0 \f$ in \f$ K_e(I)\f$ --- **NEW in anolis_v3a.pdf**
     static size_t CARRYING_CAPACITY_;
 
     //! \f$ b \f$ in \f$ w(I) \f$

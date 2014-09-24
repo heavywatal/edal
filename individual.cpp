@@ -39,7 +39,7 @@ constexpr double Individual::INV_NUM_LOCI_;
     Command line option      | Symbol           | Variable
     ------------------------ | ---------------- | ------------------------------
     `-a,--beta_param`        | \f$ \alpha \f$   | Individual::BETA_PARAM_
-    `-K,--carrying_capacity` | -                | Individual::CARRYING_CAPACITY_
+    `-K,--carrying_capacity` | \f$ K_0 \f$      | Individual::CARRYING_CAPACITY_
     `-b,--birth_rate`        | \f$ b \f$        | Individual::AVG_NUM_OFFSPINRGS_
     `-p,--height_pref`       | \f$ h_0 \f$      | Individual::HEIGHT_PREFERENCE_
     `-P,--diameter_pref`     | \f$ h_1 \f$      | Individual::DIAMETER_PREFERENCE_
