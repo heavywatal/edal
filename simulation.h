@@ -64,6 +64,7 @@ class Simulation {
     //! Seed for random number generator
     unsigned int SEED = std::random_device{}();
 
+    //! Control execution mode
     int MODE = 0;
 
     //! Group name of this run such as altered parameter
@@ -90,15 +91,16 @@ class Simulation {
     //! Parse command arguments
     Simulation(int argc, char* argv[]);
 
+    //! Top level function that should be called from main()
     void run();
 
   private:
-    //! Call life_cycle() repeatedly
-    void evolve();
-
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
     /** @addtogroup life_cycle
         @{*/
+
+    //! Call life_cycle() repeatedly
+    void evolve();
 
     /*! @brief One step forward
 
@@ -125,7 +127,7 @@ class Simulation {
     */
     std::pair<size_t, size_t> choose_destination(const size_t row_orig, const size_t col_orig);
 
-    /** @} biol_proc */
+    /** @} life_cycle */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
     boost::program_options::options_description& opt_description();

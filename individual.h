@@ -158,26 +158,37 @@ class Individual {
         @retval 1 for individuals with identical preferences
 
         following Roughgarden and others
+        \f[
+            C(I,J) = \exp(-c_0 (y_{0,I} - y_{0,J})^2 - c_1(y_{1,I} - y_{1,J})^2)
+        \f]
     */
     double habitat_overlap(const Individual& other) const;
 
-    //! \f$C(I, J)\f$ in anolis_v2
+    //! Competition coefficient \f$C(I, J)\f$ with numerical integration
     /*! @ingroup habitat_pareference
     */
     double habitat_overlap_v2(const Individual&) const;
 
-    //! \f$K_e(I)\f$
+    //! \f$K_e(I)\f$ in anolis_v3a.pdf
+    /*! @ingroup natural_selection
+        \f[
+            K_e(I) = K_0 \int_0^1 \int_0^{1-u}
+                F(u,v) W(x_0,x_1|u,v) \Xi(y_0,y_1|u,v) dv du
+        \f]
+    */
+    double effective_carrying_capacity() const;
+
+    //! \f$K_e(I)\f$ in anolis_v3.pdf
     /*! @ingroup natural_selection
         \f[
             K_e(I) = \int_0^1 \int_0^{1-u}
                 W(x_0,x_1|u,v) T(y_0,y_1|u,v) dv du
         \f]
     */
-    double effective_carrying_capacity() const;
+    double effective_carrying_capacity_v3() const;
 
-    //! \f$K_e(I)\f$
+    //! \f$K_e(I)\f$ in anolis_v3.pdf before normalized by \f$D_I\f$
     /*! @ingroup natural_selection
-        The value before normalized by \f$D_I\f$
     */
     double effective_carrying_capacity_unnormalized() const;
 
@@ -240,10 +251,13 @@ class Individual {
     //! detailed str() for testing/debugging
     std::string str_detail() const;
 
-    //! Unit test for Individual
+    //! test function
     static void unit_test();
+    //! test function
     static void write_resource_abundance();
+    //! test function
     static std::string possible_ke();
+    //! test function
     static std::string test_sojourn_time();
 
     static boost::program_options::options_description& opt_description();
@@ -254,18 +268,37 @@ class Individual {
     /** @addtogroup biol_proc
         @{*/
 
+    //! \f$\Xi(I, u, v)\f$ in anolis_v2
+    /*! @ingroup habitat_pareference
+        @param height habitat environment
+        @param diameter habitat environment
+        @return \f$\Xi(I, u, v)\f$ before normalization
+        \f[
+            \Xi(I,u,v) \propto \exp(-h_0 (u - y_0)^2 - h_1 (v - y_1)^2)
+        \f]
+    */
+    double habitat_preference_v2(const double height, const double diameter) const;
+
     //! \f$\Xi(I, u, v)\f$ quadratic approximation in anolis_v3
     /*! @ingroup habitat_pareference
         @param height habitat environment
         @param diameter habitat environment
-        @return \f$\Xi(I, u, v)\f$
+        @return \f$\Xi(I, u, v)\f$ before normalization
+        \f[
+            \Xi(I,u,v) \propto 1 - h_0 (u - y_0)^2 - h_1 (v - y_1)^2
+        \f]
     */
     double habitat_preference(const double height, const double diameter) const;
 
-    //! \f$\Xi(I, u, v)\f$ in anolis_v2
+    //! Calculate \f$\Xi(I, u, v)\f$ normalizer with analytical solution
     /*! @ingroup habitat_pareference
     */
-    double habitat_preference_v2(const double height, const double diameter) const;
+    double calc_xi_normalizer() const;
+
+    //! Numerical integration of \f$\Xi(I, u, v)\f$ for testing
+    /*! @ingroup habitat_pareference
+    */
+    double calc_xi_normalizer_numerical() const;
 
     //! \f$D_I\f$ numerical computation (slow)
     /*! @ingroup habitat_pareference
@@ -323,7 +356,7 @@ class Individual {
     */
     static std::vector<Loci> mutate(std::vector<Loci> haplotype);
 
-    //! for debugging
+    //! test function
     std::string sojourn_time(const bool normalizing) const;
 
     /** @} biol_proc */

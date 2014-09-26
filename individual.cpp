@@ -193,32 +193,57 @@ double Individual::calc_denom_maple() const {
 
 
 double Individual::habitat_preference_v2(const double height, const double diameter) const {
-    auto impl = [](const double ind_preference,
-                   const double env_characterstics,
-                   const double habitat_pref_strength) {
-        double exponent = ind_preference;
-        exponent -= env_characterstics;
-        exponent *= exponent;
-        return exponent *= -habitat_pref_strength;
+    auto impl = [](double u, const double y, const double h) {
+        u -= y;
+        u *= u;
+        return u *= h;
     };
-    double exponent = impl(phenotype_[trait::height_preference], height, HEIGHT_PREFERENCE_);
-    exponent += impl(phenotype_[trait::diameter_preference], diameter, DIAMETER_PREFERENCE_);
+    double exponent = -impl(phenotype_[trait::height_preference], height, HEIGHT_PREFERENCE_);
+    exponent -= impl(phenotype_[trait::diameter_preference], diameter, DIAMETER_PREFERENCE_);
     return std::exp(exponent);
 }
 
 double Individual::habitat_preference(const double height, const double diameter) const {
-    auto impl = [](const double ind_preference,
-                   const double env_characterstics,
-                   const double habitat_pref_strength) {
-        double x = ind_preference;
-        x -= env_characterstics;
-        x *= x;
-        return x *= habitat_pref_strength;
+    auto impl = [](double u, const double y, const double h) {
+        u -= y;
+        u *= u;
+        return u *= h;
     };
     double x = 1.0;
     x -= impl(phenotype_[trait::height_preference], height, HEIGHT_PREFERENCE_);
     x -= impl(phenotype_[trait::diameter_preference], diameter, DIAMETER_PREFERENCE_);
     return x;
+}
+
+double Individual::calc_xi_normalizer() const {
+    //-h0*y0**2/2 + h0*y0/3 - h0/12 - h1*y1**2/2 + h1*y1/3 - h1/12 + 1/2
+    auto impl = [](double y) {
+        double result = 1.0;
+        result /= 12.0;
+        result -= y / 3.0;
+        y *= y;
+        return result += y * 0.5;
+    };
+    double x = 0.5;
+//    auto impl = [](double y) {
+//        double result = 1.0;
+//        result /= 3.0;
+//        result -= y;
+//        y *= y;
+//        return result += y;
+//    };
+//    double x = 1.0;
+    x -= HEIGHT_PREFERENCE_ * impl(phenotype_[trait::height_preference]);
+    x -= DIAMETER_PREFERENCE_ * impl(phenotype_[trait::diameter_preference]);
+    return x;
+}
+
+double Individual::calc_xi_normalizer_numerical() const {
+    return wtl::integrate([this](const double height) {
+        return wtl::integrate([this, height](const double diameter) {
+            return habitat_preference(height, diameter);
+        }, 0.0, 1.0 - height, NUM_STEPS_);
+    }, 0.0, 1.0, NUM_STEPS_);
 }
 
 double Individual::habitat_overlap_v2(const Individual& other) const {
@@ -260,8 +285,11 @@ double Individual::fitness(const double height, const double diameter) const {
     return std::exp(exponent);
 }
 
-
 double Individual::effective_carrying_capacity() const {
+    return effective_carrying_capacity_unnormalized() / calc_xi_normalizer();
+}
+
+double Individual::effective_carrying_capacity_v3() const {
     return effective_carrying_capacity_unnormalized() / calc_denom();
 }
 
@@ -282,7 +310,7 @@ double Individual::survival_probability(const double effective_num_competitors) 
     double denom = AVG_NUM_OFFSPINRGS_;
     denom -= 1.0;
     denom *= effective_num_competitors;  // ^ alpha for crowding strength
-    denom /= effective_carrying_capacity_unnormalized();
+    denom /= effective_carrying_capacity();
     denom += 1.0;
     return 1.0 / denom;
 }
@@ -382,6 +410,8 @@ std::string Individual::str_detail() const {
     ost << "DI numer: " << calc_denom_numerical() << std::endl;
     ost << "DI mathe: " << calc_denom_mathematica() << std::endl;
     ost << "DI maple: " << calc_denom_maple() << std::endl;
+    ost << "Xi denom ana: " << calc_xi_normalizer() << std::endl;
+    ost << "Xi denom num: " << calc_xi_normalizer_numerical() << std::endl;
     return ost.str();
 }
 
@@ -417,15 +447,17 @@ std::string Individual::possible_ke() {
     constexpr size_t half = max_trait / 2;
     std::ostringstream ost;
     std::string sep(",");
-    ost << "toepad,limb,height_pref,diameter_pref,Ke,unnormalized_Ke,DI\n";
+    ost << "toepad,limb,height_pref,diameter_pref,Ke_v3,Ke_v3u,Ke_v3a,Dxi,DI\n";
     for (size_t toe=0; toe<=max_trait; ++toe) {
         for (size_t limb=0; limb<=max_trait; ++limb) {
             for (size_t hpref=0; hpref<=max_trait; ++hpref) {
                 for (size_t dpref=0; dpref<=max_trait; ++dpref) {
                     Individual ind(std::vector<size_t>{toe, limb, hpref, dpref, half, half, half, half});
                     ost << toe << sep << limb << sep << hpref << sep << dpref << sep
-                        << ind.effective_carrying_capacity() << sep
+                        << ind.effective_carrying_capacity_v3() << sep
                         << ind.effective_carrying_capacity_unnormalized() << sep
+                        << ind.effective_carrying_capacity() << sep
+                        << ind.calc_xi_normalizer() << sep
                         << ind.calc_denom() << "\n";
                 }
             }
