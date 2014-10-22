@@ -1,0 +1,98 @@
+---
+title: "anolis_v3a"
+author: "Watal M. Iwasaki"
+date: "2014-09-27"
+output:
+  html_document:
+    toc: true
+---
+
+Codes
+================================================================================
+
+```{r, echo=FALSE, eval=FALSE}
+.outdir = '~/edal/html/results'
+rmarkdown::render('~/edal/normalizing_pref.Rmd', output_dir=.outdir)
+```
+
+```{r library}
+library(plyr)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(pipeR)
+library(ggplot2)
+library(gridExtra)
+library(doMC)
+doMC::registerDoMC(min(parallel::detectCores(), 12))
+```
+
+```{r preparation}
+.read_conf = function(.rundir) {
+    .conf_file = list.files(.rundir, '\\.conf$', full.names=TRUE)
+    wtl::read.conf(.conf_file) %>>%
+        dplyr::select(-help, -test, -verbose, -seed, -ppn)
+}
+
+.traits = list(
+    toepad_P=expression(paste('Toepad size ', italic(x[0]))),
+    limb_P=expression(paste('Limb length ', italic(x[1]))),
+    height_pref_P=expression(paste('Height pref. ', italic(y[0]))),
+    diameter_pref_P=expression(paste('Diameter pref. ', italic(y[1]))),
+    male_P=expression(paste('Male trait ', italic(m))),
+    female_P=expression(paste('Female trait ', italic(f))),
+    choosiness_P=expression(paste('Choosiness ', italic(c))),
+    neutral_P='Neutral'
+)
+
+.tr = .traits
+.axes = matrix(names(.traits), ncol=2, byrow=TRUE)
+
+theme_tile =
+    theme(panel.background=element_rect(fill='white', colour='black'))+
+    theme(panel.grid=element_blank())+
+    theme(axis.ticks=element_blank())+
+    theme(axis.text=element_blank())+
+    theme(legend.position='none')
+
+heat_colours = c('#000000', '#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000')
+scale_fill_heat = scale_fill_gradientn(colours=heat_colours)
+
+is.odd = function(x) x %% 2 != 0
+```
+
+```{r plot_comparison}
+.data_dirs = c('~/working/anolis20140926')
+.indirs = list.files(.data_dirs, full.names=TRUE)
+.indirs = .indirs[isdir(.indirs)]
+.indirs = .indirs[.indirs %>>% basename() %>>% str_detect('^p')]
+names(.indirs) = .indirs
+
+.plot = function(.indir) {
+    .conf = .read_conf(.indir)
+    .raw = read.csv(file.path(.indir, 'possible_ke.csv.gz'))
+    .tidy = .raw %>>%
+        gather(key, value, starts_with('Ke'))
+    .p = .tidy %>>%
+        filter(is.odd(toepad), is.odd(limb)) %>>%
+        mutate_each(funs(f = . / 16), toepad, limb, height_pref, diameter_pref) %>>%
+        ggplot(aes(x=height_pref, y=diameter_pref))
+    .p + geom_tile(aes(fill=value))+
+    facet_grid(limb ~ key + toepad, as.table=FALSE, labeller=label_both)+
+    labs(title=basename(.indir))+
+    theme_tile + scale_fill_heat+
+    theme(strip.text=element_text(size=rel(0.6)))+
+    labs(x=.tr[['height_pref_P']], y=.tr[['diameter_pref_P']])
+}
+
+.done = llply(.indirs, .plot, .parallel=TRUE)
+```
+
+Results
+================================================================================
+
+```{r habitat_pref, echo=FALSE, fig.width=14, fig.height=6}
+for (x in .done) {
+    print(x)
+}
+```
