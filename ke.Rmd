@@ -46,19 +46,29 @@ setwd(.working_dir)
 .plot = function(.indir) {
     .raw = read.csv(file.path(.indir, 'possible_ke.csv.gz'))
     .tidy = .raw %>>%
-        gather(key, Ke, ends_with('Ke')) %>>%
+        gather(key, Ke, starts_with('Ke')) %>>%
         mutate(normalized=ifelse(key=='Ke', 1, 0))
     .p = .tidy %>>%
         filter(is.odd(toepad), is.odd(limb)) %>>%
+        filter(key!='Ke_v3') %>>%
         mutate_each(funs(f = . / 16), toepad, limb, height_pref, diameter_pref) %>>%
         ggplot(aes(x=height_pref, y=diameter_pref))
     .p = .p + geom_tile(aes(fill=Ke))
-    .p = .p + facet_grid(limb ~ normalized + toepad, as.table=FALSE, labeller=label_both)
+    .p = .p + facet_grid(limb ~ key + toepad, as.table=FALSE, labeller=label_both)
     .p = .p + labs(title=basename(.indir))
     .p = .p + .theme_tile + scale_fill_heat
     .p = .p + theme(strip.text=element_text(size=rel(0.6)))
     .p
 }
+
+.plot('default_20141101_121108_57833@pohjola-2.local')
+default_20141101_120805_57797@pohjola-2.local
+.plot('default_20141101_120805_57797@pohjola-2.local')
+.plot('default_20141101_120512_57765@pohjola-2.local')
+.plot('default_20141101_120206_57722@pohjola-2.local')
+.plot('default_20141101_115647_57620@pohjola-2.local')
+.plot('default_20141101_115348_57576@pohjola-2.local')
+.plot('default_20141101_114355_57378@pohjola-2.local')
 ```
 
 
@@ -83,10 +93,12 @@ Following figures show the relative contribution of morphological traits and hab
 Each heatmap denotes $K_e$ level on varied habitat preference with a fixed morphology:
 
 ```{r plot_example, echo=FALSE, fig.width=5, fig.height=4}
+#.indir = 'default_20141101_111637_56875@pohjola-2.local'
+.indir = 'default_20141101_113114_57121@pohjola-2.local'
     .indir = .indirs[1]
     .raw = read.csv(file.path(.indir, 'possible_ke.csv.gz'))
     .tidy = .raw %>>%
-        gather(key, Ke, ends_with('Ke')) %>>%
+        gather(key, Ke, starts_with('Ke')) %>>%
         mutate(normalized=ifelse(key=='Ke', 1, 0))
     .p = .tidy %>>%
         filter(toepad==8, limb==8, normalized==0) %>>%

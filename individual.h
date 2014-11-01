@@ -186,6 +186,7 @@ class Individual {
         \f]
     */
     double effective_carrying_capacity() const;
+    double effective_carrying_capacity_numerical() const;
 
     //! \f$K_e(I)\f$ in anolis_v3.pdf
     /*! @ingroup natural_selection
@@ -286,7 +287,7 @@ class Individual {
             \Xi(I,u,v) \propto \exp(-h_0 (u - y_0)^2 - h_1 (v - y_1)^2)
         \f]
     */
-    double habitat_preference_v2(const double height, const double diameter) const;
+    double habitat_preference_exp(const double height, const double diameter) const;
 
     //! \f$\Xi(I, u, v)\f$ quadratic approximation in anolis_v3
     /*! @ingroup habitat_pareference
@@ -297,7 +298,17 @@ class Individual {
             \Xi(I,u,v) \propto 1 - h_0 (u - y_0)^2 - h_1 (v - y_1)^2
         \f]
     */
-    double habitat_preference(const double height, const double diameter) const;
+    double habitat_preference_quadratic(const double height, const double diameter) const;
+
+    //! Wrapper function of \f$\Xi(I, u, v)\f$
+    /*! @ingroup habitat_pareference
+        @param height habitat environment
+        @param diameter habitat environment
+        @return \f$\Xi(I, u, v)\f$
+    */
+    inline double habitat_preference(const double height, const double diameter) const {
+        return habitat_preference_quadratic(height, diameter);
+    }
 
     //! Calculate \f$\Xi(I, u, v)\f$ normalizer with analytical solution
     /*! @ingroup habitat_pareference

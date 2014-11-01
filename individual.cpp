@@ -209,7 +209,7 @@ double Individual::calc_denom_maple() const {
 }
 
 
-double Individual::habitat_preference_v2(const double height, const double diameter) const {
+double Individual::habitat_preference_exp(const double height, const double diameter) const {
     auto impl = [](double u, const double y, const double h) {
         u -= y;
         u *= u;
@@ -220,7 +220,7 @@ double Individual::habitat_preference_v2(const double height, const double diame
     return std::exp(exponent);
 }
 
-double Individual::habitat_preference(const double height, const double diameter) const {
+double Individual::habitat_preference_quadratic(const double height, const double diameter) const {
     auto impl = [](double u, const double y, const double h) {
         u -= y;
         u *= u;
@@ -300,6 +300,10 @@ double Individual::fitness(const double height, const double diameter) const {
     double exponent = impl(phenotype_[trait::toepad_size], height, TOEPAD_SELECTION_);
     exponent += impl(phenotype_[trait::limb_length], diameter, LIMB_SELECTION_);
     return std::exp(exponent);
+}
+
+double Individual::effective_carrying_capacity_numerical() const {
+    return effective_carrying_capacity_unnormalized() / calc_xi_normalizer_numerical();
 }
 
 double Individual::effective_carrying_capacity() const {
