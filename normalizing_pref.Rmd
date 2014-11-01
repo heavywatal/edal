@@ -1,5 +1,5 @@
 ---
-title: "anolis_v3a"
+title: "Possible Ke values with normalized habitat preference (anolis_v3a)"
 author: "Watal M. Iwasaki"
 date: "2014-09-27"
 output:
@@ -52,8 +52,7 @@ theme_tile =
     theme(panel.background=element_rect(fill='white', colour='black'))+
     theme(panel.grid=element_blank())+
     theme(axis.ticks=element_blank())+
-    theme(axis.text=element_blank())+
-    theme(legend.position='none')
+    theme(axis.text=element_blank())
 
 heat_colours = c('#000000', '#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000')
 scale_fill_heat = scale_fill_gradientn(colours=heat_colours)
@@ -68,11 +67,12 @@ is.odd = function(x) x %% 2 != 0
 .indirs = .indirs[.indirs %>>% basename() %>>% str_detect('^p')]
 names(.indirs) = .indirs
 
-.plot = function(.indir) {
+.plot = function(.indir, prefix) {
     .conf = .read_conf(.indir)
     .raw = read.csv(file.path(.indir, 'possible_ke.csv.gz'))
     .tidy = .raw %>>%
-        gather(key, value, starts_with('Ke'))
+        select(-Ke_v3) %>>%
+        gather(key, value, starts_with(prefix, ignore.case=FALSE))
     .p = .tidy %>>%
         filter(is.odd(toepad), is.odd(limb)) %>>%
         mutate_each(funs(f = . / 16), toepad, limb, height_pref, diameter_pref) %>>%
@@ -85,13 +85,33 @@ names(.indirs) = .indirs
     labs(x=.tr[['height_pref_P']], y=.tr[['diameter_pref_P']])
 }
 
-.done = llply(.indirs, .plot, .parallel=TRUE)
 ```
 
 Results
 ================================================================================
 
-```{r habitat_pref, echo=FALSE, fig.width=14, fig.height=6}
+$K_e$
+--------------------------------------------------------------------------------
+
+The arrangement of plots is the same as [previous ones](ke.html),
+except that the right halves are the results from normalized $\Xi$ according to anolis_v3a.
+
+```{r ke, echo=FALSE, fig.width=14, fig.height=8}
+.done = llply(.indirs, .plot, prefix='Ke', .parallel=TRUE)
+for (x in .done) {
+    print(x)
+}
+```
+
+Normalizer of preferences
+--------------------------------------------------------------------------------
+
+$\iint \{1 - h_0 (u - y_0) ^ 2 - h_1 (v - y_1) ^ 2 \} du dv$
+
+Dividing by this value will be the cause of the strange results above.
+
+```{r denominators, echo=FALSE, fig.width=8, fig.height=8}
+.done = llply(.indirs, .plot, prefix='Dxi', .parallel=TRUE)
 for (x in .done) {
     print(x)
 }

@@ -20,4 +20,5 @@ Results
 
 - [Possible Ke values in the parameter space and phenotype space](results/ke.html)
 - [Whether or not to normalize time by D_I](results/normalizing_time.html)
+- [Possible Ke values with normalized habitat preference (anolis_v3a)](results/normalizing_pref.html)
 
