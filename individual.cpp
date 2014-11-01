@@ -229,7 +229,7 @@ double Individual::habitat_preference(const double height, const double diameter
     double x = 1.0;
     x -= impl(phenotype_[trait::height_preference], height, HEIGHT_PREFERENCE_);
     x -= impl(phenotype_[trait::diameter_preference], diameter, DIAMETER_PREFERENCE_);
-    return x;
+    return std::max(x, 0.0);
 }
 
 double Individual::calc_xi_normalizer() const {
