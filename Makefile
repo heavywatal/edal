@@ -2,7 +2,7 @@
 PACKAGE := $(notdir ${CURDIR})
 SRCDIR := .
 OBJDIR := build
-INCLUDEDIR := ${HOME}/local/include
+INCLUDEDIR := -isystem /usr/local/include -iquote ${HOME}/local/include
 PROGRAM := anolis.out
 
 
@@ -18,7 +18,7 @@ GXX := $(firstword $(foreach x,g++-4.9 g++-4.8 g++,$(shell which $x)))
 CXX_ARRAY := clang++ ${GXX}
 CXX := $(firstword $(foreach x,${CXX_ARRAY},$(shell which $x)))
 CC := $(CXX)
-CPPFLAGS := -Wall -Wextra -Wno-unused-parameter -fno-strict-aliasing -iquote ${INCLUDEDIR} ${CPPDBG} -ftemplate-depth=512
+CPPFLAGS := -Wall -Wextra -Wno-unused-parameter -fno-strict-aliasing ${INCLUDEDIR} ${CPPDBG} -ftemplate-depth=512
 CXXFLAGS := -std=c++11 -O3 ${CXXDBG}
 LDFLAGS := -L${HOME}/local/lib -L/usr/local/lib
 LDLIBS := -lsfmt -lboost_program_options -lboost_filesystem -lboost_system -lboost_iostreams -lz
