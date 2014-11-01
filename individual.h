@@ -71,6 +71,15 @@ class Individual {
     //! \f$ \alpha \f$ of Beta distribution in \f$ F(u,v) \f$
     static double BETA_PARAM_;
 
+    //! \f$ \sigma \f$ of Normal distribution in v2 \f$ F(u,v) \f$
+    static double NORMAL_SIGMA_;
+
+    //! \f$ c_0 \f$ of Normal distribution in v2 \f$ F(u,v) \f$
+    static double C0_;
+
+    //! \f$ c_1 \f$ of Normal distribution in v2 \f$ F(u,v) \f$
+    static double C1_;
+
     //! \f$ K_0 \f$ in \f$ K_e(I)\f$ --- **NEW in anolis_v3a.pdf**
     static size_t CARRYING_CAPACITY_;
 
@@ -375,6 +384,8 @@ class Individual {
     };
 
     friend double pdf_beta(const double height, const double diameter);
+    friend double pdf_normal(const double height, const double diameter);
+    friend double pdf_exp(const double height, const double diameter);
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
     // data member

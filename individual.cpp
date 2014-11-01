@@ -14,6 +14,9 @@
 #include "cxxwtils/gz.hpp"
 
 double Individual::BETA_PARAM_ = 3.0;
+double Individual::NORMAL_SIGMA_ = 0.1;
+double Individual::C0_ = 0.5;
+double Individual::C1_ = 0.5;
 size_t Individual::CARRYING_CAPACITY_ = 160;
 size_t Individual::AVG_NUM_OFFSPINRGS_ = 4;
 double Individual::HEIGHT_PREFERENCE_ = 0.5;
@@ -96,6 +99,20 @@ inline double pdf_triangle(const double height, const double diameter) {
 //! Product Beta(u, v) Tri(u, v)
 inline double abundance(const double height, const double diameter) {
     return pdf_beta(height, diameter) * pdf_triangle(height, diameter);
+}
+
+inline double pdf_normal(const double height, const double diameter) {
+    return std::exp(- 0.5 * wtl::pow<2>(height - 0.5) / Individual::NORMAL_SIGMA_);
+}
+
+inline double pdf_exp(const double height, const double diameter) {
+    double theta = 1.0;
+    theta /= Individual::C0_ - Individual::C1_ * diameter;
+    return std::exp(- theta * diameter) * theta;
+}
+
+inline double abundance_old(const double height, const double diameter) {
+    return pdf_normal(height, diameter) * pdf_exp(height, diameter);
 }
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
@@ -439,6 +456,9 @@ void Individual::write_resource_abundance() {
     wtl::Fout{"ignore/abundance_beta.csv"} << ::test_resource_abundance(pdf_beta);
     wtl::Fout{"ignore/abundance_triangle.csv"} << ::test_resource_abundance(pdf_triangle);
     wtl::Fout{"ignore/abundance_v3.csv"} << ::test_resource_abundance(abundance);
+    wtl::Fout{"ignore/abundance_normal.csv"} << ::test_resource_abundance(pdf_normal);
+    wtl::Fout{"ignore/abundance_exp.csv"} << ::test_resource_abundance(pdf_exp);
+    wtl::Fout{"ignore/abundance_old.csv"} << ::test_resource_abundance(abundance_old);
 }
 
 std::string Individual::possible_ke() {
