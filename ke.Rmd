@@ -60,17 +60,7 @@ setwd(.working_dir)
     .p = .p + theme(strip.text=element_text(size=rel(0.6)))
     .p
 }
-
-.plot('default_20141101_121108_57833@pohjola-2.local')
-default_20141101_120805_57797@pohjola-2.local
-.plot('default_20141101_120805_57797@pohjola-2.local')
-.plot('default_20141101_120512_57765@pohjola-2.local')
-.plot('default_20141101_120206_57722@pohjola-2.local')
-.plot('default_20141101_115647_57620@pohjola-2.local')
-.plot('default_20141101_115348_57576@pohjola-2.local')
-.plot('default_20141101_114355_57378@pohjola-2.local')
 ```
-
 
 Results
 ================================================================================
