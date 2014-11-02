@@ -51,7 +51,7 @@ double Patch::effective_num_competitors(const Individual& focal) const {
     double n = 0;
     auto impl = [&] (const std::vector<Individual>& members) {
         for (const auto& ind: members) {
-            n += focal.habitat_overlap(ind);
+            n += focal.habitat_overlap_roughgarden(ind);
         }
     };
     impl(females_);

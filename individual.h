@@ -171,22 +171,12 @@ class Individual {
             C(I,J) = \exp(-c_0 (y_{0,I} - y_{0,J})^2 - c_1(y_{1,I} - y_{1,J})^2)
         \f]
     */
-    double habitat_overlap(const Individual& other) const;
+    double habitat_overlap_roughgarden(const Individual& other) const;
 
     //! Competition coefficient \f$C(I, J)\f$ with numerical integration
     /*! @ingroup habitat_pareference
     */
     double habitat_overlap_v2(const Individual&) const;
-
-    //! \f$K_e(I)\f$ in anolis_v3a.pdf
-    /*! @ingroup natural_selection
-        \f[
-            K_e(I) = K_0 \int_0^1 \int_0^{1-u}
-                F(u,v) W(x_0,x_1|u,v) \Xi(y_0,y_1|u,v) dv du
-        \f]
-    */
-    double effective_carrying_capacity() const;
-    double effective_carrying_capacity_numerical() const;
 
     //! \f$K_e(I)\f$ in anolis_v3.pdf
     /*! @ingroup natural_selection
@@ -197,10 +187,34 @@ class Individual {
     */
     double effective_carrying_capacity_v3() const;
 
-    //! \f$K_e(I)\f$ in anolis_v3.pdf before normalized by \f$D_I\f$
+    //! \f$K_e(I)\f$ in anolis_v3a.pdf
+    /*! @ingroup natural_selection
+        \f[
+            K_e(I) = K_0 \int_0^1 \int_0^{1-u}
+                F(u,v) W(x_0,x_1|u,v) \Xi(y_0,y_1|u,v) dv du
+        \f]
+    */
+    double effective_carrying_capacity_v3a() const;
+
+    //! \f$K_e(I)\f$ in anolis_v3a.pdf with numerical integration
     /*! @ingroup natural_selection
     */
-    double effective_carrying_capacity_unnormalized() const;
+    double effective_carrying_capacity_v3a_numerical() const;
+
+    //! \f$K_e(I)\f$ with old resource distribution and exponential \f$\Xi\f$
+    /*! @ingroup natural_selection
+    */
+    double effective_carrying_capacity_old_exp() const;
+
+    //! \f$K_e(I)\f$ in anolis_v3.pdf before normalization
+    /*! @ingroup natural_selection
+    */
+    double effective_carrying_capacity_quad_unnormalized() const;
+
+    //! \f$K_e(I)\f$ with old resource distribution and exponential \f$\Xi\f$ before normalization
+    /*! @ingroup natural_selection
+    */
+    double effective_carrying_capacity_old_exp_unnormalized() const;
 
     //! Probability of survival \f$w(I)\f$
     /*! @ingroup natural_selection
@@ -225,7 +239,7 @@ class Individual {
     /*! @ingroup mating
     */
     double mating_probability(const Individual& male) const {
-        return mating_preference(male) * habitat_overlap(male);
+        return mating_preference(male) * habitat_overlap_roughgarden(male);
     };
 
     //! generates poisson random number with \f$\lambda\f$ = Individual::AVG_NUM_OFFSPINRGS_
@@ -268,6 +282,8 @@ class Individual {
     //! test function
     static std::string possible_ke();
     //! test function
+    static std::string test_psi_xi();
+    //! test function
     static std::string test_sojourn_time();
 
     static boost::program_options::options_description& opt_description();
@@ -300,25 +316,25 @@ class Individual {
     */
     double habitat_preference_quadratic(const double height, const double diameter) const;
 
-    //! Wrapper function of \f$\Xi(I, u, v)\f$
-    /*! @ingroup habitat_pareference
-        @param height habitat environment
-        @param diameter habitat environment
-        @return \f$\Xi(I, u, v)\f$
-    */
-    inline double habitat_preference(const double height, const double diameter) const {
-        return habitat_preference_quadratic(height, diameter);
-    }
-
-    //! Calculate \f$\Xi(I, u, v)\f$ normalizer with analytical solution
+    //! Calculate quadratic \f$\Xi(I, u, v)\f$ normalizer with analytical solution
     /*! @ingroup habitat_pareference
     */
     double calc_xi_normalizer() const;
 
-    //! Numerical integration of \f$\Xi(I, u, v)\f$ for testing
+    //! Numerical integration of quadratic \f$\Xi(I, u, v)\f$
     /*! @ingroup habitat_pareference
     */
     double calc_xi_normalizer_numerical() const;
+
+    //! Numerical integration of exponential \f$\Xi(I, u, v)\f$
+    /*! @ingroup habitat_pareference
+    */
+    double calc_xi_normalizer_exp_numerical() const;
+
+    //! Numerical integration of exponential \f$\Xi(I, u, v)\f$
+    /*! @ingroup habitat_pareference
+    */
+    double calc_xi_normalizer_old_exp_numerical() const;
 
     //! \f$D_I\f$ numerical computation (slow)
     /*! @ingroup habitat_pareference
@@ -393,6 +409,12 @@ class Individual {
         }
         return output;
     };
+
+    //! aggregation of intermediate phenotype values
+    std::vector<double> intermediate_phenotypes() const;
+
+    //! labels for intermediate phenotypes
+    static const std::vector<std::string> INTERMEDIATE_KEYS_;
 
     friend double pdf_beta(const double height, const double diameter);
     friend double pdf_normal(const double height, const double diameter);

@@ -109,6 +109,9 @@ void Simulation::run() {HERE;
       case 2:
         wtl::gzip{wtl::Fout{"possible_ke.csv.gz"}} << Individual::possible_ke();
         break;
+      case 3:
+        wtl::gzip{wtl::Fout{"possible_ke_xi.csv.gz"}} << Individual::test_psi_xi();
+        break;
       default:
         exit(1);
     }

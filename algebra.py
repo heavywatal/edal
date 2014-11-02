@@ -10,6 +10,21 @@ y0, y1 = symbols('y0 y1', real=True, positive=True)
 h0, h1 = symbols('h0 h1', real=True, positive=True)
 a = Symbol('a', real=True, positive=True)
 
+sigma = Symbol('sigma', real=True, positive=True)
+c0, c1 = symbols('c0 c1', real=True, positive=True)
+
+norm = exp(-0.5 * (u - 0.5) ** 2 / sigma ** 2)
+theta = 1.0 / (c0 - c1 * u)
+expo = exp(-theta * v) * theta
+Fpre = norm * expo
+print(Fpre)
+with assuming(Q.positive(theta)):
+    print(integrate(integrate(norm, (v, 0, 1)), (u, 0, 1)))
+#    print(integrate(Fpre, (v, 0, 1)))
+
+
+exit()
+
 triangle = 2 / (1 - u) * (1 - (v / (1 - u)))
 beta = (u * (1 - u)) ** (a - 1)
 F_approx = beta * triangle
