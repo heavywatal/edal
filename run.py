@@ -5,6 +5,7 @@
 import sys
 import os
 import re
+import itertools
 
 import torque
 
@@ -32,11 +33,22 @@ def param20140130():
     return [x + [make_label(x)] for x in args_list]
 
 
+def simple_trait1d_patch0d():
+    const = ['--row=1', '--col=1', '-C0', '-P0', '-S0']
+    params = dict()
+    params.update(c=[0.1, 1, 10, 100])
+    params.update(p=[0.1, 1, 10, 100])
+    params.update(s=[0.1, 1, 10, 100])
+    ret = []
+    return [const + x + [make_label(x)] for x in product(params)]
+
+
 def upperlower(params):
     ret = []
     for (key, vals) in params.items():
+        var_args = []
         for value in vals:
-            var_args = ['-{}{}'.format(key, value)]
+            var_args.append('-{}{}'.format(key, value))
             var_args.append('-{}{}'.format(key.upper(), value))
             ret.append(var_args)
     return ret
@@ -45,12 +57,26 @@ def upperlower(params):
 def sequential(params):
     ret = []
     for (key, vals) in params.items():
+        var_args = []
         for value in vals:
             if len(key) > 1:
-                var_args = ['--{}={}'.format(key, value)]
+                var_args.append('--{}={}'.format(key, value))
             else:
-                var_args = ['-{}{}'.format(key, value)]
+                var_args.append('-{}{}'.format(key, value))
             ret.append(var_args)
+    return ret
+
+
+def product(params):
+    ret = []
+    for vals in itertools.product(*params.values()):
+        var_args = []
+        for (key, value) in zip(params.keys(), vals):
+            if len(key) > 1:
+                var_args.append('--{}={}'.format(key, value))
+            else:
+                var_args.append('-{}{}'.format(key, value))
+        ret.append(var_args)
     return ret
 
 
@@ -79,7 +105,7 @@ if __name__ == '__main__':
     constargs.append('--ppn={}'.format(args.ppn))
     constargs.append('-T50000')
 
-    args_list = param20140130()
+    args_list = simple_trait1d_patch0d()
     commands = [constargs + x for x in args_list] * args.repeat
 
     qargs = dict()
