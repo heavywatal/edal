@@ -71,9 +71,8 @@ doMC::registerDoMC(min(parallel::detectCores(), 12))
 #.run_grob(.rundirs[1])
 
 .read_conf = function(.rundir) {
-    .files = list.files(.rundir, full.names=TRUE)
-    .conf_file = grep('\\.conf$', .files, value=TRUE)
-    .ret = wtl::read.conf(.conf_file, id=.rundir)
+    .conf_file = list.files(.rundir, '\\.conf$', full.names=TRUE)
+    .ret = wtl::read.conf(.conf_file)
     dplyr::select(.ret, -help, -test, -verbose, -seed)
 }
 
@@ -82,11 +81,13 @@ doMC::registerDoMC(min(parallel::detectCores(), 12))
 #.topdir = getwd()
 #.topdir = '~/SpiderOak Hive/anole20140130'
 .topdir = '~/working/anolis20140903'
+.topdir = '~/working/anolis20141103'
 setwd(.topdir)
 .rundirs = list.files(.topdir, full.names=TRUE)
 .rundirs = .rundirs[wtl::isdir(.rundirs)]
+names(.rundirs) = .rundirs
 
-.conf = plyr::ldply(.rundirs, .read_conf)
+.conf = plyr::ldply(.rundirs, .read_conf, .id='id')
 
 .aggr = function(x) {
     .label = subset(.conf, id==x[1])$label
