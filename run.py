@@ -20,7 +20,7 @@ def param20140124():
     params.update(s=[0.2, 0.4, 0.6, 0.8])
     params.update(S=[0.2, 0.4, 0.6, 0.8])
     params.update(f=[0.1, 0.2, 0.3, 0.4])
-    return add_labels(sequential(params))
+    return [x + [make_label(x)] for x in sequential(params)]
 
 
 def param20140130():
@@ -28,7 +28,8 @@ def param20140130():
     params.update(p=[0.2, 0.4, 0.6, 0.8])
     params.update(c=[0.2, 0.4, 0.6, 0.8])
     params.update(s=[0.1, 0.2, 0.3, 0.4])
-    return add_labels(upperlower(params) + sequential(dict(f=[0.05, 0.1, 0.15, 0.2])))
+    args_list = upperlower(params) + sequential(dict(f=[0.05, 0.1, 0.15, 0.2]))
+    return [x + [make_label(x)] for x in args_list]
 
 
 def upperlower(params):
@@ -53,11 +54,9 @@ def sequential(params):
     return ret
 
 
-def add_labels(args_list):
-    for var_args in args_list:
-        label = '_'.join([s.lstrip('-') for s in var_args])
-        var_args.append('--label=' + re.sub('[^\w\._]+', '_', label))
-    return args_list
+def make_label(var_args):
+    label = '_'.join([s.lstrip('-') for s in var_args])
+    return '--label=' + re.sub('[^\w\._]+', '_', label)
 
 
 if __name__ == '__main__':
