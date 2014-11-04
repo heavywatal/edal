@@ -6,6 +6,7 @@ import sys
 import os
 import re
 import itertools
+import multiprocessing
 
 import torque
 
@@ -34,7 +35,7 @@ def param20140130():
 
 
 def simple_trait1d_patch0d():
-    const = ['--row=1', '--col=1', '-C0', '-P0', '-S0']
+    const = ['--row=1', '--col=1', '-C0', '-P0', '-S0', '-K10000']
     params = dict()
     params.update(c=[0.1, 1, 10, 100])
     params.update(p=[0.1, 1, 10, 100])
@@ -90,7 +91,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-n', '--dry-run', action='store_true')
-    parser.add_argument('--ppn', type=int, default=4)
+    parser.add_argument('--ppn', type=int, default=min(4, multiprocessing.cpu_count()))
     parser.add_argument('-q', '--queue',
                         choices=['low', 'batch', 'high'], default='batch')
     parser.add_argument('-r', '--repeat', type=int, default=1)
