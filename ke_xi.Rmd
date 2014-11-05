@@ -40,7 +40,7 @@ is.odd = function(x) x %% 2 != 0
         gather(key, Ke, starts_with('Ke'))
     .p = .tidy %>>%
         filter(is.odd(height), is.odd(diameter)) %>>%
-        filter(key=='Ke_v3an' | key=='Ke_v3u') %>>%
+        filter(key=='Ke_v3u') %>>%
         mutate_each(funs(f = . / 16), height, diameter, height_pref, diameter_pref) %>>%
         ggplot(aes(x=height_pref, y=diameter_pref))
     .p = .p + geom_tile(aes(fill=Ke))
@@ -72,9 +72,18 @@ is.odd = function(x) x %% 2 != 0
 Results
 ================================================================================
 
+```{r plot_s, eval=FALSE, echo=FALSE, fig.width=9, fig.height=8}
+.working_dir = '~/working/anolis20141102'
+setwd(.working_dir)
+.indirs = list.files(.working_dir, full.names=TRUE)
+for (x in .indirs) {
+    print(.plot_ke(x))
+}
+```
+
 ```{r plot, echo=FALSE, fig.width=14, fig.height=8}
-.indir = 'default_20141103_020244_75110@pohjola-2.local'
+.indir = 'default_20141103_125805_79775@pohjola-2.local'
 .indir = file.path('~/tmp/out20141103', .indir)
-.plot_ke(.indir)
 .plot_psi(.indir)
+.plot_ke(.indir)
 ```
