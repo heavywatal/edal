@@ -71,15 +71,6 @@ class Individual {
     //! \f$ \alpha \f$ of Beta distribution in \f$ F(u,v) \f$
     static double BETA_PARAM_;
 
-    //! \f$ \sigma \f$ of Normal distribution in v2 \f$ F(u,v) \f$
-    static double NORMAL_SIGMA_;
-
-    //! \f$ c_0 \f$ of Normal distribution in v2 \f$ F(u,v) \f$
-    static double C0_;
-
-    //! \f$ c_1 \f$ of Normal distribution in v2 \f$ F(u,v) \f$
-    static double C1_;
-
     //! \f$ K_0 \f$ in \f$ K_e(I)\f$ --- **NEW in anolis_v3a.pdf**
     static size_t CARRYING_CAPACITY_;
 
@@ -122,14 +113,23 @@ class Individual {
     //! The number of loci per trait
     constexpr static size_t NUM_LOCI_ = 8;
 
+    /** @} endgroup */
+    /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
+
+    //! \f$ \sigma \f$ of Normal distribution in v2 \f$ F(u,v) \f$
+    static double NORMAL_SIGMA_;
+
+    //! \f$ c_0 \f$ of Normal distribution in v2 \f$ F(u,v) \f$
+    static double C0_;
+
+    //! \f$ c_1 \f$ of Normal distribution in v2 \f$ F(u,v) \f$
+    static double C1_;
+
     //! Genotype that produce trait value = 1.0, i.e., `11111111`
     constexpr static unsigned long FULL_BITS = wtl::pow<NUM_LOCI_>(2) - 1;
 
     //! Genotype that produce trait value = 0.5, i.e., `00001111`
     constexpr static unsigned long HALF_BITS = wtl::pow<NUM_LOCI_ / 2>(2) - 1;
-
-    /** @} endgroup */
-    /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
     //! Compile-time constant value used in init_phenotype()
     constexpr static double INV_NUM_LOCI_ = 0.5 / NUM_LOCI_;
