@@ -1,4 +1,4 @@
-Evolutionary Diversification in Anolis Lizards {#mainpage}
+Evolutionary Diversification in Anolis Lizards
 ================================================================================
 
 Parameters and functions
