@@ -69,7 +69,7 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
         exit(0);
     }
     OUT_DIR = fs::path(vm["top_dir"].as<std::string>());
-    const std::string CONFIG_STRING = flags_into_string(description, vm);
+    const std::string CONFIG_STRING = wtl::flags_into_string(description, vm);
     prandom().seed(SEED); // TODO: want to read seed?
     if (VERBOSE) {
         std::cout << CONFIG_STRING << std::endl;
