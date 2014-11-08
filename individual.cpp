@@ -120,6 +120,26 @@ inline double abundance_old(const double height, const double diameter) {
     return pdf_normal(height, diameter) * pdf_exp(height, diameter);
 }
 
+//! Integral over \f$0 \leq u \leq 1\f$ and \f$0 \leq v \leq 1 - u\f$
+template <class Func> inline
+double integrate_triangle(Func&& func) {
+    return wtl::integrate([&func](const double height) {
+        return wtl::integrate([&func, height](const double diameter) {
+            return func(height, diameter);
+        }, 0.0, 1.0 - height, Individual::NUM_STEPS_);
+    }, 0.0, 1.0, Individual::NUM_STEPS_);
+}
+
+//! Integral over \f$0 \leq u,v \leq 1\f$
+template <class Func> inline
+double integrate_square(Func&& func) {
+    return wtl::integrate([&func](const double height) {
+        return wtl::integrate([&func, height](const double diameter) {
+            return func(height, diameter);
+        }, 0.0, 1.0, Individual::NUM_STEPS_);
+    }, 0.0, 1.0, Individual::NUM_STEPS_);
+}
+
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
 Individual::Individual(const std::vector<size_t>& values): genotype_{{}, {}} {
@@ -140,79 +160,6 @@ Individual::Individual(const std::vector<size_t>& values): genotype_{{}, {}} {
     }
     phenotype_ = init_phenotype();
 }
-
-double Individual::calc_denom_numerical() const {
-    return wtl::integrate([this](const double height) {
-        return wtl::integrate([this, height](const double diameter) {
-            double result = habitat_preference_quadratic(height, diameter);
-            return result *= abundance(height, diameter);
-        }, 0.0, 1.0 - height, NUM_STEPS_);
-    }, 0.0, 1.0, NUM_STEPS_);
-}
-
-double Individual::calc_denom_mathematica() const {
-    const double a = BETA_PARAM_;
-    const double h0 = HEIGHT_PREFERENCE_;
-    const double h1 = DIAMETER_PREFERENCE_;
-    const double y0 = phenotype_[trait::height_preference];
-    const double y1 = phenotype_[trait::diameter_preference];
-    double d = 12;
-    d -= 6*h0*(1 + 2*(-1 + y0)*y0);
-    d += h1*(-1 + 4*(1 - 3*y1)*y1);
-    d -= a*(-24 + h1 + 6*h0*wtl::pow<2>(1 - 2*y0) - 8*h1*y1 + 24*h1*wtl::pow<2>(y1));
-    d /= (12 + 24*a);
-    return d;
-}
-
-
-double Individual::calc_denom_maple() const {
-    const double alpha = BETA_PARAM_;
-    const double h0 = HEIGHT_PREFERENCE_;
-    const double h1 = DIAMETER_PREFERENCE_;
-    const double y0 = phenotype_[trait::height_preference];
-    const double y1 = phenotype_[trait::diameter_preference];
-    const double minus1_2a = std::pow(-1, 2 * alpha);
-    const double minus1_2a_1 = std::pow(-1, 2 * alpha + 1);
-    const double alpha_2 =  wtl::pow<2>(alpha);
-    const double alpha_3 =  wtl::pow<3>(alpha);
-    double z = 0.0;
-    z +=  8 * minus1_2a_1 * alpha_3 * h1 * y1;
-    z += 60 * minus1_2a_1 * alpha_2 * h1 * wtl::pow<2>(y1);
-    z += 60 * minus1_2a_1 * alpha_2 * h0 * wtl::pow<2>(y0);
-    z += 24 * minus1_2a   * alpha_3 * h0 * wtl::pow<2>(y0);
-    z += 12 * minus1_2a   * alpha   * h1 * wtl::pow<2>(y1);
-    z += 12 * minus1_2a   * alpha   * h0 * wtl::pow<2>(y0);
-    z += 24 * minus1_2a   * alpha_3 * h1 * wtl::pow<2>(y1);
-    z += 12 * minus1_2a_1 * alpha;
-    z += 24 * minus1_2a_1 * alpha_3;
-    z += 12 * minus1_2a   *           h0;
-    z +=  2 * minus1_2a   *           h1;
-    z += 60 * minus1_2a   * alpha_2;
-    z +=  8 * minus1_2a_1 *           h1 * y1;
-    z += 12 * minus1_2a_1 * alpha_2 * h0;
-    z +=  6 * minus1_2a_1 * alpha   * h0;
-    z += 24 * minus1_2a   *           h1 * wtl::pow<2>(y1);
-    z +=      minus1_2a   * alpha_3 * h1;
-    z -=      minus1_2a   * alpha   * h1;
-    z +=  6 * minus1_2a   * alpha_3 * h0;
-    z += 24 * minus1_2a_1 *           h0 * y0;
-    z +=  2 * minus1_2a_1 * alpha_2 * h1;
-    z += 24 * minus1_2a   *           h0 * wtl::pow<2>(y0);
-    z += 24 * minus1_2a_1;
-    z += 24 * minus1_2a_1 * alpha_3 * h0 * y0;
-    z += 60 * minus1_2a   * alpha_2 * h0 * y0;
-    z += 20 * minus1_2a   * alpha_2 * h1 * y1;
-    z +=  4 * minus1_2a_1 * alpha   * h1 * y1;
-    z += 12 * minus1_2a_1 * alpha   * h0 * y0;
-    z *= std::pow(4, -alpha);
-    z *= std::sqrt(M_PI);
-    z *= std::tgamma(alpha - 2);
-    z /= std::tgamma(alpha + 3 / 2);
-    z *= std::tgamma(2 * alpha);
-    z /= wtl::pow<2>(std::tgamma(alpha));
-    return z /= 12;  // TODO: wrong sign?
-}
-
 
 double Individual::habitat_preference_exp(const double height, const double diameter) const {
     auto impl = [](double u, const double y, const double h) {
@@ -237,51 +184,46 @@ double Individual::habitat_preference_quadratic(const double height, const doubl
     return std::max(x, 0.0);
 }
 
-double Individual::calc_xi_normalizer() const {
-    //-h0*y0**2/2 + h0*y0/3 - h0/12 - h1*y1**2/2 + h1*y1/3 - h1/12 + 1/2
+double Individual::calc_DI_analytical() const {
+    const double a = BETA_PARAM_;
+    const double h0 = HEIGHT_PREFERENCE_;
+    const double h1 = DIAMETER_PREFERENCE_;
+    const double y0 = phenotype_[trait::height_preference];
+    const double y1 = phenotype_[trait::diameter_preference];
+    double d = 12;
+    d -= 6*h0*(1 + 2*(-1 + y0)*y0);
+    d += h1*(-1 + 4*(1 - 3*y1)*y1);
+    d -= a*(-24 + h1 + 6*h0*wtl::pow<2>(1 - 2*y0) - 8*h1*y1 + 24*h1*wtl::pow<2>(y1));
+    d /= (12 + 24*a);
+    return d;
+}
+
+double Individual::calc_DI_numerical() const {
+    return integrate_triangle([this](const double u, const double v) {
+        double result = habitat_preference_quadratic(u, v);
+        return result *= abundance(u, v);
+    });
+}
+
+double Individual::calc_Dxi_analytical() const {
     auto impl = [](double y) {
         double result = 1.0;
         result /= 12.0;
         result -= y / 3.0;
         y *= y;
-        return result += y * 0.5;
+        y *= 0.5;
+        return result += y;
     };
     double x = 0.5;
-//    auto impl = [](double y) {
-//        double result = 1.0;
-//        result /= 3.0;
-//        result -= y;
-//        y *= y;
-//        return result += y;
-//    };
-//    double x = 1.0;
     x -= HEIGHT_PREFERENCE_ * impl(phenotype_[trait::height_preference]);
     x -= DIAMETER_PREFERENCE_ * impl(phenotype_[trait::diameter_preference]);
     return x;
 }
 
-double Individual::calc_xi_normalizer_numerical() const {
-    return wtl::integrate([this](const double height) {
-        return wtl::integrate([this, height](const double diameter) {
-            return habitat_preference_quadratic(height, diameter);
-        }, 0.0, 1.0 - height, NUM_STEPS_);
-    }, 0.0, 1.0, NUM_STEPS_);
-}
-
-double Individual::calc_xi_normalizer_exp_numerical() const {
-    return wtl::integrate([this](const double height) {
-        return wtl::integrate([this, height](const double diameter) {
-            return habitat_preference_exp(height, diameter);
-        }, 0.0, 1.0 - height, NUM_STEPS_);
-    }, 0.0, 1.0, NUM_STEPS_);
-}
-
-double Individual::calc_xi_normalizer_old_exp_numerical() const {
-    return wtl::integrate([this](const double height) {
-        return wtl::integrate([this, height](const double diameter) {
-            return habitat_preference_exp(height, diameter);
-        }, 0.0, 1.0, NUM_STEPS_);
-    }, 0.0, 1.0, NUM_STEPS_);
+double Individual::calc_Dxi_numerical() const {
+    return integrate_triangle([this](const double u, const double v) {
+        return habitat_preference_quadratic(u, v);
+    });
 }
 
 double Individual::habitat_overlap_v2(const Individual& other) const {
@@ -323,45 +265,36 @@ double Individual::fitness(const double height, const double diameter) const {
     return std::exp(exponent);
 }
 
-double Individual::effective_carrying_capacity_v3() const {
-    return effective_carrying_capacity_quad_unnormalized() / calc_denom();
-}
-
-double Individual::effective_carrying_capacity_v3a() const {
-    return effective_carrying_capacity_quad_unnormalized() / calc_xi_normalizer();
-}
-
-double Individual::effective_carrying_capacity_v3a_numerical() const {
-    return effective_carrying_capacity_quad_unnormalized() / calc_xi_normalizer_numerical();
-}
-
-double Individual::effective_carrying_capacity_old_exp() const {
-    return effective_carrying_capacity_old_exp_unnormalized() / calc_xi_normalizer_old_exp_numerical();
-}
-
 double Individual::effective_carrying_capacity_quad_unnormalized() const {
     double result = CARRYING_CAPACITY_;
-    result *= wtl::integrate([this](const double height) {
-        return wtl::integrate([this, height](const double diameter) {
-            double result = fitness(height, diameter);
-            result *= habitat_preference_quadratic(height, diameter);
-            result *= abundance(height, diameter);
-            return result;
-        }, 0.0, 1.0 - height, NUM_STEPS_);
-    }, 0.0, 1.0, NUM_STEPS_);
+    result *= integrate_triangle([this](const double u, const double v) {
+        double result = fitness(u, v);
+        result *= habitat_preference_quadratic(u, v);
+        result *= abundance(u, v);
+        return result;
+    });
+    return result;
+}
+
+double Individual::effective_carrying_capacity_exp_unnormalized() const {
+    double result = CARRYING_CAPACITY_;
+    result *= integrate_triangle([this](const double u, const double v) {
+        double result = fitness(u, v);
+        result *= habitat_preference_exp(u, v);
+        result *= abundance(u, v);
+        return result;
+    });
     return result;
 }
 
 double Individual::effective_carrying_capacity_old_exp_unnormalized() const {
     double result = CARRYING_CAPACITY_;
-    result *= wtl::integrate([this](const double height) {
-        return wtl::integrate([this, height](const double diameter) {
-            double result = fitness(height, diameter);
-            result *= habitat_preference_exp(height, diameter);
-            result *= abundance_old(height, diameter);
-            return result;
-        }, 0.0, 1.0, NUM_STEPS_);
-    }, 0.0, 1.0, NUM_STEPS_);
+    result *= integrate_square([this](const double u, const double v) {
+        double result = fitness(u, v);
+        result *= habitat_preference_exp(u, v);
+        result *= abundance_old(u, v);
+        return result;
+    });
     return result;
 }
 
@@ -462,22 +395,24 @@ std::string Individual::header() {
 
 std::vector<double> Individual::intermediate_phenotypes() const {
     return {
-        effective_carrying_capacity_v3(),
-        effective_carrying_capacity_v3a(),
-        effective_carrying_capacity_v3a_numerical(),
         effective_carrying_capacity_quad_unnormalized(),
+        effective_carrying_capacity_exp_unnormalized(),
         effective_carrying_capacity_old_exp_unnormalized(),
-        calc_denom_mathematica(),
-        calc_denom_numerical(),
-        calc_xi_normalizer(),
-        calc_xi_normalizer_numerical(),
-        calc_xi_normalizer_exp_numerical(),
-        calc_xi_normalizer_old_exp_numerical()};
+        calc_DI_analytical(),
+        calc_DI_numerical(),
+        calc_Dxi_analytical(),
+        calc_Dxi_numerical(),
+        integrate_triangle([this](const double u, const double v) {
+            return habitat_preference_exp(u, v);
+        }),
+        integrate_square([this](const double u, const double v) {
+            return habitat_preference_exp(u, v);
+        })};
 }
 
 const std::vector<std::string> Individual::INTERMEDIATE_KEYS_ = {
-    "Ke_v3", "Ke_v3a", "Ke_v3an", "Ke_v3u", "Ke_oeu",
-    "DI", "DIn", "Dxi", "Dxi_n", "Dxi_en", "Dxi_oen"
+    "Ke_v3u", "Ke_v3eu", "Ke_oeu", "DI_a", "DI",
+    "Dxi_a", "Dxi", "Dxi_e", "Dxi_oe"
 };
 
 std::string Individual::str_detail() const {
@@ -491,11 +426,12 @@ std::string Individual::str_detail() const {
         ost << Individual::INTERMEDIATE_KEYS_[i] << ": "
             << values[i] << std::endl;
     }
-return ost.str();
+    return ost.str();
 }
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
+//! CSV string of \f$F(u,v)\f$ in \f$0 \leq u,v \leq 1\f$
 template <class Func> inline
 std::string test_resource_abundance(Func func) {
     constexpr int precision = 25;
@@ -515,15 +451,15 @@ std::string test_resource_abundance(Func func) {
 
 void Individual::write_resource_abundance() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
-    wtl::Fout{"ignore/abundance_beta.csv"} << ::test_resource_abundance(pdf_beta);
-    wtl::Fout{"ignore/abundance_triangle.csv"} << ::test_resource_abundance(pdf_triangle);
-    wtl::Fout{"ignore/abundance_v3.csv"} << ::test_resource_abundance(abundance);
-    wtl::Fout{"ignore/abundance_normal.csv"} << ::test_resource_abundance(pdf_normal);
-    wtl::Fout{"ignore/abundance_exp.csv"} << ::test_resource_abundance(pdf_exp);
-    wtl::Fout{"ignore/abundance_old.csv"} << ::test_resource_abundance(abundance_old);
+    wtl::Fout{"abundance_beta.csv"} << ::test_resource_abundance(pdf_beta);
+    wtl::Fout{"abundance_triangle.csv"} << ::test_resource_abundance(pdf_triangle);
+    wtl::Fout{"abundance_v3.csv"} << ::test_resource_abundance(abundance);
+    wtl::Fout{"abundance_normal.csv"} << ::test_resource_abundance(pdf_normal);
+    wtl::Fout{"abundance_exp.csv"} << ::test_resource_abundance(pdf_exp);
+    wtl::Fout{"abundance_old.csv"} << ::test_resource_abundance(abundance_old);
 }
 
-std::string Individual::possible_ke() {
+std::string Individual::possible_phenotypes() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
     constexpr size_t max_trait = NUM_LOCI_ * 2;
     constexpr size_t half = max_trait / 2;
@@ -532,10 +468,10 @@ std::string Individual::possible_ke() {
     ost << "toepad,limb,height_pref,diameter_pref,"
         << wtl::str_join(INTERMEDIATE_KEYS_, sep)
         << "\n";
-    for (size_t toe=0; toe<=max_trait; ++toe) {
-        for (size_t limb=0; limb<=max_trait; ++limb) {
-            for (size_t hpref=0; hpref<=max_trait; ++hpref) {
-                for (size_t dpref=0; dpref<=max_trait; ++dpref) {
+    for (size_t toe=0; toe<=max_trait; ++toe, ++toe) {
+        for (size_t limb=0; limb<=max_trait; ++limb, ++limb) {
+            for (size_t hpref=0; hpref<=max_trait; ++hpref, ++hpref) {
+                for (size_t dpref=0; dpref<=max_trait; ++dpref, ++dpref) {
                     Individual ind(std::vector<size_t>{toe, limb, hpref, dpref, half, half, half, half});
                     ost << toe << sep << limb << sep << hpref << sep << dpref << sep
                         << wtl::str_join(ind.intermediate_phenotypes(), sep) << "\n";
@@ -546,76 +482,39 @@ std::string Individual::possible_ke() {
     return ost.str();
 }
 
-std::string Individual::test_psi_xi() {
+std::string Individual::possible_geographic() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
     constexpr size_t max_trait = NUM_LOCI_ * 2;
     constexpr size_t half = max_trait / 2;
     constexpr double max_reciprocal = 1.0 / max_trait;
     std::ostringstream ost;
     std::string sep(",");
-    ost << "height,diameter,height_pref,diameter_pref,"
-        << wtl::str_join(INTERMEDIATE_KEYS_, sep) << sep
-        << "Xi_quad,Xi_exp,fitness\n";
-    for (size_t hi=0; hi<=max_trait; ++hi) {
-        const double height = hi * max_reciprocal;
-        for (size_t di=0; di<=max_trait; ++di) {
-            const double diameter = di * max_reciprocal;
-            for (size_t hpref=0; hpref<=max_trait; ++hpref) {
-                for (size_t dpref=0; dpref<=max_trait; ++dpref) {
-                    Individual ind(std::vector<size_t>{half, half, hpref, dpref, half, half, half, half});
-                    ost << hi << sep << di << sep << hpref << sep << dpref << sep
-                        << wtl::str_join(ind.intermediate_phenotypes(), sep) << sep
-                        << ind.habitat_preference_quadratic(height, diameter) << sep
-                        << ind.habitat_preference_exp(height, diameter) << sep
-                        << ind.fitness(height, diameter) << "\n";
+    ost << "toepad,limb,height_pref,diameter_pref,"
+        << "DI,Dxi,height,diameter,"
+        << "resource,Xi_quad,Xi_exp,fitness\n";
+    for (size_t toe=0; toe<=max_trait; ++toe, ++toe) {
+        for (size_t limb=0; limb<=max_trait; ++limb, ++limb) {
+            for (size_t hpref=0; hpref<=max_trait; ++hpref, ++hpref) {
+                for (size_t dpref=0; dpref<=max_trait; ++dpref, ++dpref) {
+                    Individual ind(std::vector<size_t>{toe, limb, hpref, dpref, half, half, half, half});
+                    const double t_denom = ind.calc_DI_numerical();
+                    const double xi_denom = ind.calc_Dxi_numerical();
+                    for (size_t hi=0; hi<=max_trait; ++hi, ++hi) {
+                        const double height = hi * max_reciprocal;
+                        for (size_t di=0; di<=max_trait; ++di, ++di) {
+                            const double diameter = di * max_reciprocal;
+                            ost << toe << sep << limb << sep << hpref << sep << dpref << sep
+                                << t_denom << sep << xi_denom << sep
+                                << hi << sep << di << sep
+                                << abundance(height, diameter) << sep
+                                << ind.habitat_preference_quadratic(height, diameter) << sep
+                                << ind.habitat_preference_exp(height, diameter) << sep
+                                << ind.fitness(height, diameter)
+                                << "\n";
+                        }
+                    }
                 }
             }
-        }
-    }
-    return ost.str();
-}
-
-std::string Individual::sojourn_time(const bool normalizing) const {
-    constexpr size_t max_trait = NUM_LOCI_ * 2;
-    constexpr double inv_max = 1.0 / max_trait;
-    const std::string sep = ",";
-    std::vector<std::string> lines;
-    lines.reserve(max_trait * max_trait);
-    std::vector<double> preference{phenotype_.begin()+2, phenotype_.begin()+4};
-    for (size_t ih=0; ih<max_trait; ++ih) {
-        const double height = ih * inv_max;
-        for (size_t id=0; id<max_trait; ++id) {
-            const double diameter = id * inv_max;
-            double result = 1.0;
-            if (normalizing) {
-                result /= calc_denom();
-            }
-            result *= habitat_preference_quadratic(height, diameter);
-            result *= abundance(height, diameter);
-            std::ostringstream ost;
-            ost.precision(16);
-            ost << preference[0] << sep << preference[1] << sep
-                << height << sep << diameter << sep
-                << std::boolalpha << normalizing << sep
-                << std::scientific << result;
-            lines.push_back(ost.str());
-        }
-    }
-    return wtl::str_join(lines, "\n");
-}
-
-std::string Individual::test_sojourn_time() {
-    std::cerr << __PRETTY_FUNCTION__ << std::endl;
-    constexpr size_t max_trait = NUM_LOCI_ * 2;
-    constexpr size_t half = max_trait / 2;
-    std::ostringstream ost;
-    std::string sep(",");
-    ost << "height_pref,diameter_pref,height,diameter,normalized,time\n";
-    for (size_t hpref=0; hpref<=max_trait; ++hpref) {
-        for (size_t dpref=0; dpref<=max_trait; ++dpref) {
-            Individual ind(std::vector<size_t>{half, half, hpref, dpref, half, half, half, half});
-            ost << ind.sojourn_time(true) << "\n";
-            ost << ind.sojourn_time(false) << "\n";
         }
     }
     return ost.str();

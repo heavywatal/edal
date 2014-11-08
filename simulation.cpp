@@ -80,9 +80,6 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
       case 1:
         test();
         exit(0);
-      case 2:
-        Individual::write_resource_abundance();
-        exit(0);
       default:
         exit(1);
     }
@@ -104,13 +101,11 @@ void Simulation::run() {HERE;
         evolve();
         break;
       case 1:
-        wtl::gzip{wtl::Fout{"sojourn_time.csv.gz"}} << Individual::test_sojourn_time();
-        // do not break
-      case 2:
-        wtl::gzip{wtl::Fout{"possible_ke.csv.gz"}} << Individual::possible_ke();
+        Individual::write_resource_abundance();
         break;
-      case 3:
-        wtl::gzip{wtl::Fout{"possible_ke_xi.csv.gz"}} << Individual::test_psi_xi();
+      case 2:
+        wtl::gzip{wtl::Fout{"possible_geographic.csv.gz"}} << Individual::possible_geographic();
+        wtl::gzip{wtl::Fout{"possible_phenotypes.csv.gz"}} << Individual::possible_phenotypes();
         break;
       default:
         exit(1);

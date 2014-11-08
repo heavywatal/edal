@@ -178,38 +178,19 @@ class Individual {
     */
     double habitat_overlap_v2(const Individual&) const;
 
-    //! \f$K_e(I)\f$ in anolis_v3.pdf
-    /*! @ingroup natural_selection
-        \f[
-            K_e(I) = \int_0^1 \int_0^{1-u}
-                W(x_0,x_1|u,v) T(y_0,y_1|u,v) dv du
-        \f]
-    */
-    double effective_carrying_capacity_v3() const;
-
-    //! \f$K_e(I)\f$ in anolis_v3a.pdf
+    //! \f$K_e(I)\f$ with quadratic \f$\Xi\f$ before normalization (v3u)
     /*! @ingroup natural_selection
         \f[
             K_e(I) = K_0 \int_0^1 \int_0^{1-u}
                 F(u,v) W(x_0,x_1|u,v) \Xi(y_0,y_1|u,v) dv du
         \f]
     */
-    double effective_carrying_capacity_v3a() const;
-
-    //! \f$K_e(I)\f$ in anolis_v3a.pdf with numerical integration
-    /*! @ingroup natural_selection
-    */
-    double effective_carrying_capacity_v3a_numerical() const;
-
-    //! \f$K_e(I)\f$ with old resource distribution and exponential \f$\Xi\f$
-    /*! @ingroup natural_selection
-    */
-    double effective_carrying_capacity_old_exp() const;
-
-    //! \f$K_e(I)\f$ in anolis_v3.pdf before normalization
-    /*! @ingroup natural_selection
-    */
     double effective_carrying_capacity_quad_unnormalized() const;
+
+    //! \f$K_e(I)\f$ with exponential \f$\Xi\f$
+    /*! @ingroup natural_selection
+    */
+    double effective_carrying_capacity_exp_unnormalized() const;
 
     //! \f$K_e(I)\f$ with old resource distribution and exponential \f$\Xi\f$ before normalization
     /*! @ingroup natural_selection
@@ -280,11 +261,9 @@ class Individual {
     //! test function
     static void write_resource_abundance();
     //! test function
-    static std::string possible_ke();
+    static std::string possible_phenotypes();
     //! test function
-    static std::string test_psi_xi();
-    //! test function
-    static std::string test_sojourn_time();
+    static std::string possible_geographic();
 
     static boost::program_options::options_description& opt_description();
 
@@ -316,50 +295,50 @@ class Individual {
     */
     double habitat_preference_quadratic(const double height, const double diameter) const;
 
-    //! Calculate quadratic \f$\Xi(I, u, v)\f$ normalizer with analytical solution
+    //! \f$D_I\f$ analytical computation by Mathematica (fast but limited)
     /*! @ingroup habitat_pareference
+        @return \f$D_I\f$
+        @bug not applicable in the parameter range where
+        \f$\Xi\f$ goes negative with high \f$h_0\f$ and \f$h_1\f$.
+        \f[
+            D_I = \frac {12
+                - 6 h_0 (1 + 2 (-1 + y_0) y_0)
+                + h_1 (-1 + 4 (1 - 3 y_1) y_1)
+                - \alpha (-24 + h_1 + 6 h_0 (1 - 2 y_0)^2 - 8 h_1 y_1 + 24 h_1 y_1^2)
+            } {12 + 24 \alpha}
+        \f]
     */
-    double calc_xi_normalizer() const;
-
-    //! Numerical integration of quadratic \f$\Xi(I, u, v)\f$
-    /*! @ingroup habitat_pareference
-    */
-    double calc_xi_normalizer_numerical() const;
-
-    //! Numerical integration of exponential \f$\Xi(I, u, v)\f$
-    /*! @ingroup habitat_pareference
-    */
-    double calc_xi_normalizer_exp_numerical() const;
-
-    //! Numerical integration of exponential \f$\Xi(I, u, v)\f$
-    /*! @ingroup habitat_pareference
-    */
-    double calc_xi_normalizer_old_exp_numerical() const;
+    double calc_DI_analytical() const;
 
     //! \f$D_I\f$ numerical computation (slow)
-    /*! @ingroup habitat_pareference
-    */
-    double calc_denom_numerical() const;
-
-    //! \f$D_I\f$ analytical computation by Mathematica (fast)
-    /*! @ingroup habitat_pareference
-    */
-    double calc_denom_mathematica() const;
-
-    //! \f$D_I\f$ analytical computation by Maple (wrong)
-    /*! @ingroup habitat_pareference
-        @bug something wrong (unused)
-    */
-    double calc_denom_maple() const;
-
-    //! Normalizing denominator \f$D_I\f$ for sojourn time
     /*! @ingroup habitat_pareference
         @return \f$D_I\f$
         \f[
             D_I = \int_0^1 \int_0^{1-u} \Xi(y_0,y_1|u,v) F(u,v) dv du
         \f]
     */
-    double calc_denom() const {return calc_denom_mathematica();}
+    double calc_DI_numerical() const;
+
+    //! Calculate quadratic \f$\Xi(I, u, v)\f$ normalizer with analytical solution
+    /*! @ingroup habitat_pareference
+        @bug not applicable in the parameter range where
+        \f$\xi\f$ goes negative with high \f$h_0\f$ and \f$h_1\f$.
+        \f[
+            \frac{1} 2
+            -h_0 (\frac{y_0^2} 2 + \frac{y_0} 3 - \frac{1} {12})
+            -h_1 (\frac{y_1^2} 2 + \frac{y_1} 3 - \frac{1} {12})
+        \f]
+    */
+    double calc_Dxi_analytical() const;
+
+    //! Numerical integration of quadratic \f$\xi(I, u, v)\f$
+    /*! @ingroup habitat_pareference
+        \f[
+            \int_0^1 \int_0^{1-u} \xi(y_0,y_1|u,v) dv du =
+            \int_0^1 \int_0^{1-u} \{1 - h_0 (u - y_0)^2 - h_1 (v - y_1)^2\} dv du
+        \f]
+    */
+    double calc_Dxi_numerical() const;
 
     //! \f$\Psi(I, I')\f$
     /*! @ingroup mating
@@ -392,9 +371,6 @@ class Individual {
     */
     static std::vector<Loci> mutate(std::vector<Loci> haplotype);
 
-    //! test function
-    std::string sojourn_time(const bool normalizing) const;
-
     /** @} biol_proc */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
@@ -419,6 +395,8 @@ class Individual {
     friend double pdf_beta(const double height, const double diameter);
     friend double pdf_normal(const double height, const double diameter);
     friend double pdf_exp(const double height, const double diameter);
+    template <class Func> friend double integrate_triangle(Func&& func);
+    template <class Func> friend double integrate_square(Func&& func);
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
     // data member
