@@ -104,7 +104,8 @@ if __name__ == '__main__':
     constargs.append('--mode={}'.format(args.mode))
     constargs.append('--top_dir=' + os.getcwd())
     constargs.append('--ppn={}'.format(args.ppn))
-    constargs.append('-T50000')
+    constargs.append('-T10000')
+    constargs.append('-I100')
 
     args_list = simple_trait1d_patch0d()
     commands = [constargs + x for x in args_list] * args.repeat
