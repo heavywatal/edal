@@ -83,17 +83,17 @@ class Individual {
     //! \f$ h_1 \f$ in \f$ \Xi(y_0,y_1|u,v) \f$
     static double DIAMETER_PREFERENCE_;
 
-    //! \f$ c_0 \f$ in \f$ C(I,J) \f$
-    static double HEIGHT_COMPETITION_;
-
-    //! \f$ c_1 \f$ in \f$ C(I,J) \f$
-    static double DIAMETER_COMPETITION_;
-
     //! \f$ s_0 \f$ in \f$ W(x_0,x_1|u,v) \f$
     static double TOEPAD_SELECTION_;
 
     //! \f$ s_1\f$ in \f$ W(x_0,x_1|u,v) \f$
     static double LIMB_SELECTION_;
+
+    //! \f$ c_0 \f$ in \f$ C(I,J) \f$
+    static double HEIGHT_COMPETITION_;
+
+    //! \f$ c_1 \f$ in \f$ C(I,J) \f$
+    static double DIAMETER_COMPETITION_;
 
     //! \f$ \sigma_a \f$ in \f$ \Psi(f,c|m) \f$
     static double MATING_SIGMA_;
