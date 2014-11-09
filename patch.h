@@ -38,8 +38,8 @@ class Patch {
     //! @return Whether this patch is empty or not
     bool empty() const {return females_.empty() && males_.empty();}
 
-    //! @return String representation for debugging
-    std::string str() const;
+    //! Count genotypes
+    std::map<Individual, size_t> summarize() const;
 
     //! All females mate with someone according to mating probability
     /*! @ingroup mating
@@ -83,8 +83,6 @@ class Patch {
 };
 
 //! Stream operator for Patch
-inline std::ostream& operator<< (std::ostream& ost, const Patch& patch) {
-    return ost << patch.str();
-}
+extern std::ostream& operator<< (std::ostream& ost, const Patch& patch);
 
 #endif /* PATCH_H_ */

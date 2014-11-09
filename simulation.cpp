@@ -39,7 +39,8 @@ boost::program_options::options_description& Simulation::opt_description() {HERE
         ("top_dir", po::value<std::string>()->default_value(OUT_DIR.string()))
         ("row", po::value<size_t>(&NUM_ROWS)->default_value(NUM_ROWS))
         ("col", po::value<size_t>(&NUM_COLS)->default_value(NUM_COLS))
-        ("time,T", po::value<size_t>(&OBSERVATION_PERIOD)->default_value(OBSERVATION_PERIOD))
+        ("time,T", po::value<size_t>(&ENTIRE_PERIOD)->default_value(ENTIRE_PERIOD))
+        ("interval,I", po::value<size_t>(&OBSERVATION_CYCLE)->default_value(OBSERVATION_CYCLE))
         ("seed", po::value<unsigned int>(&SEED)->default_value(SEED))
     ;
     return description;
@@ -73,6 +74,12 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
     prandom().seed(SEED); // TODO: want to read seed?
     if (VERBOSE) {
         std::cout << CONFIG_STRING << std::endl;
+    }
+    if (ENTIRE_PERIOD % OBSERVATION_CYCLE > 0) {
+        std::cerr << wtl::strprintf(
+            "T=%d is not a multiple of I=%d",
+            ENTIRE_PERIOD, OBSERVATION_CYCLE) << std::endl;
+        exit(1);
     }
     switch (vm["test"].as<int>()) {
       case 0:
@@ -116,24 +123,23 @@ void Simulation::run() {HERE;
 }
 
 void Simulation::evolve() {HERE;
+    assert(ENTIRE_PERIOD % OBSERVATION_CYCLE == 0);
     population.assign(NUM_ROWS, std::vector<Patch>(NUM_COLS));
     population[0][0] = Patch(INITIAL_PATCH_SIZE);
-    for (size_t i=0; i<OBSERVATION_PERIOD; ++i) {
+    std::ostringstream ost;
+    for (size_t t=0; t<=ENTIRE_PERIOD; ++t) {
         if (VERBOSE) {
-            std::cout << "T = " << i << "\n"
-                << str_population([](const Patch& p) {return p.size();})
-                << std::endl;
+            std::cout << "\nT = " << t << "\n"
+                << str_population([](const Patch& p) {return p.size();});
         }
-        life_cycle();
+        if (t % OBSERVATION_CYCLE == 0) {
+            write_snapshot(t, ost);
+        }
+        if (t < ENTIRE_PERIOD) {
+            life_cycle();
+        }
     }
-    if (VERBOSE) {
-        std::cout << "T = " << OBSERVATION_PERIOD << "\n"
-            << str_population([](const Patch& p) {return p.size();})
-            << std::endl;
-    }
-    wtl::gzip{wtl::Fout{"population.csv.gz"}}
-        << Individual::header()
-        << str_population([](const Patch& p) {return p;}, "", "");
+    wtl::gzip{wtl::Fout{"evolution.csv.gz"}} << ost.str();
 }
 
 void Simulation::life_cycle() {
@@ -194,3 +200,23 @@ std::pair<size_t, size_t> Simulation::choose_destination(const size_t row_orig, 
     }
     return {row, col};
 }
+
+void Simulation::write_snapshot(const size_t time, std::ostream& ost) const {
+    const std::string sep{","};
+    if (time == 0) {
+        ost << "time" << sep << "row" << sep << "col" << sep
+            << "n" << sep << Individual::header() << "\n";
+    }
+    std::size_t popsize = 0;
+    for (size_t row=0; row<population.size(); ++row) {
+        for (size_t col=0; col<population[row].size(); ++col) {
+            for (const auto& item: population[row][col].summarize()) {
+                ost << time << sep << row << sep << col << sep
+                    << item.second << sep << item.first << "\n";
+                popsize += item.second;
+            }
+        }
+    }
+    derr("N = " << popsize << std::endl);
+}
+

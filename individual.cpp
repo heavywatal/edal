@@ -361,14 +361,12 @@ std::vector<Individual::Loci> Individual::gametogenesis() const {
     return mutate(gamete);
 }
 
-
-std::string Individual::str() const {
-    std::ostringstream ost;
+std::ostream& operator<< (std::ostream& ost, const Individual& ind) {
     const std::string sep{","};
-    ost << wtl::str_join(genotype_.first, sep) << sep;
-    ost << wtl::str_join(genotype_.second, sep) << sep;
-    ost << wtl::str_join(phenotype_, sep);
-    return ost.str();
+    return ost
+        << wtl::str_join(ind.genotype_.first, sep) << sep
+        << wtl::str_join(ind.genotype_.second, sep) << sep
+        << wtl::str_join(ind.phenotype_, sep);
 }
 
 std::string Individual::header() {
@@ -387,8 +385,7 @@ std::string Individual::header() {
     }
     for (const auto& s: names) {
         ost << s << "_P";
-        if (s == "neutral") {ost << "\n";}
-        else {ost << sep;}
+        if (s != "neutral") {ost << sep;}
     }
     return ost.str();
 }
@@ -418,7 +415,7 @@ const std::vector<std::string> Individual::INTERMEDIATE_KEYS_ = {
 std::string Individual::str_detail() const {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
     std::ostringstream ost;
-    ost << Individual::header();
+    ost << Individual::header() << std::endl;
     ost << *this << std::endl;
     ost << gametogenesis() << std::endl;
     const auto values = Individual::intermediate_phenotypes();

@@ -49,8 +49,11 @@ class Simulation {
     //! The number of individuals in an original patch
     size_t INITIAL_PATCH_SIZE = 40;
 
-    //! The number of generations to observe
-    size_t OBSERVATION_PERIOD = 1000;
+    //! The overall number of generations to observe
+    size_t ENTIRE_PERIOD = 1000;
+
+    //! Interval between snapshots
+    size_t OBSERVATION_CYCLE = 100;
 
     /** @} endgroup */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
@@ -129,6 +132,8 @@ class Simulation {
 
     /** @} life_cycle */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
+
+    void write_snapshot(const size_t time, std::ostream& ost) const;
 
     boost::program_options::options_description& opt_description();
 

@@ -137,11 +137,11 @@ class Individual {
     //! Precision of numerical integration
     constexpr static size_t NUM_STEPS_ = 32;
 
-    //! typedef for diallelic loci of a trait
-    typedef std::bitset<NUM_LOCI_> Loci;
-
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   public:
+
+    //! typedef for diallelic loci of a trait
+    typedef std::bitset<NUM_LOCI_> Loci;
 
     //! Default constructor for original individuals
     Individual(): Individual{
@@ -245,16 +245,24 @@ class Individual {
     /** @} biol_proc */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
-    //! CSV formated string
-    /*! @return CSV formated string
-    */
-    std::string str() const;
+    //! Operator required to be std::map key
+    bool operator<(const Individual& other) const {
+        return genotype_ < other.genotype_;
+    }
+
+    //! Getter
+    const std::vector<double>& phenotype() const {
+        return phenotype_;
+    }
 
     //! The header correspongs to str()
     static std::string header();
 
     //! detailed str() for testing/debugging
     std::string str_detail() const;
+
+    //! put CSV on ostream
+    friend std::ostream& operator<< (std::ostream& ost, const Individual& ind);
 
     //! test function
     static void unit_test();
@@ -408,9 +416,16 @@ class Individual {
     std::vector<double> phenotype_;
 };
 
-//! Stream operator for Individual
-inline std::ostream& operator<< (std::ostream& ost, const Individual& ind) {
-    return ost << ind.str();
+//! Overload: output 15 instead of 00001111
+inline std::ostream& operator<< (std::ostream& ost, const Individual::Loci& bs) {
+    return ost << bs.to_ulong();
+}
+
+namespace std {
+//! Less operator for genotype comparison
+inline bool operator< (const Individual::Loci& lhs, const Individual::Loci& rhs) {
+    return lhs.to_ulong() < rhs.to_ulong();
+}
 }
 
 #endif /* INDIVIDUAL_H_ */

@@ -10,6 +10,7 @@
 
 #include <boost/program_options.hpp>
 
+#include "cxxwtils/iostr.hpp"
 #include "cxxwtils/prandom.hpp"
 
 
@@ -73,16 +74,20 @@ void Patch::viability_selection() {
     impl(&males_);
 }
 
-std::string Patch::str() const {
-    if (empty()) return "";
-    std::ostringstream ost;
+std::map<Individual, size_t> Patch::summarize() const {
+    std::map<Individual, size_t> genotypes;
     for (const auto& ind: females_) {
-        ost << ind << "\n";
+        ++genotypes[ind];
     }
     for (const auto& ind: males_) {
-        ost << ind << "\n";
+        ++genotypes[ind];
     }
-    return ost.str();
+    return genotypes;
+}
+
+std::ostream& operator<< (std::ostream& ost, const Patch& patch) {
+    return ost << patch.summarize();
+    // operator<< for std::map is defined in "iostr.hpp"
 }
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
@@ -90,13 +95,15 @@ std::string Patch::str() const {
 void Patch::unit_test() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
     Patch patch(20);
-    std::cerr << patch.size() << std::endl;
+    std::cerr << patch.size();
     for (size_t i=0; i<10; ++i) {
         for (const auto& child: patch.mate_and_reproduce()) {
             patch.append(child);
         }
-        std::cerr << patch.size() << " -> ";
+        std::cerr << " b " << patch.size();
         patch.viability_selection();
-        std::cerr << patch.size() << std::endl;
+        std::cerr << " d " << patch.size();
     }
+    std::cerr << std::endl;
+    std::cerr << patch << std::endl;
 }
