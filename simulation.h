@@ -133,6 +133,7 @@ class Simulation {
     /** @} life_cycle */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
+    //! output genotype frequencies for each patch
     void write_snapshot(const size_t time, std::ostream& ost) const;
 
     boost::program_options::options_description& opt_description();

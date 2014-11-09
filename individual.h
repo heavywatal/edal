@@ -107,7 +107,7 @@ class Individual {
     //! Unused yet
     static double MU_NEUTRAL_;
 
-    //! Migration rate \f$ m \f$ per generation
+    //! Migration rate \f$m\f$ (i.e., \f$Nm\f$ makes the expected # of migrants)
     static double MIGRATION_RATE_;
 
     //! The number of loci per trait

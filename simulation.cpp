@@ -21,9 +21,10 @@
     @return Program options description
 
     Command line option | Symbol   | Variable
-    ------------------- | -------- | ------------------------------
+    ------------------- | -------- | ------------------------------------------
     `--row,--col`       | -        | Simulation::NUM_COLS, Simulation::NUM_ROWS
-    `-T,--time`         | -        | Simulation::OBSERVATION_PERIOD
+    `-T,--time`         | -        | Simulation::ENTIRE_PERIOD
+    `-I,--interval`     | -        | Simulation::OBSERVATION_CYCLE
 */
 boost::program_options::options_description& Simulation::opt_description() {HERE;
     namespace po = boost::program_options;
