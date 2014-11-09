@@ -46,10 +46,10 @@ constexpr double Individual::INV_NUM_LOCI_;
     `-b,--birth_rate`        | \f$ b \f$        | Individual::AVG_NUM_OFFSPINRGS_
     `-p,--height_pref`       | \f$ h_0 \f$      | Individual::HEIGHT_PREFERENCE_
     `-P,--diameter_pref`     | \f$ h_1 \f$      | Individual::DIAMETER_PREFERENCE_
-    `-c,--height_compe`      | \f$ c_0 \f$      | Individual::HEIGHT_COMPETITION_
-    `-C,--diameter_compe`    | \f$ c_1 \f$      | Individual::DIAMETER_COMPETITION_
     `-s,--toepad_select`     | \f$ s_0 \f$      | Individual::TOEPAD_SELECTION_
     `-S,--limb_select`       | \f$ s_1 \f$      | Individual::LIMB_SELECTION_
+    `-c,--height_compe`      | \f$ c_0 \f$      | Individual::HEIGHT_COMPETITION_
+    `-C,--diameter_compe`    | \f$ c_1 \f$      | Individual::DIAMETER_COMPETITION_
     `-f,--mating_sigma`      | \f$ \sigma_a \f$ | Individual::MATING_SIGMA_
     `-u,--mu_locus`          | -                | Individual::MU_LOCUS_
     `-U,--mu_neutral`        | -                | Individual::MU_NEUTRAL_
@@ -64,10 +64,10 @@ boost::program_options::options_description& Individual::opt_description() {
         ("birth_rate,b", po::value<size_t>(&AVG_NUM_OFFSPINRGS_)->default_value(AVG_NUM_OFFSPINRGS_))
         ("height_pref,p", po::value<double>(&HEIGHT_PREFERENCE_)->default_value(HEIGHT_PREFERENCE_))
         ("diameter_pref,P", po::value<double>(&DIAMETER_PREFERENCE_)->default_value(DIAMETER_PREFERENCE_))
-        ("height_compe,c", po::value<double>(&HEIGHT_COMPETITION_)->default_value(HEIGHT_COMPETITION_))
-        ("diameter_compe,C", po::value<double>(&DIAMETER_COMPETITION_)->default_value(DIAMETER_COMPETITION_))
         ("toepad_select,s", po::value<double>(&TOEPAD_SELECTION_)->default_value(TOEPAD_SELECTION_))
         ("limb_select,S", po::value<double>(&LIMB_SELECTION_)->default_value(LIMB_SELECTION_))
+        ("height_compe,c", po::value<double>(&HEIGHT_COMPETITION_)->default_value(HEIGHT_COMPETITION_))
+        ("diameter_compe,C", po::value<double>(&DIAMETER_COMPETITION_)->default_value(DIAMETER_COMPETITION_))
         ("mating_sigma,f", po::value<double>(&MATING_SIGMA_)->default_value(MATING_SIGMA_))
         ("mu_locus,u", po::value<double>(&MU_LOCUS_)->default_value(MU_LOCUS_))
         ("mu_neutral,U", po::value<double>(&MU_NEUTRAL_)->default_value(MU_NEUTRAL_))

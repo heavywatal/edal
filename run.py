@@ -37,9 +37,9 @@ def param20140130():
 def simple_trait1d_patch0d():
     const = ['--row=1', '--col=1', '-C0', '-P0', '-S0', '-K10000']
     params = dict()
-    params.update(c=[0.1, 1, 10, 100])
-    params.update(p=[0.1, 1, 10, 100])
-    params.update(s=[0.1, 1, 10, 100])
+    params.update(c=[0.1, 1, 10])
+    params.update(p=[0.1, 1, 10])
+    params.update(s=[0.1, 1, 10])
     ret = []
     return [const + x + [make_label(x)] for x in product(params)]
 
