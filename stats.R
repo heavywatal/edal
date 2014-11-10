@@ -9,11 +9,6 @@ library(gridExtra)
 #########1#########2#########3#########4#########5#########6#########7#########
 .argv = commandArgs(trailingOnly=TRUE)
 stopifnot(length(.argv) > 0)
-print(.argv)
-.indir = .argv[1]
-if (file.exists(file.path(.indir, 'evolution.pdf'))) {quit()}
-#.indir = '.'
-#.indir = "s0.1_p0.1_c0.1_20141110_033750_17413@node51"
 #########1#########2#########3#########4#########5#########6#########7#########
 
 .flags = list(
@@ -67,15 +62,53 @@ if (file.exists(file.path(.indir, 'evolution.pdf'))) {quit()}
 }
 #.plot('toepad_P', 'limb_P', .raw %>>% filter(time==1000))
 
-.raw = read.csv(file.path(.indir, 'evolution.csv.gz'), stringsAsFactors=FALSE) %>>% tbl_df()
-.done = .raw %>>%
-#    filter(time < 500) %>>%
-    group_by(time) %>>%
-    do(gpl={
-        .pl = plyr::mlply(.axes, .plot, data=.)
-        do.call(gridExtra::arrangeGrob, c(.pl,
-            list(nrow=1, main=paste0('T = ', .$time[1]))))
-       })
+.plot_time = function(y) {
+    .tidy = .raw %>>%
+        group_by_('time', y) %>>%
+        tally(wt=n)# %>>% (? .)
+    .p = ggplot(.tidy, aes_string(x='time', y=y))
+    .p = .p + geom_tile(aes(fill=n))
+    .p = .p + scale_fill_gradientn(colours=.heat_colours)
+    .p = .p + ylim(0, 1)
+    .p = .p + ylab(.tr[[y]])
+    .p = .p + theme(legend.position='none')
+    .p = .p + theme(panel.background=element_rect(fill='#EEEEEE'))
+    .p = .p + theme(panel.grid=element_blank())
+    .p = .p + theme(axis.text=element_blank())
+    .p
+}
+#.plot_time('toepad_P')
 
-.mgrob = do.call(marrangeGrob, c(.done$gpl, list(nrow=1, ncol=1, top=NULL)))
-ggsave(file.path(.indir, 'evolution.pdf'), .mgrob, width=4, height=1, scale=6)
+#.indir = '.'
+#.indir = 's1_p1_c10_20141110_033830_26387@node47'
+
+for (.indir in .argv) {
+    if (!file.info(.indir)$isdir) {next}
+    .outfile = file.path(.indir, 'trajectory.pdf')
+    if (!file.exists(.outfile)) {
+        message(.outfile)
+        .raw = read.csv(file.path(.indir, 'evolution.csv.gz'), stringsAsFactors=FALSE) %>>% tbl_df()
+        .ys = c('toepad_P', 'height_pref_P', 'male_P', 'female_P', 'choosiness_P', 'neutral_P')
+        .pl = llply(.ys, .plot_time)
+        .grob = do.call(arrangeGrob, c(.pl, list(ncol=2, main=.indir)))
+        #print(.grob)
+        ggsave(.outfile, .grob, width=2, height=1, scale=6)
+    }
+
+    .outfile = file.path(.indir, 'evolution.pdf')
+    if (!file.exists(.outfile)) {
+        message(.outfile)
+        .raw = read.csv(file.path(.indir, 'evolution.csv.gz'), stringsAsFactors=FALSE) %>>% tbl_df()
+        .done = .raw %>>%
+        #    filter(time < 500) %>>%
+            group_by(time) %>>%
+            do(gpl={
+                .pl = plyr::mlply(.axes, .plot, data=.)
+                do.call(gridExtra::arrangeGrob, c(.pl,
+                    list(nrow=1, main=paste0('T = ', .$time[1]))))
+               })
+
+        .mgrob = do.call(marrangeGrob, c(.done$gpl, list(nrow=1, ncol=1, top=NULL)))
+        ggsave(.outfile, .mgrob, width=4, height=1, scale=6)
+    }
+}
