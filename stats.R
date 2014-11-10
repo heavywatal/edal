@@ -1,13 +1,19 @@
+#!/usr/bin/Rscript
 library(plyr)
 library(dplyr)
 library(stringr)
 library(tidyr)
 library(pipeR)
 library(ggplot2)
-
-library(doMC)
-doMC::registerDoMC(min(parallel::detectCores(), 12))
-
+library(gridExtra)
+#########1#########2#########3#########4#########5#########6#########7#########
+.argv = commandArgs(trailingOnly=TRUE)
+stopifnot(length(.argv) > 0)
+print(.argv)
+.indir = .argv[1]
+if (file.exists(file.path(.indir, 'evolution.pdf'))) {quit()}
+#.indir = '.'
+#.indir = "s0.1_p0.1_c0.1_20141110_033750_17413@node51"
 #########1#########2#########3#########4#########5#########6#########7#########
 
 .flags = list(
@@ -19,10 +25,10 @@ doMC::registerDoMC(min(parallel::detectCores(), 12))
     b="birth_rate",
     p="height_pref",
     P="diameter_pref",
-    c="height_compe",
-    C="diameter_compe",
     s="toepad_select",
     S="limb_select",
+    c="height_compe",
+    C="diameter_compe",
     f="mating_sigma",
     u="mu_locus",
     U="mu_neutral",
@@ -42,62 +48,34 @@ doMC::registerDoMC(min(parallel::detectCores(), 12))
 
 .tr = c(.flags, .traits)
 .axes = matrix(names(.traits), ncol=2, byrow=TRUE)
+.heat_colours = c('#000000', '#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000')
 
 .plot = function(x, y, data) {
     .hist_list = data %>>%
-        regroup(list(as.symbol(x), as.symbol(y))) %>>%
-        tally()
+        group_by_(x, y) %>>%
+        tally(wt=n)
     .p = ggplot(.hist_list, aes_string(x=x, y=y))
-    .p = .p + geom_tile(aes(fill=n))
-    .p = .p + scale_fill_gradient(low='white', high='darkcyan')
+    .p = .p + geom_point(aes(colour=n), shape=15, size=8)
+    .p = .p + scale_colour_gradientn(colours=.heat_colours)
     .p = .p + xlim(0, 1) + ylim(0, 1)
     .p = .p + xlab(.tr[[x]]) + ylab(.tr[[y]])
-    .p = .p + theme(legend.position='none')
-    .p = .p + theme(panel.background=element_rect(fill='white', colour='black'))
+#    .p = .p + theme(legend.position='none')
+    .p = .p + theme(panel.background=element_rect(fill='#EEEEEE'))
     .p = .p + theme(panel.grid=element_blank())
     .p = .p + theme(axis.text=element_blank())
-    .p = .p + theme(axis.title=element_text(family='Linux Libertine O'))
     .p
 }
-#.run_grob(.rundirs[1])
+#.plot('toepad_P', 'limb_P', .raw %>>% filter(time==1000))
 
-.run_grob = function(.rundir) {
-    cat(.rundir, '\n')
-    .raw = read.csv(file.path(.rundir, 'population.csv.gz')) %>>% (? head(.))
-    .gpl = plyr::mlply(.axes, .plot, data=.raw)
-    .grob = wtl::grid_grob(.gpl, 1, 4)
-    .grob
-}
-#.run_grob(.rundirs[1])
+.raw = read.csv(file.path(.indir, 'evolution.csv.gz'), stringsAsFactors=FALSE) %>>% tbl_df()
+.done = .raw %>>%
+#    filter(time < 500) %>>%
+    group_by(time) %>>%
+    do(gpl={
+        .pl = plyr::mlply(.axes, .plot, data=.)
+        do.call(gridExtra::arrangeGrob, c(.pl,
+            list(nrow=1, main=paste0('T = ', .$time[1]))))
+       })
 
-.read_conf = function(.rundir) {
-    .conf_file = list.files(.rundir, '\\.conf$', full.names=TRUE)
-    .ret = wtl::read.conf(.conf_file)
-    dplyr::select(.ret, -help, -test, -verbose, -seed)
-}
-
-#########1#########2#########3#########4#########5#########6#########7#########
-
-#.topdir = getwd()
-#.topdir = '~/SpiderOak Hive/anole20140130'
-.topdir = '~/working/anolis20140903'
-.topdir = '~/working/anolis20141103'
-setwd(.topdir)
-.rundirs = list.files(.topdir, full.names=TRUE)
-.rundirs = .rundirs[wtl::isdir(.rundirs)]
-names(.rundirs) = .rundirs
-
-.conf = plyr::ldply(.rundirs, .read_conf, .id='id')
-
-.aggr = function(x) {
-    .label = subset(.conf, id==x[1])$label
-    print(.label)
-    print(x)
-    .gpl = plyr::llply(x, .run_grob, .parallel=TRUE)
-    .grob = wtl::grid_grob(.gpl, length(x), 1)
-    .key = .tr[[str_extract(.label, '^\\w')]]
-    wtl::ggsave2(sprintf('tile_%s_%s.png', .key, .label), .grob)
-    .label
-}
-dplyr::summarise(dplyr::group_by(.conf, label), g=.aggr(id))
-
+.mgrob = do.call(marrangeGrob, c(.done$gpl, list(nrow=1, ncol=1, top=NULL)))
+ggsave(file.path(.indir, 'evolution.pdf'), .mgrob, width=4, height=1, scale=6)
