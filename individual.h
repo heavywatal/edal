@@ -229,7 +229,7 @@ class Individual {
     */
     size_t poisson_offsprings() const;
 
-    //! Gametogenesis with free recombination among loci
+    //! Gametogenesis with free recombination and mutation
     /*! @ingroup mating
         @return a gamete
     */
@@ -371,13 +371,6 @@ class Individual {
         @return haplotype after recombination
     */
     static Loci recombination(const Loci& lhs, const Loci& rhs);
-
-    //! poisson process with \f$\lambda\f$ = MU_LOCUS_ * NUM_LOCI_ * trait::size
-    /*! @ingroup mating
-        @param haplotype (call-by-value)
-        @return mutated haplotype
-    */
-    static std::vector<Loci> mutate(std::vector<Loci> haplotype);
 
     /** @} biol_proc */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////

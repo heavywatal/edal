@@ -336,29 +336,22 @@ size_t Individual::poisson_offsprings() const {
     return prandom().poisson(AVG_NUM_OFFSPINRGS_);
 }
 
-std::vector<Individual::Loci> Individual::mutate(std::vector<Individual::Loci> haplotype) {
-    const size_t num_mutations = prandom().poisson(MU_LOCUS_ * NUM_LOCI_ * trait::size);
-    std::vector<size_t> indices(NUM_LOCI_ * trait::size);
-    std::iota(indices.begin(), indices.end(), 0);
-    indices = prandom().sample(std::move(indices), num_mutations);
-    for (const auto& i: indices) {
-        haplotype[i / NUM_LOCI_].flip(i % NUM_LOCI_);
-    }
-    return haplotype;
-}
-
 Individual::Loci Individual::recombination(const Loci& lhs, const Loci& rhs) {
     const Loci filter(prandom().randrange(wtl::pow<NUM_LOCI_>(2)));
     return (lhs & filter) | (rhs & ~filter);
 }
 
 std::vector<Individual::Loci> Individual::gametogenesis() const {
+    const double mu_trait = MU_LOCUS_ * NUM_LOCI_;
     std::vector<Loci> gamete;
     gamete.reserve(trait::size);
     for (size_t i=0; i<trait::size; ++i) {
         gamete.push_back(recombination(genotype_.first[i], genotype_.second[i]));
+        if (prandom().bernoulli(mu_trait)) {
+            gamete.back().flip(prandom().randrange(NUM_LOCI_));
+        }
     }
-    return mutate(gamete);
+    return gamete;
 }
 
 std::ostream& operator<< (std::ostream& ost, const Individual& ind) {
