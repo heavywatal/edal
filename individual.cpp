@@ -35,6 +35,7 @@ constexpr size_t Individual::NUM_LOCI_;
 constexpr unsigned long Individual::FULL_BITS;
 constexpr unsigned long Individual::HALF_BITS;
 constexpr double Individual::INV_NUM_LOCI_;
+std::map<std::vector<double>, double> Individual::KE_CACHE_;
 
 //! Symbols for the program options can be different from those in equations
 /*! @ingroup biol_param
@@ -92,7 +93,9 @@ inline double pdf_beta(const double height, const double diameter) {
 //! Triangular distribution function for resource abundance
 inline double pdf_triangle(const double height, const double diameter) {
     if (height == 1.0 || 1.0 - height < diameter) {return 0.0;}
-    double result = 1.0 - height - diameter;
+    double result = 1.0;
+    result -= height;
+    result -= diameter;
     result /= wtl::pow<2>(1.0 - height);
     return result *= 2.0;
 }
@@ -154,7 +157,8 @@ Individual::Individual(const std::vector<unsigned long>& flags): genotype_{{}, {
     assert(genotype_.first.size() == trait::size);
     genotype_.second = genotype_.first;
     assert(genotype_.second.size() == trait::size);
-    phenotype_ = init_phenotype();
+    phenotype_ = calc_phenotype();
+    ke_ = effective_carrying_capacity_cache();
 }
 
 double Individual::habitat_preference_exp(const double height, const double diameter) const {
@@ -236,35 +240,42 @@ double Individual::fitness(const double height, const double diameter) const {
 
 double Individual::effective_carrying_capacity_quad_unnormalized() const {
     double result = CARRYING_CAPACITY_;
-    result *= integrate_triangle([this](const double u, const double v) {
+    return result *= integrate_triangle([this](const double u, const double v) {
         double result = fitness(u, v);
         result *= habitat_preference_quadratic(u, v);
-        result *= abundance(u, v);
-        return result;
+        return result *= abundance(u, v);
     });
-    return result;
 }
 
 double Individual::effective_carrying_capacity_exp_unnormalized() const {
     double result = CARRYING_CAPACITY_;
-    result *= integrate_triangle([this](const double u, const double v) {
+    return result *= integrate_triangle([this](const double u, const double v) {
         double result = fitness(u, v);
         result *= habitat_preference_exp(u, v);
-        result *= abundance(u, v);
-        return result;
+        return result *= abundance(u, v);
     });
-    return result;
 }
 
 double Individual::effective_carrying_capacity_old_exp_unnormalized() const {
     double result = CARRYING_CAPACITY_;
-    result *= integrate_square([this](const double u, const double v) {
+    return result *= integrate_square([this](const double u, const double v) {
         double result = fitness(u, v);
         result *= habitat_preference_exp(u, v);
-        result *= abundance_old(u, v);
-        return result;
+        return result *= abundance_old(u, v);
     });
-    return result;
+}
+
+double Individual::effective_carrying_capacity_cache() const {
+    static std::mutex mtx;
+    std::vector<double> ecol_traits(phenotype_.begin(), phenotype_.begin()+4);
+    if (KE_CACHE_.find(ecol_traits) == KE_CACHE_.end()) {
+        const double ke = effective_carrying_capacity_quad_unnormalized();
+        std::lock_guard<std::mutex> lck(mtx);
+        return KE_CACHE_[ecol_traits] = ke;
+    } else {
+        std::lock_guard<std::mutex> lck(mtx);
+        return KE_CACHE_[ecol_traits];
+    }
 }
 
 double Individual::preference_overlap(const Individual& other) const {
@@ -316,7 +327,7 @@ double Individual::survival_probability(const double effective_num_competitors) 
     double denom = AVG_NUM_OFFSPINRGS_;
     denom -= 1.0;
     denom *= effective_num_competitors;  // ^ alpha for crowding strength
-    denom /= effective_carrying_capacity_quad_unnormalized();
+    denom /= ke_;
     denom += 1.0;
     return 1.0 / denom;
 }
@@ -536,4 +547,5 @@ void Individual::unit_test() {
     std::cerr << ind.str_detail();
     Individual offspring(ind.gametogenesis(), ind.gametogenesis());
     std::cerr << offspring << std::endl;
+    std::map<std::vector<double>, double> cache;
 }

@@ -138,6 +138,9 @@ class Individual {
     //! Precision of numerical integration
     constexpr static size_t NUM_STEPS_ = 32;
 
+    //! Store \f$K_e(I)\f$ with ecological traits as keys
+    static std::map<std::vector<double>, double> KE_CACHE_;
+
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   public:
 
@@ -152,7 +155,8 @@ class Individual {
     //! Constructor for sexual reproduction
     Individual(const std::vector<Loci>& egg, const std::vector<Loci>& sperm):
         genotype_{egg, sperm},
-        phenotype_(init_phenotype()) {}
+        phenotype_(calc_phenotype()),
+        ke_(effective_carrying_capacity_cache()) {}
 
     //! Homozygous initialization by bit values
     Individual(const std::vector<unsigned long>&);
@@ -179,6 +183,9 @@ class Individual {
     /*! @ingroup natural_selection
     */
     double effective_carrying_capacity_old_exp_unnormalized() const;
+
+    //! Find \f$K_e(I)\f$ in KE_CACHE_ or calculate
+    double effective_carrying_capacity_cache() const;
 
     //! \f$C(I, J)\f$ for competition and mating
     /*! @ingroup habitat_pareference
@@ -268,11 +275,6 @@ class Individual {
     //! Operator required to be std::map key
     bool operator<(const Individual& other) const {
         return genotype_ < other.genotype_;
-    }
-
-    //! Getter
-    const std::vector<double>& phenotype() const {
-        return phenotype_;
     }
 
     //! The header correspongs to str()
@@ -398,7 +400,7 @@ class Individual {
     //! calculates phenotypic values from genotype
     /*! @return phenotypic values
     */
-    std::vector<double> init_phenotype() const {
+    std::vector<double> calc_phenotype() const {
         constexpr size_t n = trait::size;
         std::vector<double> output(n);
         for (size_t i=0; i<n; ++i) {
@@ -427,6 +429,9 @@ class Individual {
 
     //! All traits are scaled to be between 0 and 1
     std::vector<double> phenotype_;
+
+    //! \f$K_e(I)\f$ calculated in advance
+    double ke_;
 };
 
 //! Overload: output 15 instead of 00001111
