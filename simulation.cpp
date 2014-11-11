@@ -92,6 +92,7 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
             << "mutation_mask = 10\n";
         std::istringstream ist(ost.str());
         po::store(po::parse_config_file(ist, description, false), vm);
+        vm.notify();
     }
     switch (vm["test"].as<int>()) {
       case 0:
