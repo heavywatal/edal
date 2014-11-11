@@ -77,8 +77,6 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
         std::ostringstream ost;
         ost << "diameter_pref = 0\n"
             << "limb_select = 0\n"
-            << "diameter_compe = 0\n"
-            << "limb_compe = 0\n"
             << "mutation_mask = 10\n";
         std::istringstream ist(ost.str());
         po::store(po::parse_config_file(ist, description, false), vm);

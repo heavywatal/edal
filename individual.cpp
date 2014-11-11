@@ -24,11 +24,9 @@ double Individual::HEIGHT_PREFERENCE_ = 0.05;
 double Individual::DIAMETER_PREFERENCE_ = 0.05;
 double Individual::TOEPAD_SELECTION_ = 0.05;
 double Individual::LIMB_SELECTION_ = 0.05;
-double Individual::HEIGHT_COMPETITION_ = 0.5;
-double Individual::DIAMETER_COMPETITION_ = 0.5;
-double Individual::TOEPAD_COMPETITION_ = 0.5;
-double Individual::LIMB_COMPETITION_ = 0.5;
-double Individual::MATING_SIGMA_ = 0.05;
+double Individual::PREF_COMPETITION_ = 0.5;
+double Individual::MORPH_COMPETITION_ = 0.5;
+double Individual::MATING_SIGMA_ = 0.1;
 double Individual::MU_LOCUS_ = 1e-4;
 unsigned long Individual::MUTATION_MASK_ = 0;
 double Individual::MIGRATION_RATE_ = 0.05;
@@ -43,7 +41,7 @@ constexpr double Individual::INV_NUM_LOCI_;
     @return Program options description
 
     Command line option      | Symbol           | Variable
-    ------------------------ | ---------------- | ------------------------------
+    ------------------------ | ---------------- | --------------------------------
     `-a,--beta_param`        | \f$ \alpha \f$   | Individual::BETA_PARAM_
     `-K,--carrying_capacity` | \f$ K_0 \f$      | Individual::CARRYING_CAPACITY_
     `-b,--birth_rate`        | \f$ b \f$        | Individual::AVG_NUM_OFFSPINRGS_
@@ -51,10 +49,8 @@ constexpr double Individual::INV_NUM_LOCI_;
     `-P,--diameter_pref`     | \f$ h_1 \f$      | Individual::DIAMETER_PREFERENCE_
     `-s,--toepad_select`     | \f$ s_0 \f$      | Individual::TOEPAD_SELECTION_
     `-S,--limb_select`       | \f$ s_1 \f$      | Individual::LIMB_SELECTION_
-    `-c,--height_compe`      | \f$ c_0 \f$      | Individual::HEIGHT_COMPETITION_
-    `-C,--diameter_compe`    | \f$ c_1 \f$      | Individual::DIAMETER_COMPETITION_
-    `-x,--toepad_compe`      | \f$ c_0' \f$     | Individual::TOEPAD_COMPETITION_
-    `-X,--limb_compe`        | \f$ c_1' \f$     | Individual::LIMB_COMPETITION_
+    `-c,--pref_compe`        | \f$ c_0, c_1 \f$ | Individual::PREF_COMPETITION_
+    `-C,--morph_compe`       | -                | Individual::MORPH_COMPETITION_
     `-f,--mating_sigma`      | \f$ \sigma_a \f$ | Individual::MATING_SIGMA_
     `-u,--mu_locus`          | -                | Individual::MU_LOCUS_
     `-U,--mutation_mask`     | -                | Individual::MUTATION_MASK_
@@ -71,10 +67,8 @@ boost::program_options::options_description& Individual::opt_description() {
         ("diameter_pref,P", po::value<double>(&DIAMETER_PREFERENCE_)->default_value(DIAMETER_PREFERENCE_))
         ("toepad_select,s", po::value<double>(&TOEPAD_SELECTION_)->default_value(TOEPAD_SELECTION_))
         ("limb_select,S", po::value<double>(&LIMB_SELECTION_)->default_value(LIMB_SELECTION_))
-        ("height_compe,c", po::value<double>(&HEIGHT_COMPETITION_)->default_value(HEIGHT_COMPETITION_))
-        ("diameter_compe,C", po::value<double>(&DIAMETER_COMPETITION_)->default_value(DIAMETER_COMPETITION_))
-        ("toepad_compe,x", po::value<double>(&TOEPAD_COMPETITION_)->default_value(TOEPAD_COMPETITION_))
-        ("limb_compe,X", po::value<double>(&LIMB_COMPETITION_)->default_value(LIMB_COMPETITION_))
+        ("pref_compe,c", po::value<double>(&PREF_COMPETITION_)->default_value(PREF_COMPETITION_))
+        ("morph_compe,C", po::value<double>(&MORPH_COMPETITION_)->default_value(MORPH_COMPETITION_))
         ("mating_sigma,f", po::value<double>(&MATING_SIGMA_)->default_value(MATING_SIGMA_))
         ("mu_locus,u", po::value<double>(&MU_LOCUS_)->default_value(MU_LOCUS_))
         ("mutation_mask,U", po::value<unsigned long>(&MUTATION_MASK_)->default_value(MUTATION_MASK_))
@@ -273,7 +267,7 @@ double Individual::effective_carrying_capacity_old_exp_unnormalized() const {
     return result;
 }
 
-double Individual::habitat_overlap_roughgarden(const Individual& other) const {
+double Individual::preference_overlap(const Individual& other) const {
     auto impl = [](const double yi, const double yj, const double c) {
         double exponent = yi;
         exponent -= yj;
@@ -282,14 +276,14 @@ double Individual::habitat_overlap_roughgarden(const Individual& other) const {
     };
     double exponent = impl(phenotype_[trait::height_preference],
                            other.phenotype_[trait::height_preference],
-                           HEIGHT_COMPETITION_);
+                           PREF_COMPETITION_);
     exponent += impl(phenotype_[trait::diameter_preference],
                      other.phenotype_[trait::diameter_preference],
-                     DIAMETER_COMPETITION_);
+                     PREF_COMPETITION_);
     return std::exp(exponent);
 }
 
-double Individual::morphology_overlap_roughgarden(const Individual& other) const {
+double Individual::morphology_overlap(const Individual& other) const {
     auto impl = [](const double yi, const double yj, const double c) {
         double exponent = yi;
         exponent -= yj;
@@ -298,15 +292,15 @@ double Individual::morphology_overlap_roughgarden(const Individual& other) const
     };
     double exponent = impl(phenotype_[trait::toepad_size],
                      other.phenotype_[trait::toepad_size],
-                     TOEPAD_COMPETITION_);
+                     MORPH_COMPETITION_);
     exponent += impl(phenotype_[trait::limb_length],
                      other.phenotype_[trait::limb_length],
-                     LIMB_COMPETITION_);
+                     MORPH_COMPETITION_);
     return std::exp(exponent);
 }
 
 double Individual::resource_overlap(const Individual& other) const {
-    double exponent = -HEIGHT_COMPETITION_;
+    double exponent = -PREF_COMPETITION_;
     exponent *= integrate_triangle([this, &other](const double u, const double v) {
         double consumption = this->habitat_preference_quadratic(u, v);
         consumption *= this->fitness(u, v);

@@ -88,17 +88,11 @@ class Individual {
     //! \f$ s_1\f$ in \f$ W(x_0,x_1|u,v) \f$
     static double LIMB_SELECTION_;
 
-    //! \f$ c_0 \f$ in \f$ C(I,J) \f$
-    static double HEIGHT_COMPETITION_;
+    //! \f$ c_0, c_1 \f$ in \f$ C(I,J) \f$
+    static double PREF_COMPETITION_;
 
-    //! \f$ c_1 \f$ in \f$ C(I,J) \f$
-    static double DIAMETER_COMPETITION_;
-
-    //! \f$ c_0' \f$ in \f$ C(I,J) \f$
-    static double TOEPAD_COMPETITION_;
-
-    //! \f$ c_1' \f$ in \f$ C(I,J) \f$
-    static double LIMB_COMPETITION_;
+    //! not yet in anolis_v3a.pdf
+    static double MORPH_COMPETITION_;
 
     //! \f$ \sigma_a \f$ in \f$ \Psi(f,c|m) \f$
     static double MATING_SIGMA_;
@@ -197,7 +191,7 @@ class Individual {
             C(I,J) = \exp(-c_0 (y_{0,I} - y_{0,J})^2 - c_1 (y_{1,I} - y_{1,J})^2)
         \f]
     */
-    double habitat_overlap_roughgarden(const Individual& other) const;
+    double preference_overlap(const Individual& other) const;
 
     //! \f$C'(I, J)\f$ for competition
     /*! @ingroup habitat_pareference
@@ -209,7 +203,7 @@ class Individual {
             C'(I,J) = \exp(-c_0'(x_{0,I} - x_{0,J})^2 - c_1'(x_{1,I} - x_{1,J})^2)
         \f]
     */
-    double morphology_overlap_roughgarden(const Individual& other) const;
+    double morphology_overlap(const Individual& other) const;
 
     //! Honest \f$C(I, J)\f$ for competition and mating (very slow, unused)
     /*! @ingroup habitat_pareference
@@ -250,7 +244,7 @@ class Individual {
     /*! @ingroup mating
     */
     double mating_probability(const Individual& male) const {
-        return mating_preference(male) * habitat_overlap_roughgarden(male);
+        return mating_preference(male) * preference_overlap(male);
     };
 
     //! generates poisson random number with \f$\lambda\f$ = Individual::AVG_NUM_OFFSPINRGS_
