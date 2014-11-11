@@ -160,8 +160,8 @@ class Individual {
         genotype_{egg, sperm},
         phenotype_(init_phenotype()) {}
 
-    //! Initialization by phenotypic values
-    Individual(const std::vector<size_t>&);
+    //! Homozygous initialization by bit values
+    Individual(const std::vector<unsigned long>&);
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
     /** @addtogroup biol_proc

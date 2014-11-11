@@ -49,6 +49,9 @@ class Simulation {
     //! The number of individuals in an original patch
     size_t INITIAL_PATCH_SIZE = 40;
 
+    //! Dimension number of resources/traits
+    size_t DIMENSIONS = 2;
+
     //! The overall number of generations to observe
     size_t ENTIRE_PERIOD = 1000;
 

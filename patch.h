@@ -27,6 +27,13 @@ class Patch {
     */
     Patch(const size_t n): females_(n / 2), males_(n - females_.size()) {}
 
+    //! Construct a patch with a non-default Individual
+    /*! @param n The number of inital individuals in this patch
+        @param founder The individual to be copied
+    */
+    Patch(const size_t n, const Individual& founder):
+        females_(n / 2, founder), males_(n - females_.size(), founder) {}
+
     //! Add an individual to this patch
     /*! @param ind New individual to add
     */

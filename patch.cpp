@@ -112,7 +112,7 @@ std::ostream& operator<< (std::ostream& ost, const Patch& patch) {
 
 void Patch::unit_test() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
-    Patch patch(20);
+    Patch patch(20, Individual({15,0,15,0}));
     std::cerr << patch.size();
     for (size_t i=0; i<10; ++i) {
         for (auto& child: patch.mate_and_reproduce()) {

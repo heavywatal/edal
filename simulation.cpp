@@ -40,6 +40,7 @@ boost::program_options::options_description& Simulation::opt_description() {HERE
         ("top_dir", po::value<std::string>()->default_value(OUT_DIR.string()))
         ("row", po::value<size_t>(&NUM_ROWS)->default_value(NUM_ROWS))
         ("col", po::value<size_t>(&NUM_COLS)->default_value(NUM_COLS))
+        ("dimensions,D", po::value<size_t>(&DIMENSIONS)->default_value(DIMENSIONS))
         ("time,T", po::value<size_t>(&ENTIRE_PERIOD)->default_value(ENTIRE_PERIOD))
         ("interval,I", po::value<size_t>(&OBSERVATION_CYCLE)->default_value(OBSERVATION_CYCLE))
         ("seed", po::value<unsigned int>(&SEED)->default_value(SEED))
@@ -81,6 +82,16 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
             "T=%d is not a multiple of I=%d",
             ENTIRE_PERIOD, OBSERVATION_CYCLE) << std::endl;
         exit(1);
+    }
+    if (DIMENSIONS == 1) {
+        std::ostringstream ost;
+        ost << "diameter_pref = 0\n"
+            << "limb_select = 0\n"
+            << "diameter_compe = 0\n"
+            << "limb_compe = 0\n"
+            << "mutation_mask = 10\n";
+        std::istringstream ist(ost.str());
+        po::store(po::parse_config_file(ist, description, false), vm);
     }
     switch (vm["test"].as<int>()) {
       case 0:
@@ -126,7 +137,11 @@ void Simulation::run() {HERE;
 void Simulation::evolve() {HERE;
     assert(ENTIRE_PERIOD % OBSERVATION_CYCLE == 0);
     population.assign(NUM_ROWS, std::vector<Patch>(NUM_COLS));
-    population[0][0] = Patch(INITIAL_PATCH_SIZE);
+    if (DIMENSIONS == 1) {
+        population[0][0] = Patch(INITIAL_PATCH_SIZE, Individual{{15, 0, 15, 0}});
+    } else {
+        population[0][0] = Patch(INITIAL_PATCH_SIZE);
+    }
     std::ostringstream ost;
     for (size_t t=0; t<=ENTIRE_PERIOD; ++t) {
         if (VERBOSE) {
