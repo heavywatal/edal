@@ -95,6 +95,12 @@ class Individual {
     //! \f$ c_1 \f$ in \f$ C(I,J) \f$
     static double DIAMETER_COMPETITION_;
 
+    //! \f$ c_0' \f$ in \f$ C(I,J) \f$
+    static double TOEPAD_COMPETITION_;
+
+    //! \f$ c_1' \f$ in \f$ C(I,J) \f$
+    static double LIMB_COMPETITION_;
+
     //! \f$ \sigma_a \f$ in \f$ \Psi(f,c|m) \f$
     static double MATING_SIGMA_;
 
@@ -160,24 +166,6 @@ class Individual {
     /** @addtogroup biol_proc
         @{*/
 
-    //! Competition coefficient \f$C(I, J)\f$ in anolis_v3
-    /*! @ingroup habitat_pareference
-        @param other individual to interact
-        @return \f$C(I, J)\f$
-        @retval 1 for individuals with identical preferences
-
-        following Roughgarden and others
-        \f[
-            C(I,J) = \exp(-c_0 (y_{0,I} - y_{0,J})^2 - c_1(y_{1,I} - y_{1,J})^2)
-        \f]
-    */
-    double habitat_overlap_roughgarden(const Individual& other) const;
-
-    //! Competition coefficient \f$C(I, J)\f$ with numerical integration
-    /*! @ingroup habitat_pareference
-    */
-    double habitat_overlap_v2(const Individual&) const;
-
     //! \f$K_e(I)\f$ with quadratic \f$\Xi\f$ before normalization (v3u)
     /*! @ingroup natural_selection
         \f[
@@ -196,6 +184,47 @@ class Individual {
     /*! @ingroup natural_selection
     */
     double effective_carrying_capacity_old_exp_unnormalized() const;
+
+    //! \f$C(I, J)\f$ for competition and mating
+    /*! @ingroup habitat_pareference
+        @param other individual to interact
+        @return \f$C(I, J)\f$
+        @retval 1 for individuals with identical preferences
+
+        following Roughgarden and others
+        \f[
+            C(I,J) = \exp(-c_0 (y_{0,I} - y_{0,J})^2 - c_1 (y_{1,I} - y_{1,J})^2)
+        \f]
+    */
+    double habitat_overlap_roughgarden(const Individual& other) const;
+
+    //! \f$C'(I, J)\f$ for competition
+    /*! @ingroup habitat_pareference
+        @param other individual to interact
+        @return \f$C'(I, J)\f$
+        @retval 1 for individuals with identical preferences
+
+        \f[
+            C'(I,J) = \exp(-c_0'(x_{0,I} - x_{0,J})^2 - c_1'(x_{1,I} - x_{1,J})^2)
+        \f]
+    */
+    double morphology_overlap_roughgarden(const Individual& other) const;
+
+    //! Honest \f$C(I, J)\f$ for competition and mating (very slow, unused)
+    /*! @ingroup habitat_pareference
+        @param other individual to interact
+        @return \f$C(I, J)\f$
+        @retval 1 for individuals with identical preferences
+
+        Competition and mating frequencies decrease with
+        increasing the total difference of the resource consumption,
+        \f$F(u,v) \Xi(x_0,x_1|u,v) W(y_0,y_1|u,v)\f$,
+        over the resource range.
+        \f[
+            C(I,J) = \exp[-c_0\{\iint F(u,v)(\Xi(I|u,v) W(I|u,v) - \Xi(J|u,v) W(J|u,v)) du dv\}^2]
+        \f]
+    */
+    double resource_overlap(const Individual& other) const;
 
     //! Probability of survival \f$w(I)\f$
     /*! @ingroup natural_selection
