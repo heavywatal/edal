@@ -109,8 +109,10 @@ class Individual {
     */
     static double MU_LOCUS_;
 
-    //! Unused yet
-    static double MU_NEUTRAL_;
+    //! Flag set to protect specific traits from mutations
+    /*! e.g., 10 ("00001010") blocks mutations on limb and diameter preference
+    */
+    static unsigned long MUTATION_MASK_;
 
     //! Migration rate \f$m\f$ (i.e., \f$Nm\f$ makes the expected # of migrants)
     static double MIGRATION_RATE_;

@@ -30,7 +30,7 @@ double Individual::TOEPAD_COMPETITION_ = 0.5;
 double Individual::LIMB_COMPETITION_ = 0.5;
 double Individual::MATING_SIGMA_ = 0.05;
 double Individual::MU_LOCUS_ = 1e-4;
-double Individual::MU_NEUTRAL_ = 1e-4;
+unsigned long Individual::MUTATION_MASK_ = 0;
 double Individual::MIGRATION_RATE_ = 0.05;
 
 constexpr size_t Individual::NUM_LOCI_;
@@ -57,7 +57,7 @@ constexpr double Individual::INV_NUM_LOCI_;
     `-D,--limb_compe`        | \f$ c_1' \f$     | Individual::LIMB_COMPETITION_
     `-f,--mating_sigma`      | \f$ \sigma_a \f$ | Individual::MATING_SIGMA_
     `-u,--mu_locus`          | -                | Individual::MU_LOCUS_
-    `-U,--mu_neutral`        | -                | Individual::MU_NEUTRAL_
+    `-U,--mutation_mask`     | -                | Individual::MUTATION_MASK_
     `-m,--migration_rate`    | \f$ m \f$        | Individual::MIGRATION_RATE_
 */
 boost::program_options::options_description& Individual::opt_description() {
@@ -77,7 +77,7 @@ boost::program_options::options_description& Individual::opt_description() {
         ("limb_compe,D", po::value<double>(&LIMB_COMPETITION_)->default_value(LIMB_COMPETITION_))
         ("mating_sigma,f", po::value<double>(&MATING_SIGMA_)->default_value(MATING_SIGMA_))
         ("mu_locus,u", po::value<double>(&MU_LOCUS_)->default_value(MU_LOCUS_))
-        ("mu_neutral,U", po::value<double>(&MU_NEUTRAL_)->default_value(MU_NEUTRAL_))
+        ("mutation_mask,U", po::value<unsigned long>(&MUTATION_MASK_)->default_value(MUTATION_MASK_))
         ("migration_rate,m", po::value<double>(&MIGRATION_RATE_)->default_value(MIGRATION_RATE_))
     ;
     return desc;
@@ -367,10 +367,15 @@ Individual::Loci Individual::recombination(const Loci& lhs, const Loci& rhs) {
 }
 
 std::vector<Individual::Loci> Individual::gametogenesis() const {
+    static const std::bitset<8> mask(MUTATION_MASK_);
     const double mu_trait = MU_LOCUS_ * NUM_LOCI_;
     std::vector<Loci> gamete;
     gamete.reserve(trait::size);
     for (size_t i=0; i<trait::size; ++i) {
+        if (mask.test(i)) {
+            gamete.push_back(genotype_.first[i]);
+            continue;
+        }
         gamete.push_back(recombination(genotype_.first[i], genotype_.second[i]));
         if (prandom().bernoulli(mu_trait)) {
             gamete.back().flip(prandom().randrange(NUM_LOCI_));
