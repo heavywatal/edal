@@ -72,17 +72,7 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
         exit(0);
     }
     OUT_DIR = fs::path(vm["top_dir"].as<std::string>());
-    const std::string CONFIG_STRING = wtl::flags_into_string(description, vm);
     prandom().seed(SEED); // TODO: want to read seed?
-    if (VERBOSE) {
-        std::cout << CONFIG_STRING << std::endl;
-    }
-    if (ENTIRE_PERIOD % OBSERVATION_CYCLE > 0) {
-        std::cerr << wtl::strprintf(
-            "T=%d is not a multiple of I=%d",
-            ENTIRE_PERIOD, OBSERVATION_CYCLE) << std::endl;
-        exit(1);
-    }
     if (DIMENSIONS == 1) {
         std::ostringstream ost;
         ost << "diameter_pref = 0\n"
@@ -93,6 +83,16 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
         std::istringstream ist(ost.str());
         po::store(po::parse_config_file(ist, description, false), vm);
         vm.notify();
+    }
+    const std::string CONFIG_STRING = wtl::flags_into_string(description, vm);
+    if (VERBOSE) {
+        std::cout << CONFIG_STRING << std::endl;
+    }
+    if (ENTIRE_PERIOD % OBSERVATION_CYCLE > 0) {
+        std::cerr << wtl::strprintf(
+            "T=%d is not a multiple of I=%d",
+            ENTIRE_PERIOD, OBSERVATION_CYCLE) << std::endl;
+        exit(1);
     }
     switch (vm["test"].as<int>()) {
       case 0:
@@ -147,7 +147,8 @@ void Simulation::evolve() {HERE;
     for (size_t t=0; t<=ENTIRE_PERIOD; ++t) {
         if (VERBOSE) {
             std::cout << "\nT = " << t << "\n"
-                << str_population([](const Patch& p) {return p.size();});
+                << str_population([](const Patch& p) {return p.size();})
+                << std::flush;
         }
         if (t % OBSERVATION_CYCLE == 0) {
             write_snapshot(t, ost);
