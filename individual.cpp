@@ -10,6 +10,7 @@
 
 #include <boost/program_options.hpp>
 
+#include "cxxwtils/prandom.hpp"
 #include "cxxwtils/iostr.hpp"
 #include "cxxwtils/gz.hpp"
 

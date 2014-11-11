@@ -11,7 +11,6 @@
 #include <string>
 
 #include "cxxwtils/algorithm.hpp"
-#include "cxxwtils/prandom.hpp"
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
@@ -264,12 +263,8 @@ class Individual {
     */
     std::vector<Loci> gametogenesis() const;
 
-    //! Bernoulli trial whether migrating or not
-    /*! @ingroup life_cycle
-    */
-    bool is_migrating() const {
-        return prandom().bernoulli(MIGRATION_RATE_);
-    }
+    //! Getter
+    static double MIGRATION_RATE() {return MIGRATION_RATE_;}
 
     /** @} biol_proc */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////

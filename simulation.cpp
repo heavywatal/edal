@@ -151,12 +151,10 @@ void Simulation::life_cycle() {
         auto offsprings = parents[row][col].mate_and_reproduce();
         std::lock_guard<std::mutex> lck(mtx);
         for (auto& child: offsprings) {
-            if (child.is_migrating()) {
-                auto new_coords = choose_destination(row, col);
-                population[new_coords.first][new_coords.second].append(std::move(child));
-            } else {
-                population[row][col].append(std::move(child));
-            }
+            size_t dest_row = row;
+            size_t dest_col = col;
+            choose_patch(&dest_row, &dest_col);
+            population[dest_row][dest_col].append(std::move(child));
         }
         sem.unlock();
     };
@@ -181,23 +179,23 @@ void Simulation::life_cycle() {
     for (auto& th: threads) {th.join();}
 }
 
-std::pair<size_t, size_t> Simulation::choose_destination(const size_t row_orig, const size_t col_orig) {
-    size_t row = row_orig;
-    size_t col = col_orig;
+void Simulation::choose_patch(size_t* row, size_t* col) const {
+    if (!prandom().bernoulli(Individual::MIGRATION_RATE())) {return;}
+    size_t r = *row;
+    size_t c = *col;
     switch (prandom().randrange(8)) {
-      case 0:        ++col; break;
-      case 1: ++row; ++col; break;
-      case 2: ++row;        break;
-      case 3: ++row; --col; break;
-      case 4:        --col; break;
-      case 5: --row; --col; break;
-      case 6: --row;        break;
-      case 7: --row; ++col; break;
+      case 0:      ++c; break;
+      case 1: ++r; ++c; break;
+      case 2: ++r;      break;
+      case 3: ++r; --c; break;
+      case 4:      --c; break;
+      case 5: --r; --c; break;
+      case 6: --r;      break;
+      case 7: --r; ++c; break;
     }
-    if ((row >= NUM_ROWS) | (col >= NUM_COLS)) {  // including -1 in size_t
-        row = row_orig; col = col_orig;
-    }
-    return {row, col};
+    // size_t(-1) also makes true
+    if ((r >= NUM_ROWS) | (c >= NUM_COLS)) {return;}
+    *row = r; *col = c;
 }
 
 void Simulation::write_snapshot(const size_t time, std::ostream& ost) const {

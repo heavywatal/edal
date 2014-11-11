@@ -118,17 +118,14 @@ class Simulation {
     */
     void life_cycle();
 
-    /*! @brief Choose migration desination randomly
-        @param row_orig Original Y position
-        @param col_orig Original X position
-        @return new position (row, col)
+    /*! @brief Change row/col with probability \f$m\f$ = Individual::MIGRATION_RATE_
 
         > With probability \f$ m > 0 \f$, each offspring becomes a "migrant."
         > Each migrant goes to one of the 8 neighboring patches.
         > For patches at the boundary,
         > the probability \f$ m \f$ is reduced according to the number of neighbors they have.
     */
-    std::pair<size_t, size_t> choose_destination(const size_t row_orig, const size_t col_orig);
+    void choose_patch(size_t* row, size_t* col) const;
 
     /** @} life_cycle */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
