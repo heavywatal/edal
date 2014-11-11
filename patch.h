@@ -30,7 +30,7 @@ class Patch {
     //! Add an individual to this patch
     /*! @param ind New individual to add
     */
-    void append(const Individual&);
+    void append(Individual&&);
 
     //! @return The number of individuals in this patch
     size_t size() const {return females_.size() + males_.size();}

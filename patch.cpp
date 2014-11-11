@@ -10,17 +10,18 @@
 
 #include <boost/program_options.hpp>
 
+#include "cxxwtils/debug.hpp"
 #include "cxxwtils/iostr.hpp"
 #include "cxxwtils/prandom.hpp"
 
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
-void Patch::append(const Individual& ind) {
+void Patch::append(Individual&& ind) {
     if (prandom().bernoulli(0.5)) {
-        females_.push_back(ind);
+        females_.push_back(std::move(ind));
     } else {
-        males_.push_back(ind);
+        males_.push_back(std::move(ind));
     }
 }
 
@@ -62,17 +63,33 @@ double Patch::effective_num_competitors(const Individual& focal) const {
 }
 
 void Patch::viability_selection() {
-    auto impl = [this] (std::vector<Individual>* members) {
-        std::vector<Individual> survivors;
-        for (const auto& ind: *members) {
+    auto choose = [this] (const std::vector<Individual>& members) {
+        std::vector<size_t> indices;
+        indices.reserve(members.size());  // TODO
+        size_t i = 0;
+        for (auto& ind: members) {
             if (prandom().bernoulli(ind.survival_probability(effective_num_competitors(ind)))) {
-                survivors.push_back(ind);
+                indices.push_back(i);
             }
+            ++i;
         }
-        members->swap(survivors);
+        return indices;
     };
-    impl(&females_);
-    impl(&males_);
+    const auto indices_female = choose(females_);
+    const auto indices_male = choose(males_);
+    std::vector<Individual> tmp;
+    tmp.reserve(std::max(females_.capacity(), males_.capacity()));
+    // to prevent re-allocation, not indices.size()
+    auto extract = [&tmp](
+        const std::vector<size_t>& indices, std::vector<Individual>* members) {
+        for (auto i: indices) {
+            tmp.push_back(std::move(members->operator[](i)));
+        }
+        members->swap(tmp);
+        tmp.clear();
+    };
+    extract(indices_female, &females_);
+    extract(indices_male, &males_);
 }
 
 std::map<Individual, size_t> Patch::summarize() const {
@@ -98,8 +115,8 @@ void Patch::unit_test() {
     Patch patch(20);
     std::cerr << patch.size();
     for (size_t i=0; i<10; ++i) {
-        for (const auto& child: patch.mate_and_reproduce()) {
-            patch.append(child);
+        for (auto& child: patch.mate_and_reproduce()) {
+            patch.append(std::move(child));
         }
         std::cerr << " b " << patch.size();
         patch.viability_selection();

@@ -144,20 +144,19 @@ void Simulation::evolve() {HERE;
 }
 
 void Simulation::life_cycle() {
-    std::vector<std::vector<Patch> > next_generation(population);
+    std::vector<std::vector<Patch> > parents(population);
     wtl::Semaphore sem(PPN);
     std::mutex mtx;
     auto patch_task = [&](const size_t row, const size_t col) {
-        auto offsprings = population[row][col].mate_and_reproduce();
-        for (const auto& child: offsprings) {
-                if (child.is_migrating()) {
-                    auto new_coords = choose_destination(row, col);
-                    std::lock_guard<std::mutex> lck(mtx);
-                    next_generation[new_coords.first][new_coords.second].append(child);
-                } else {
-                    std::lock_guard<std::mutex> lck(mtx);
-                    next_generation[row][col].append(child);
-                }
+        auto offsprings = parents[row][col].mate_and_reproduce();
+        std::lock_guard<std::mutex> lck(mtx);
+        for (auto& child: offsprings) {
+            if (child.is_migrating()) {
+                auto new_coords = choose_destination(row, col);
+                population[new_coords.first][new_coords.second].append(std::move(child));
+            } else {
+                population[row][col].append(std::move(child));
+            }
         }
         sem.unlock();
     };
@@ -173,14 +172,13 @@ void Simulation::life_cycle() {
     for (size_t row=0; row<NUM_ROWS; ++row) {
         for (size_t col=0; col<NUM_COLS; ++col) {
             sem.lock();
-            threads.emplace_back([row, col, &sem, &next_generation] {
-                next_generation[row][col].viability_selection();
+            threads.emplace_back([row, col, &sem, this] {
+                population[row][col].viability_selection();
                 sem.unlock();
             });
         }
     }
     for (auto& th: threads) {th.join();}
-    population.swap(next_generation);
 }
 
 std::pair<size_t, size_t> Simulation::choose_destination(const size_t row_orig, const size_t col_orig) {
