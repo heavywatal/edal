@@ -7,6 +7,7 @@
 #include <cmath>
 #include <iostream>
 #include <sstream>
+#include <mutex>
 
 #include <boost/program_options.hpp>
 
