@@ -35,12 +35,19 @@ def param20140130():
 
 
 def simple_trait1d_patch0d():
-    const = ['--row=1', '--col=1', '-C0', '-P0', '-S0', '-K10000']
+    const = ['-D1', '--row=1', '--col=1', '-m0', '-K10000']
     params = dict()
-    params.update(c=[0.1, 1, 10])
     params.update(p=[0.1, 1, 10])
     params.update(s=[0.1, 1, 10])
-    ret = []
+    params.update(c=[0.1, 1, 10])
+    return [const + x + [make_label(x)] for x in product(params)]
+
+
+def adaptive_dynamics():
+    const = ['-D1', '--row=1', '--col=1', '-m0', '-K10000', '-p0', '-c0']
+    params = dict()
+    params.update(s=[0.1, 0.5, 1, 5, 10])
+    params.update(C=[0.1, 0.5, 1, 5, 10])
     return [const + x + [make_label(x)] for x in product(params)]
 
 
@@ -107,7 +114,7 @@ if __name__ == '__main__':
     constargs.append('-T10000')
     constargs.append('-I100')
 
-    args_list = simple_trait1d_patch0d()
+    args_list = adaptive_dynamics()
     commands = [constargs + x for x in args_list] * args.repeat
 
     qargs = dict()
