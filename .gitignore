@@ -2,3 +2,7 @@
 build/
 html/
 Dependfile
+tex/*.aux
+tex/*.dvi
+tex/*.log
+tex/*.pdf
