@@ -131,69 +131,7 @@ are equal.
 
 
 \newpage
-\section{Old text: ignore this page!!\\ Habitat preference}
-
-{\em The relative preference of an individual with habitat preference
-traits $y_0,y_1$ for environmental characteristic $(u,v)$ is
-	\be 
-	\Xi(y_0,y_1\mid u,v)= \exp(-h_0(u-y_0)^2-h_1(v-y_1)^2)
-	\ee
-We can also consider a quadratic approximation:
-	\be \label{quad}
-	\Xi(y_0,y_1\mid u,v)= 1-h_0(u-y_0)^2-h_1(v-y_1)^2.
-	\ee
-	
-The normalized time ---  total time is normalized to one ---
-that an individual $I$ (with
-habitat preference traits $(y_0,y_1)$ spends in
-environment $(u,v)$ has density
-\bs
-	\be
-	   T(y_0,y_1\mid u,v)= \frac{ \Xi(y_0,y_1\mid u,v) F(u,v)}
-	    	{D_I}	    
-	\ee
-% tacking $du dv$ on to the denisty gives the time measure
-where the (time normalizing) denominator $D_I$ is
-\be
-D_I \; = \; {\int \! \int  \Xi(y_0,y_1\mid u,v) F(u,v) \,du \,dv}
-\ee
-\es
-
-In the attached Maple file, I show that we can explicitly find $D_I$ and, thus,
-$T(y_0,y_1\mid u,v)$ for the model specified by equations~(\ref{beta},\ref{quad}).
-However, with quadratic preferences, parameters $h_0$ and $h_1$ cannot be too large as we
-will get negative preference. That is, we cannot make preferences very strong
-and this might prevent speciation. On the other hand, with Gaussian preferences $D_I$ has to be evaluated
-numerically for each individual which might be too time consuming. \\
-
-I suggest to start with model~(\ref{beta},\ref{quad}) and see how it goes.
-
-
-\section{Natural selection}
-
-\subsubsection{Effective carrying capacity}
-
-For an individual $I$ with morphological characters $\langle x_0,x_1 \rangle$ and habitat preference 
-traits $\langle y_0,y_1 \rangle$, the ``carrying capacity'' is
-	\bs \label{K}
-	\be \label{K-def}
-		K_e(I)= \int \! \int W(x_0,x_1 \mid u,v)\  T(y_0,y_1\mid u,v) du \,dv
-	\ee
-where $W$ is the fitness of the individual in  environment $u,v$.  Fitness is Gaussian,
-	\be \label{K-Gaus}
-		W(x_0,x_1 \mid u,v) = \exp(-s_0(u-x_0)^2-s_1(v-x_1)^2),
-	\ee
-	\es
-where the $\gs_{s_i}>0$ are parameters measuring the strength of
-selection.  Note that the optimum values of traits $x_0$ and $x_1$
-under environmental conditions $(u,v)$ are $x_0 = u$ and $x_1 = v$.\\
-
-Effective carrying capacity $K_e(I)$ will have to be evaluated numerically.
-If we know $T$ explicitly, this won't be a problem.}
-
-
-\newpage
-\section{Habitat preference and carrying capacity (new text, Sept.22, 2014)}
+\section{Habitat preference and carrying capacity}
 
 {\bf Habitat preference}.\quad
 The relative preference of an individual with habitat preference
@@ -205,8 +143,6 @@ We can also consider a quadratic approximation:
 	\be \label{quad}
 	\Xi(y_0,y_1\mid u,v) \sim 1-h_0(u-y_0)^2-h_1(v-y_1)^2.
 	\ee
-{\em We want the preference function to be normalized!!} (So that $\int \int \Xi(y_0,y_1\mid u,v) du dv=1$
-for all $y_1$ and $y_2$).\\
 
 {\bf Viability}.\quad Let viability of genotype $(x_0,x_1)$ in niche $(u,v)$ be Gaussian,
 \be
@@ -321,26 +257,13 @@ I think dispersal before selection is more appropriate, although we actually kno
 
 {\bf So}, we consider the second option only.
 
-\end{document}
-
 
 \section{Initial conditions}
 
-$K_{init}$ offsprings populate each patch in a small square of patches in the upper left
-corner. There are two options for assigning genotypes:
-(1) genotypes are assigned randomly, and
-(2) all individuals are identical homozygotes such that all traits are exactly in the
+$K_{init}$ offsprings populate each patch in a small square of patches in the upper left corner.
+All individuals are identical homozygotes such that all traits are exactly in the
 middle of their range (i.e., $x_i=y_i=0.5$ for all $i$).
 These initial conditions correspond to the colonization of a system by a small number of
 genetically similar, poorly adapted generalists.
 
-\section{Default values}
-
-System size: $20 \times 20$, number of traits $k=3$, number of loci $L=4$,
-number of alleles $A=2$, offspring carrying capacity $K_0=100$,
-$\sigma_{s,i}=0.32$ (with Gaussian selection), $\sigma_{c,i}=1000$ 
-(i.e., no frequency-dependent competition), average number of offspring $b=5$,
-maximum strength of preference $a_i=0.95$, mutation rate $\mu=10^{-5}$,
-extinction probability $\ge=0.01$.
-The parameters are the same for all traits.
-
+\end{document}
