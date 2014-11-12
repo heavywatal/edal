@@ -1,5 +1,5 @@
 ---
-title: "Whether or not to normalize time by D_I"
+title: "Simulation results with sojourn time normalization (anolis_v3)"
 author: "Watal M. Iwasaki"
 date: "2014-09-18"
 output:
@@ -9,11 +9,6 @@ output:
 
 Codes
 ================================================================================
-
-```{r, echo=FALSE, eval=FALSE}
-.outdir = '~/edal/html/results'
-rmarkdown::render('~/edal/normalizing_time.Rmd', output_dir=.outdir)
-```
 
 ```{r library}
 library(plyr)
@@ -88,7 +83,7 @@ theme_tile =
 
 .working_dir = '~/SpiderOak Hive/anole20140130'
 .indirs = list.files(.working_dir, full.names=TRUE)
-.indirs = .indirs[isdir(.indirs)]
+.indirs = .indirs[file.info(.indirs)$isdir]
 names(.indirs) = .indirs
 .conf = plyr::ldply(.indirs, .read_conf)
 
@@ -100,9 +95,9 @@ names(.indirs) = .indirs
 ```
 
 ```{r plot_comparison}
-.data_dirs = c('~/SpiderOak Hive/anole20140130', '~/working/anolis20140903')
+.data_dirs = c('~/working/anole20140130', '~/working/anolis20140903')
 .indirs = list.files(.data_dirs, full.names=TRUE)
-.indirs = .indirs[isdir(.indirs)]
+.indirs = .indirs[file.info(.indirs)$isdir]
 names(.indirs) = .indirs
 .conf = plyr::ldply(.indirs, .read_conf)
 

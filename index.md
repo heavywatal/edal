@@ -20,8 +20,6 @@ Individual::opt_description()
 Results
 --------------------------------------------------------------------------------
 
-- [Possible Ke values in the parameter space and phenotype space](http://meme.biology.tohoku.ac.jp/edal/results/ke.html)
-- [Whether or not to normalize time by D_I](http://meme.biology.tohoku.ac.jp/edal/results/normalizing_time.html)
-- [Possible Ke values with normalized habitat preference (anolis_v3a)](http://meme.biology.tohoku.ac.jp/edal/results/normalizing_pref.html)
-- [Possible Ke and Xi values with/without normalization and approximation](http://meme.biology.tohoku.ac.jp/edal/results/ke_xi.html)
-
+- [Possible Ke values with sojourn time normalization (anolis_v3)](http://meme.biology.tohoku.ac.jp/edal/results/ke_v3.html)
+- [Simulation results with sojourn time normalization (anolis_v3)](http://meme.biology.tohoku.ac.jp/edal/results/sim_v3.html)
+- [Possible Ke values with habitat preference normalization (anolis_v3a)](http://meme.biology.tohoku.ac.jp/edal/results/ke_v3a.html)
