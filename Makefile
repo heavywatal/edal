@@ -31,7 +31,7 @@ ifneq (,$(filter $(CXX), ${GXX}))
 else
   CPPFLAGS += -isystem /usr/local/boost-clang/include
   CXXFLAGS += -stdlib=libc++
-  LDFLAGS += -L/usr/local/boost-clang/lib 
+  LDFLAGS += -L/usr/local/boost-clang/lib
   ifeq ($(shell uname), Linux)
     LDLIBS += -lpthread -lsupc++
   endif
@@ -82,12 +82,16 @@ instruments: release
 doxygen:
 	$(RM) -r html/*.html
 	doxygen
+	$(MAKE) pandoc
 
 sync:
 	rsync -auv --delete html/ meme:~/Default/edal
 
 pdf:
 	pdflatex --output-directory=tex tex/anolis.tex && open tex/anolis.pdf
+
+pandoc:
+	pandoc tex/anolis.tex -s --mathjax -o html/model.html
 
 ${OBJDIR}/%.o: | ${OBJDIR}
 	$(COMPILE.cpp) ${OUTPUT_OPTION} $<
