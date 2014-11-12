@@ -5,7 +5,6 @@
 %\usepackage[notcite]{showkeys}  % to have keys in margins
 %\usepackage{showkeys}  % to have keys in margins
 
-\usepackage{kniga}
 %\usepackage{cite}
 
 
@@ -88,7 +87,7 @@ constants.  In particular, the natural constraint $\theta^{-1} > 0$
 implies $1 \le c_0/c_1$.  The joint density $F$ is
 \begin{equation} \label{gaus}
 F(u,v) \; = \;
-k \,\exp (- \gs (u - \mu)^2 )\exp\Big(\!- \theta  v \Big) \theta,
+k \,\exp (- \sigma (u - \mu)^2 )\exp\Big(\!- \theta  v \Big) \theta,
 \end{equation}
 where $k$ is normalizing constant.
 We can truncate this distribution so it's defined for $0\leq u,v \leq 1$.
@@ -97,13 +96,13 @@ We can also set the mean of $u$ at $\mu=1/2$.
 
 {\em New version}.\quad Height $u$ has a symmetric beta distribution mean 1/2
 and with parameter
-$\ga>1$ and the diameter has a triangular distribution on the interval $[0,1-u]$
+$\alpha>1$ and the diameter has a triangular distribution on the interval $[0,1-u]$
 so that the joint density is 
 \begin{equation} \label{beta}
 F(u,v) \; = \;
-\frac{\gG(2\ga)}{\gG(\ga)^2} (u(1-u))^{\ga-1}\ \frac{2}{1-u}(1-\frac{v}{1-u}),
+\frac{\Gamma(2\alpha)}{\Gamma(\alpha)^2} (u(1-u))^{\alpha-1}\ \frac{2}{1-u}(1-\frac{v}{1-u}),
 \end{equation}
-where $\gG$ is gamma function. The mean of $u$ is 1/2 and the variance is $1/(4(1+2\ga))$.
+where $\Gamma$ is gamma function. The mean of $u$ is 1/2 and the variance is $1/(4(1+2\alpha))$.
 For any given $u$, the mean of $v$ is $(1-u)/3$.
 This distribution is defined for $0 \leq u \leq 1$ and $0 \leq v \leq 1-u$.
 The triangular distribution seems to be a good approximation of the exponential
@@ -112,14 +111,15 @@ distribution (good for our purposes).
 \section{Individuals}
 
 Individuals are sexual and diploid. Each individual has a number of
-additive quantitative characters: \bi
+additive quantitative characters:
+\begin{itemize}
 \item 2 ``morphological'' characters $x_0$ (toepad size) and $x_1$
   (limb length) that control viability;
 \item 2 ``habitat preference'' characters: the most preferred height
   $y_0$ and the most preferred diameter $y_1$
 %   , tolerance for height $z_0$, and tolerance for diameter $z_1$; 
 \item three ``mating compatibility'' characters $m, f$, and $c$.
-\ei
+\end{itemize}
 
 The male display trait $m$ is expressed in males only, whereas female
 mating preference $f$ and tolerance $c$ are expressed in females
@@ -136,24 +136,24 @@ are equal.
 {\bf Habitat preference}.\quad
 The relative preference of an individual with habitat preference
 traits $y_0,y_1$ for environmental characteristic $(u,v)$ is 
-	\be 
+	\begin{equation}
 	\Xi(y_0,y_1\mid u,v) \sim \exp(-h_0(u-y_0)^2-h_1(v-y_1)^2)
-	\ee
+	\end{equation}
 We can also consider a quadratic approximation:
-	\be \label{quad}
+	\begin{equation} \label{quad}
 	\Xi(y_0,y_1\mid u,v) \sim 1-h_0(u-y_0)^2-h_1(v-y_1)^2.
-	\ee
+	\end{equation}
 
 {\bf Viability}.\quad Let viability of genotype $(x_0,x_1)$ in niche $(u,v)$ be Gaussian,
-\be
+\begin{equation}
 		W(x_0,x_1 \mid u,v) = \exp(-s_0(u-x_0)^2-s_1(v-x_1)^2),
-\ee
-where the $\gs_{s_i}>0$ are parameters measuring the strength of
+\end{equation}
+where the $\sigma_{s_i}>0$ are parameters measuring the strength of
 selection.  Note that the optimum values of traits $x_0$ and $x_1$
 under environmental conditions $(u,v)$ are $x_0 = u$ and $x_1 = v$.\\
 
 {\bf Carrying capacity}.\quad Consider a specific genotype that has an absolute
-preference for environment $(u,v)$ (so that $\Xi$ is a $\gd$-function). Then a natural
+preference for environment $(u,v)$ (so that $\Xi$ is a $\delta$-function). Then a natural
 measure of the carrying capacity of a population of such individuals is
 \[
     K_0 F(u,v) W(x_0,x_1 \mid u,v),
@@ -163,9 +163,9 @@ number of individuals with an absolute preference for environment $(u,v)$ is the
 also have perfect adaptation for this niche (i.e. if $W(x_0,x_1 \mid u,v)=1$).
 Naturally, the more common environments can maintain higher densities of individuals
 that prefer them. Now,
-\be
+\begin{equation}
     K_e(I)= K_0 \int \int F(u,v) W(x_0,x_1 \mid u,v) \Xi(y_0,y_1\mid u,v) du dv
-\ee
+\end{equation}
 is the average carrying capacity of genotype $(x_0,x_1, y_0, y_1)$.
 
 
@@ -173,25 +173,25 @@ is the average carrying capacity of genotype $(x_0,x_1, y_0, y_1)$.
 
 Following Roughgarden and others, we define the competition coefficient for individual $I$ and $J$
 as
-\bs
-\be
+\begin{subequations}
+\begin{equation}
 c(I,J)=exp( -c_0(y_{0,I}-y_{0,J})^2-c_1(y_{1,I}-y_{1,J})^2).
-\ee
+\end{equation}
 That is, competition strength is evaluated  on the basis of their habitat preferences.
 For individuals with identical preferences, $c(I,J)=1$, that is competition is the strongest.
 
 For individual $I$, the effective number of competitors is 
-\be
+\begin{equation}
 N_e(I)=\sum_J c(I,J).
-\ee
-\es
+\end{equation}
+\end{subequations}
 
 \subsubsection{Survival}
 
 The probability that an individual survives to the age of reproduction is
-	\be \label{BH}
+	\begin{equation} \label{BH}
 		w(I)=\frac{1}{1+(b-1)\frac{N_e(I)^\alpha}{K_e(I)}},
-	\ee
+	\end{equation}
 where the parameter $\alpha$ controls the strength of
 crowding, and $b>0$ is a parameter (average number of offspring per female;
 see below).  Equation~(\ref{BH}) is the Beverton-Holt model which
@@ -205,14 +205,14 @@ $N_e(I)=K_e(I)$, then $w(I)=1/b$.
 
 The relative probability of mating between a
 female with traits $f$ and $c$ and a male with trait $m$ is
-	\be  \label{pref}
+	\begin{equation}  \label{pref}
 	\psi(f,c\mid m) =  \left\{ \begin{array}{ll}
-                         \exp \left( -(2c-1)^2 \frac{(f-m)^2}{2\gs_a^2}\right) & \mbox{if}\ c > 0.5, \\
+                         \exp \left( -(2c-1)^2 \frac{(f-m)^2}{2\sigma_a^2}\right) & \mbox{if}\ c > 0.5, \\
 			  1 & \mbox{if}\ c=0.5,\\
-                         \exp \left( -(2c-1)^2 \frac{(f-(1-m))^2}{2\gs_a^2}\right) & \mbox{if}\ c<0.5,
+                         \exp \left( -(2c-1)^2 \frac{(f-(1-m))^2}{2\sigma_a^2}\right) & \mbox{if}\ c<0.5,
                       \end{array} \right.
-	\ee
-where parameter $\gs_a$ scales the strength of female mating preferences. Under this parameterization,
+	\end{equation}
+where parameter $\sigma_a$ scales the strength of female mating preferences. Under this parameterization,
 females with $c=0.5$ mate randomly, females with $c>0.5$ prefer males whose trait $m$ is close to 
 the female's trait $f$ (positive assortative mating), and females with $c<0.5$ prefer males whose 
 trait $m$ is close to $1-f$ (negative assortative mating). 
@@ -222,9 +222,9 @@ trait $m$ is close to $1-f$ (negative assortative mating).
 
 The pseudo probability that female
 $I = \langle f,c,\ldots \rangle$ mates with male $I^{\prime}= \langle m,\ldots \rangle$ is
-\be
+\begin{equation}
 P(I,I^{\prime}) = \psi(I,I^{\prime})\ C(I,J) \\
-\ee
+\end{equation}
 This is the preference of $I$ for $I^{\prime}$, multiplied by their
 correlation (with respect to habitat preferences $C(I,J)$).  These ``pseudo
 probabilities'' are scaled to sum to one (by summing over the available males $I^\prime$).
