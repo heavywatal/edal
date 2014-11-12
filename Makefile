@@ -3,7 +3,7 @@ PACKAGE := $(notdir ${CURDIR})
 SRCDIR := .
 OBJDIR := build
 INCLUDEDIR := -isystem /usr/local/include -iquote ${HOME}/local/include
-PROGRAM := anolis.out
+PROGRAM := a.out
 
 
 ## Directories and Files
@@ -45,7 +45,6 @@ export CXX CC TARGET_ARCH
 
 all:
 	${MAKE} -j3 ${PROGRAM}
-	cp -f ${PROGRAM} a.out
 
 ${PROGRAM}: ${OBJS}
 	${LINK.cpp} ${OUTPUT_OPTION} $^ ${LOADLIBES} ${LDLIBS}
@@ -63,20 +62,13 @@ help:
 	./${PROGRAM} --help
 
 
-.PHONY: debug release parallel full clang instruments
+.PHONY: debug release llvm instruments
 debug:
 	${MAKE} CXXDBG="-g" all
 
 release:
 	${MAKE} CXX=${GXX} CPPDBG="-DNDEBUG" all
 #	${MAKE} CXXDBG="-flto" CPPDBG="-DNDEBUG" all
-
-parallel:
-	${MAKE} CXX=${GXX} CXXDBG="-fopenmp" all
-
-full:
-	${MAKE} CXX=${GXX} CXXDBG="-fopenmp" CPPDBG="-DNDEBUG" all
-#	${MAKE} CXX=${GXX} CXXDBG="-fopenmp -flto" CPPDBG="-DNDEBUG" all
 
 llvm:
 	${MAKE} CXX=clang++ CPPDBG="-DNDEBUG" all
@@ -86,7 +78,7 @@ instruments: release
 	instruments -t "/Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/Resources/templates/Time Profiler.tracetemplate" -D ~/tmp/profile$(shell gdate +%F_%T) ${PROGRAM}
 
 
-.PHONY: doxygen sync
+.PHONY: doxygen sync pdf
 doxygen:
 	$(RM) -r html/*.html
 	doxygen
@@ -94,6 +86,8 @@ doxygen:
 sync:
 	rsync -auv --delete html/ meme:~/Default/edal
 
+pdf:
+	pdflatex --output-directory=tex tex/anolis.tex && open tex/anolis.pdf
 
 ${OBJDIR}/%.o: | ${OBJDIR}
 	$(COMPILE.cpp) ${OUTPUT_OPTION} $<
