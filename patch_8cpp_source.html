@@ -79,7 +79,7 @@
 <div class="line"><a name="l00028"></a><span class="lineno"><a class="line" href="group__mating.html#gaea85d2e4ee0b40003f002d5931fba2d5">   28</a></span>&#160;std::vector&lt;Individual&gt; <a class="code" href="group__mating.html#gaea85d2e4ee0b40003f002d5931fba2d5">Patch::mate_and_reproduce</a>()<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    std::vector&lt;Individual&gt; offsprings;</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="class_patch.html#a4fcf1d1b0754d40707eedc01fe90df4b">males_</a>.empty()) {<span class="keywordflow">return</span> offsprings;}</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    offsprings.reserve(<a class="code" href="class_patch.html#a4a4d717642cbe9ca0f742fc5e4406d9b">females_</a>.size() * 8);</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    offsprings.reserve(<a class="code" href="class_patch.html#a4a4d717642cbe9ca0f742fc5e4406d9b">females_</a>.size() * <a class="code" href="group__biol__proc.html#ga29873268c015b7d23c98b5aacc0645af">Individual::AVG_NUM_OFFSPINRGS</a>());</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; mother: <a class="code" href="class_patch.html#a4a4d717642cbe9ca0f742fc5e4406d9b">females_</a>) {</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        std::vector&lt;double&gt; prefs;</div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        prefs.reserve(<a class="code" href="class_patch.html#a4fcf1d1b0754d40707eedc01fe90df4b">males_</a>.size());</div>
@@ -92,104 +92,105 @@
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <span class="keywordtype">size_t</span> father_i = 0;</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keywordflow">while</span> (upper_bounds[father_i] &lt; dart) {++father_i;}</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keyword">const</span> <a class="code" href="class_individual.html">Individual</a>&amp; father = males_[father_i];</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">size_t</span> num_children = mother.<a class="code" href="group__mating.html#ga99e3d89e9e0b76971fab7834d8af621f">poisson_offsprings</a>();</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i=0; i&lt;num_children; ++i) {</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;            offsprings.push_back(<a class="code" href="class_individual.html">Individual</a>(mother.gametogenesis(), father.<a class="code" href="group__mating.html#ga9173a285fda6e2026898f993498ed903">gametogenesis</a>()));</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        }</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    }</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">return</span> offsprings;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;}</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;</div>
-<div class="line"><a name="l00052"></a><span class="lineno"><a class="line" href="group__natural__selection.html#gad66c69e3f4d4e719deac84ad676842d2">   52</a></span>&#160;<span class="keywordtype">double</span> <a class="code" href="group__natural__selection.html#gad66c69e3f4d4e719deac84ad676842d2">Patch::effective_num_competitors</a>(<span class="keyword">const</span> <a class="code" href="class_individual.html">Individual</a>&amp; focal)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keywordtype">double</span> n = 0;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keyword">auto</span> impl = [&amp;] (<span class="keyword">const</span> std::vector&lt;Individual&gt;&amp; members) {</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; ind: members) {</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment">//            n += focal.resource_overlap(ind); // too slow</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;            n += focal.<a class="code" href="group__habitat__pareference.html#ga18a63a3bac4c5d6a400bcdd98e0dbd09">preference_overlap</a>(ind) * focal.<a class="code" href="group__habitat__pareference.html#ga7a82540186663c5105a136e0411a98ed">morphology_overlap</a>(ind);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        }</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    };</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    impl(<a class="code" href="class_patch.html#a4a4d717642cbe9ca0f742fc5e4406d9b">females_</a>);</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    impl(<a class="code" href="class_patch.html#a4fcf1d1b0754d40707eedc01fe90df4b">males_</a>);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordflow">return</span> n;</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;}</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;</div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="group__natural__selection.html#gaba3c1ab2eff35d22af2576b0a8a1acf5">   65</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__natural__selection.html#gaba3c1ab2eff35d22af2576b0a8a1acf5">Patch::viability_selection</a>() {</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keyword">auto</span> choose = [<span class="keyword">this</span>] (<span class="keyword">const</span> std::vector&lt;Individual&gt;&amp; members) {</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;        std::vector&lt;size_t&gt; indices;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        indices.reserve(members.size());  <span class="comment">// TODO</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <span class="keywordtype">size_t</span> i = 0;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; ind: members) {</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;            <span class="keywordflow">if</span> (prandom().bernoulli(ind.survival_probability(<a class="code" href="group__natural__selection.html#gad66c69e3f4d4e719deac84ad676842d2">effective_num_competitors</a>(ind)))) {</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;                indices.push_back(i);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;            }</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            ++i;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;        }</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        <span class="keywordflow">return</span> indices;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    };</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span> indices_female = choose(<a class="code" href="class_patch.html#a4a4d717642cbe9ca0f742fc5e4406d9b">females_</a>);</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span> indices_male = choose(<a class="code" href="class_patch.html#a4fcf1d1b0754d40707eedc01fe90df4b">males_</a>);</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    std::vector&lt;Individual&gt; tmp;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    tmp.reserve(std::max(<a class="code" href="class_patch.html#a4a4d717642cbe9ca0f742fc5e4406d9b">females_</a>.capacity(), <a class="code" href="class_patch.html#a4fcf1d1b0754d40707eedc01fe90df4b">males_</a>.capacity()));</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="comment">// to prevent re-allocation, not indices.size()</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="keyword">auto</span> extract = [&amp;tmp](</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        <span class="keyword">const</span> std::vector&lt;size_t&gt;&amp; indices, std::vector&lt;Individual&gt;* members) {</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> i: indices) {</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;            tmp.push_back(std::move(members-&gt;operator[](i)));</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        }</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        members-&gt;swap(tmp);</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        tmp.clear();</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    };</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    extract(indices_female, &amp;<a class="code" href="class_patch.html#a4a4d717642cbe9ca0f742fc5e4406d9b">females_</a>);</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    extract(indices_male, &amp;<a class="code" href="class_patch.html#a4fcf1d1b0754d40707eedc01fe90df4b">males_</a>);</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;}</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;</div>
-<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="class_patch.html#ad5eb4810fb7915df4b9989cbb7194afb">   95</a></span>&#160;std::map&lt;Individual, size_t&gt; <a class="code" href="class_patch.html#ad5eb4810fb7915df4b9989cbb7194afb">Patch::summarize</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    std::map&lt;Individual, size_t&gt; genotypes;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; ind: <a class="code" href="class_patch.html#a4a4d717642cbe9ca0f742fc5e4406d9b">females_</a>) {</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        ++genotypes[ind];</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    }</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; ind: <a class="code" href="class_patch.html#a4fcf1d1b0754d40707eedc01fe90df4b">males_</a>) {</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        ++genotypes[ind];</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    }</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordflow">return</span> genotypes;</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;}</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;</div>
-<div class="line"><a name="l00106"></a><span class="lineno"><a class="line" href="patch_8h.html#a098c4486f9d9244b92437dbe0be312d0">  106</a></span>&#160;std::ostream&amp; <a class="code" href="patch_8cpp.html#a098c4486f9d9244b92437dbe0be312d0">operator&lt;&lt; </a>(std::ostream&amp; ost, <span class="keyword">const</span> <a class="code" href="class_patch.html">Patch</a>&amp; patch) {</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keywordflow">return</span> ost &lt;&lt; patch.<a class="code" href="class_patch.html#ad5eb4810fb7915df4b9989cbb7194afb">summarize</a>();</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="comment">// operator&lt;&lt; for std::map is defined in &quot;iostr.hpp&quot;</span></div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;}</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;</div>
-<div class="line"><a name="l00113"></a><span class="lineno"><a class="line" href="class_patch.html#a1f78ffb19dac26b15d617a9f198e8af5">  113</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_patch.html#a1f78ffb19dac26b15d617a9f198e8af5">Patch::unit_test</a>() {</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    std::cerr &lt;&lt; __PRETTY_FUNCTION__ &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    <a class="code" href="class_patch.html">Patch</a> patch(20, <a class="code" href="class_individual.html">Individual</a>({15,0,15,0}));</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    std::cerr &lt;&lt; patch.<a class="code" href="class_patch.html#a5ae8e8701a7023ea66cdd19e589637f2">size</a>();</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i=0; i&lt;10; ++i) {</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; child: patch.<a class="code" href="group__mating.html#gaea85d2e4ee0b40003f002d5931fba2d5">mate_and_reproduce</a>()) {</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;            patch.<a class="code" href="class_patch.html#abcf6963450131343cc2e7fa74be721d9">append</a>(std::move(child));</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        }</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot; b &quot;</span> &lt;&lt; patch.<a class="code" href="class_patch.html#a5ae8e8701a7023ea66cdd19e589637f2">size</a>();</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        patch.<a class="code" href="group__natural__selection.html#gaba3c1ab2eff35d22af2576b0a8a1acf5">viability_selection</a>();</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot; d &quot;</span> &lt;&lt; patch.<a class="code" href="class_patch.html#a5ae8e8701a7023ea66cdd19e589637f2">size</a>();</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    }</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    std::cerr &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    std::cerr &lt;&lt; patch &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;}</div>
-<div class="ttc" id="group__natural__selection_html_gaba3c1ab2eff35d22af2576b0a8a1acf5"><div class="ttname"><a href="group__natural__selection.html#gaba3c1ab2eff35d22af2576b0a8a1acf5">Patch::viability_selection</a></div><div class="ttdeci">void viability_selection()</div><div class="ttdoc">Some individuals die depending on Individual::survival_probability() </div><div class="ttdef"><b>Definition:</b> <a href="patch_8cpp_source.html#l00065">patch.cpp:65</a></div></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keyword">const</span> <span class="keywordtype">size_t</span> num_children =</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;            prandom().poisson(<a class="code" href="group__biol__proc.html#ga29873268c015b7d23c98b5aacc0645af">Individual::AVG_NUM_OFFSPINRGS</a>());</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i=0; i&lt;num_children; ++i) {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;            offsprings.push_back(<a class="code" href="class_individual.html">Individual</a>(mother.gametogenesis(), father.<a class="code" href="group__mating.html#ga9173a285fda6e2026898f993498ed903">gametogenesis</a>()));</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        }</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    }</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keywordflow">return</span> offsprings;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;}</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;</div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="group__natural__selection.html#gad66c69e3f4d4e719deac84ad676842d2">   53</a></span>&#160;<span class="keywordtype">double</span> <a class="code" href="group__natural__selection.html#gad66c69e3f4d4e719deac84ad676842d2">Patch::effective_num_competitors</a>(<span class="keyword">const</span> <a class="code" href="class_individual.html">Individual</a>&amp; focal)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <span class="keywordtype">double</span> n = 0;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">auto</span> impl = [&amp;] (<span class="keyword">const</span> std::vector&lt;Individual&gt;&amp; members) {</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; ind: members) {</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">//            n += focal.resource_overlap(ind); // too slow</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;            n += focal.<a class="code" href="group__habitat__pareference.html#ga18a63a3bac4c5d6a400bcdd98e0dbd09">preference_overlap</a>(ind) * focal.<a class="code" href="group__habitat__pareference.html#ga7a82540186663c5105a136e0411a98ed">morphology_overlap</a>(ind);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        }</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    };</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    impl(<a class="code" href="class_patch.html#a4a4d717642cbe9ca0f742fc5e4406d9b">females_</a>);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    impl(<a class="code" href="class_patch.html#a4fcf1d1b0754d40707eedc01fe90df4b">males_</a>);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    <span class="keywordflow">return</span> n;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;</div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="group__natural__selection.html#gaba3c1ab2eff35d22af2576b0a8a1acf5">   66</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="group__natural__selection.html#gaba3c1ab2eff35d22af2576b0a8a1acf5">Patch::viability_selection</a>() {</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keyword">auto</span> choose = [<span class="keyword">this</span>] (<span class="keyword">const</span> std::vector&lt;Individual&gt;&amp; members) {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        std::vector&lt;size_t&gt; indices;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        indices.reserve(members.size());  <span class="comment">// TODO</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordtype">size_t</span> i = 0;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; ind: members) {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;            <span class="keywordflow">if</span> (prandom().bernoulli(ind.survival_probability(<a class="code" href="group__natural__selection.html#gad66c69e3f4d4e719deac84ad676842d2">effective_num_competitors</a>(ind)))) {</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                indices.push_back(i);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            }</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            ++i;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        }</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        <span class="keywordflow">return</span> indices;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    };</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span> indices_female = choose(<a class="code" href="class_patch.html#a4a4d717642cbe9ca0f742fc5e4406d9b">females_</a>);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span> indices_male = choose(<a class="code" href="class_patch.html#a4fcf1d1b0754d40707eedc01fe90df4b">males_</a>);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    std::vector&lt;Individual&gt; tmp;</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    tmp.reserve(std::max(<a class="code" href="class_patch.html#a4a4d717642cbe9ca0f742fc5e4406d9b">females_</a>.capacity(), <a class="code" href="class_patch.html#a4fcf1d1b0754d40707eedc01fe90df4b">males_</a>.capacity()));</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <span class="comment">// to prevent re-allocation, not indices.size()</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keyword">auto</span> extract = [&amp;tmp](</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        <span class="keyword">const</span> std::vector&lt;size_t&gt;&amp; indices, std::vector&lt;Individual&gt;* members) {</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span> i: indices) {</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;            tmp.push_back(std::move(members-&gt;operator[](i)));</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;        }</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;        members-&gt;swap(tmp);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        tmp.clear();</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    };</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    extract(indices_female, &amp;<a class="code" href="class_patch.html#a4a4d717642cbe9ca0f742fc5e4406d9b">females_</a>);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    extract(indices_male, &amp;<a class="code" href="class_patch.html#a4fcf1d1b0754d40707eedc01fe90df4b">males_</a>);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;</div>
+<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="class_patch.html#ad5eb4810fb7915df4b9989cbb7194afb">   96</a></span>&#160;std::map&lt;Individual, size_t&gt; <a class="code" href="class_patch.html#ad5eb4810fb7915df4b9989cbb7194afb">Patch::summarize</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    std::map&lt;Individual, size_t&gt; genotypes;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; ind: <a class="code" href="class_patch.html#a4a4d717642cbe9ca0f742fc5e4406d9b">females_</a>) {</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        ++genotypes[ind];</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    }</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; ind: <a class="code" href="class_patch.html#a4fcf1d1b0754d40707eedc01fe90df4b">males_</a>) {</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        ++genotypes[ind];</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    }</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="keywordflow">return</span> genotypes;</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;}</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;</div>
+<div class="line"><a name="l00107"></a><span class="lineno"><a class="line" href="patch_8h.html#a098c4486f9d9244b92437dbe0be312d0">  107</a></span>&#160;std::ostream&amp; <a class="code" href="patch_8cpp.html#a098c4486f9d9244b92437dbe0be312d0">operator&lt;&lt; </a>(std::ostream&amp; ost, <span class="keyword">const</span> <a class="code" href="class_patch.html">Patch</a>&amp; patch) {</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keywordflow">return</span> ost &lt;&lt; patch.<a class="code" href="class_patch.html#ad5eb4810fb7915df4b9989cbb7194afb">summarize</a>();</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="comment">// operator&lt;&lt; for std::map is defined in &quot;iostr.hpp&quot;</span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;}</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;</div>
+<div class="line"><a name="l00114"></a><span class="lineno"><a class="line" href="class_patch.html#a1f78ffb19dac26b15d617a9f198e8af5">  114</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="class_patch.html#a1f78ffb19dac26b15d617a9f198e8af5">Patch::unit_test</a>() {</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    std::cerr &lt;&lt; __PRETTY_FUNCTION__ &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <a class="code" href="class_patch.html">Patch</a> patch(20, <a class="code" href="class_individual.html">Individual</a>({15,0,15,0}));</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    std::cerr &lt;&lt; patch.<a class="code" href="class_patch.html#a5ae8e8701a7023ea66cdd19e589637f2">size</a>();</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i=0; i&lt;10; ++i) {</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">auto</span>&amp; child: patch.<a class="code" href="group__mating.html#gaea85d2e4ee0b40003f002d5931fba2d5">mate_and_reproduce</a>()) {</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;            patch.<a class="code" href="class_patch.html#abcf6963450131343cc2e7fa74be721d9">append</a>(std::move(child));</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        }</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot; b &quot;</span> &lt;&lt; patch.<a class="code" href="class_patch.html#a5ae8e8701a7023ea66cdd19e589637f2">size</a>();</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;        patch.<a class="code" href="group__natural__selection.html#gaba3c1ab2eff35d22af2576b0a8a1acf5">viability_selection</a>();</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        std::cerr &lt;&lt; <span class="stringliteral">&quot; d &quot;</span> &lt;&lt; patch.<a class="code" href="class_patch.html#a5ae8e8701a7023ea66cdd19e589637f2">size</a>();</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    }</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    std::cerr &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    std::cerr &lt;&lt; patch &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;}</div>
+<div class="ttc" id="group__natural__selection_html_gaba3c1ab2eff35d22af2576b0a8a1acf5"><div class="ttname"><a href="group__natural__selection.html#gaba3c1ab2eff35d22af2576b0a8a1acf5">Patch::viability_selection</a></div><div class="ttdeci">void viability_selection()</div><div class="ttdoc">Some individuals die depending on Individual::survival_probability() </div><div class="ttdef"><b>Definition:</b> <a href="patch_8cpp_source.html#l00066">patch.cpp:66</a></div></div>
 <div class="ttc" id="group__habitat__pareference_html_ga7a82540186663c5105a136e0411a98ed"><div class="ttname"><a href="group__habitat__pareference.html#ga7a82540186663c5105a136e0411a98ed">Individual::morphology_overlap</a></div><div class="ttdeci">double morphology_overlap(const Individual &amp;other) const </div><div class="ttdoc"> for competition </div></div>
 <div class="ttc" id="group__mating_html_ga9173a285fda6e2026898f993498ed903"><div class="ttname"><a href="group__mating.html#ga9173a285fda6e2026898f993498ed903">Individual::gametogenesis</a></div><div class="ttdeci">std::vector&lt; Loci &gt; gametogenesis() const </div><div class="ttdoc">Gametogenesis with free recombination and mutation. </div></div>
 <div class="ttc" id="class_patch_html_a5ae8e8701a7023ea66cdd19e589637f2"><div class="ttname"><a href="class_patch.html#a5ae8e8701a7023ea66cdd19e589637f2">Patch::size</a></div><div class="ttdeci">size_t size() const </div><div class="ttdef"><b>Definition:</b> <a href="patch_8h_source.html#l00043">patch.h:43</a></div></div>
 <div class="ttc" id="group__habitat__pareference_html_ga18a63a3bac4c5d6a400bcdd98e0dbd09"><div class="ttname"><a href="group__habitat__pareference.html#ga18a63a3bac4c5d6a400bcdd98e0dbd09">Individual::preference_overlap</a></div><div class="ttdeci">double preference_overlap(const Individual &amp;other) const </div><div class="ttdoc"> for competition and mating </div></div>
 <div class="ttc" id="class_patch_html_abcf6963450131343cc2e7fa74be721d9"><div class="ttname"><a href="class_patch.html#abcf6963450131343cc2e7fa74be721d9">Patch::append</a></div><div class="ttdeci">void append(Individual &amp;&amp;)</div><div class="ttdoc">Add an individual to this patch. </div><div class="ttdef"><b>Definition:</b> <a href="patch_8cpp_source.html#l00020">patch.cpp:20</a></div></div>
 <div class="ttc" id="group__mating_html_gaea85d2e4ee0b40003f002d5931fba2d5"><div class="ttname"><a href="group__mating.html#gaea85d2e4ee0b40003f002d5931fba2d5">Patch::mate_and_reproduce</a></div><div class="ttdeci">std::vector&lt; Individual &gt; mate_and_reproduce() const </div><div class="ttdoc">All females mate with someone according to mating probability. </div><div class="ttdef"><b>Definition:</b> <a href="patch_8cpp_source.html#l00028">patch.cpp:28</a></div></div>
-<div class="ttc" id="class_patch_html_ad5eb4810fb7915df4b9989cbb7194afb"><div class="ttname"><a href="class_patch.html#ad5eb4810fb7915df4b9989cbb7194afb">Patch::summarize</a></div><div class="ttdeci">std::map&lt; Individual, size_t &gt; summarize() const </div><div class="ttdoc">Count genotypes. </div><div class="ttdef"><b>Definition:</b> <a href="patch_8cpp_source.html#l00095">patch.cpp:95</a></div></div>
+<div class="ttc" id="class_patch_html_ad5eb4810fb7915df4b9989cbb7194afb"><div class="ttname"><a href="class_patch.html#ad5eb4810fb7915df4b9989cbb7194afb">Patch::summarize</a></div><div class="ttdeci">std::map&lt; Individual, size_t &gt; summarize() const </div><div class="ttdoc">Count genotypes. </div><div class="ttdef"><b>Definition:</b> <a href="patch_8cpp_source.html#l00096">patch.cpp:96</a></div></div>
 <div class="ttc" id="class_patch_html"><div class="ttname"><a href="class_patch.html">Patch</a></div><div class="ttdef"><b>Definition:</b> <a href="patch_8h_source.html#l00019">patch.h:19</a></div></div>
 <div class="ttc" id="class_individual_html"><div class="ttname"><a href="class_individual.html">Individual</a></div><div class="ttdoc">sexual, diploid, additive, unlinked, diallelic </div><div class="ttdef"><b>Definition:</b> <a href="individual_8h_source.html#l00064">individual.h:64</a></div></div>
+<div class="ttc" id="group__biol__proc_html_ga29873268c015b7d23c98b5aacc0645af"><div class="ttname"><a href="group__biol__proc.html#ga29873268c015b7d23c98b5aacc0645af">Individual::AVG_NUM_OFFSPINRGS</a></div><div class="ttdeci">static size_t AVG_NUM_OFFSPINRGS()</div><div class="ttdoc">Getter. </div><div class="ttdef"><b>Definition:</b> <a href="individual_8h_source.html#l00267">individual.h:267</a></div></div>
 <div class="ttc" id="class_patch_html_a4fcf1d1b0754d40707eedc01fe90df4b"><div class="ttname"><a href="class_patch.html#a4fcf1d1b0754d40707eedc01fe90df4b">Patch::males_</a></div><div class="ttdeci">std::vector&lt; Individual &gt; males_</div><div class="ttdoc">male individuals </div><div class="ttdef"><b>Definition:</b> <a href="patch_8h_source.html#l00092">patch.h:92</a></div></div>
-<div class="ttc" id="patch_8cpp_html_a098c4486f9d9244b92437dbe0be312d0"><div class="ttname"><a href="patch_8cpp.html#a098c4486f9d9244b92437dbe0be312d0">operator&lt;&lt;</a></div><div class="ttdeci">std::ostream &amp; operator&lt;&lt;(std::ostream &amp;ost, const Patch &amp;patch)</div><div class="ttdoc">Stream operator for Patch. </div><div class="ttdef"><b>Definition:</b> <a href="patch_8cpp_source.html#l00106">patch.cpp:106</a></div></div>
-<div class="ttc" id="group__mating_html_ga99e3d89e9e0b76971fab7834d8af621f"><div class="ttname"><a href="group__mating.html#ga99e3d89e9e0b76971fab7834d8af621f">Individual::poisson_offsprings</a></div><div class="ttdeci">size_t poisson_offsprings() const </div><div class="ttdoc">generates poisson random number with  = Individual::AVG_NUM_OFFSPINRGS_ </div></div>
-<div class="ttc" id="class_patch_html_a1f78ffb19dac26b15d617a9f198e8af5"><div class="ttname"><a href="class_patch.html#a1f78ffb19dac26b15d617a9f198e8af5">Patch::unit_test</a></div><div class="ttdeci">static void unit_test()</div><div class="ttdoc">Unit test for Patch. </div><div class="ttdef"><b>Definition:</b> <a href="patch_8cpp_source.html#l00113">patch.cpp:113</a></div></div>
-<div class="ttc" id="group__natural__selection_html_gad66c69e3f4d4e719deac84ad676842d2"><div class="ttname"><a href="group__natural__selection.html#gad66c69e3f4d4e719deac84ad676842d2">Patch::effective_num_competitors</a></div><div class="ttdeci">double effective_num_competitors(const Individual &amp;) const </div><div class="ttdoc">Calculate  from  and . </div><div class="ttdef"><b>Definition:</b> <a href="patch_8cpp_source.html#l00052">patch.cpp:52</a></div></div>
+<div class="ttc" id="patch_8cpp_html_a098c4486f9d9244b92437dbe0be312d0"><div class="ttname"><a href="patch_8cpp.html#a098c4486f9d9244b92437dbe0be312d0">operator&lt;&lt;</a></div><div class="ttdeci">std::ostream &amp; operator&lt;&lt;(std::ostream &amp;ost, const Patch &amp;patch)</div><div class="ttdoc">Stream operator for Patch. </div><div class="ttdef"><b>Definition:</b> <a href="patch_8cpp_source.html#l00107">patch.cpp:107</a></div></div>
+<div class="ttc" id="class_patch_html_a1f78ffb19dac26b15d617a9f198e8af5"><div class="ttname"><a href="class_patch.html#a1f78ffb19dac26b15d617a9f198e8af5">Patch::unit_test</a></div><div class="ttdeci">static void unit_test()</div><div class="ttdoc">Unit test for Patch. </div><div class="ttdef"><b>Definition:</b> <a href="patch_8cpp_source.html#l00114">patch.cpp:114</a></div></div>
+<div class="ttc" id="group__natural__selection_html_gad66c69e3f4d4e719deac84ad676842d2"><div class="ttname"><a href="group__natural__selection.html#gad66c69e3f4d4e719deac84ad676842d2">Patch::effective_num_competitors</a></div><div class="ttdeci">double effective_num_competitors(const Individual &amp;) const </div><div class="ttdoc">Calculate  from  and . </div><div class="ttdef"><b>Definition:</b> <a href="patch_8cpp_source.html#l00053">patch.cpp:53</a></div></div>
 <div class="ttc" id="class_patch_html_a4a4d717642cbe9ca0f742fc5e4406d9b"><div class="ttname"><a href="class_patch.html#a4a4d717642cbe9ca0f742fc5e4406d9b">Patch::females_</a></div><div class="ttdeci">std::vector&lt; Individual &gt; females_</div><div class="ttdoc">female individuals </div><div class="ttdef"><b>Definition:</b> <a href="patch_8h_source.html#l00089">patch.h:89</a></div></div>
 <div class="ttc" id="patch_8h_html"><div class="ttname"><a href="patch_8h.html">patch.h</a></div><div class="ttdoc">Interface of Patch class. </div></div>
 </div><!-- fragment --></div><!-- contents -->

@@ -56,9 +56,6 @@ Functions</h2></td></tr>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga8a7330aa68e101eaa7e342e9215bffdf">Individual::mating_probability</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;male) const </td></tr>
 <tr class="memdesc:ga8a7330aa68e101eaa7e342e9215bffdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">\( P(I, I&#39;) = \Xi(I, I&#39;) C(I, I&#39;)\) <br /></td></tr>
 <tr class="separator:ga8a7330aa68e101eaa7e342e9215bffdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga99e3d89e9e0b76971fab7834d8af621f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga99e3d89e9e0b76971fab7834d8af621f">Individual::poisson_offsprings</a> () const </td></tr>
-<tr class="memdesc:ga99e3d89e9e0b76971fab7834d8af621f"><td class="mdescLeft">&#160;</td><td class="mdescRight">generates poisson random number with \(\lambda\) = <a class="el" href="group__biol__param.html#gab200c753ce4b534c676acf396b6b5dbd" title=" in  ">Individual::AVG_NUM_OFFSPINRGS_</a>  <a href="#ga99e3d89e9e0b76971fab7834d8af621f">More...</a><br /></td></tr>
-<tr class="separator:ga99e3d89e9e0b76971fab7834d8af621f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9173a285fda6e2026898f993498ed903"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Loci &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga9173a285fda6e2026898f993498ed903">Individual::gametogenesis</a> () const </td></tr>
 <tr class="memdesc:ga9173a285fda6e2026898f993498ed903"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gametogenesis with free recombination and mutation.  <a href="#ga9173a285fda6e2026898f993498ed903">More...</a><br /></td></tr>
 <tr class="separator:ga9173a285fda6e2026898f993498ed903"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -111,24 +108,6 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 <p>Each mating results in a number of offspring drawn from a Poisson distribution with parameter b. We assume that all adult females mate. This assumption implies that any costs of mate choice, which can easily prevent divergence and speciation, are absent. This assumption also means that the effective population size is increased relative to the actual number of adults. </p>
 
 <p>Definition at line <a class="el" href="patch_8cpp_source.html#l00028">28</a> of file <a class="el" href="patch_8cpp_source.html">patch.cpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga99e3d89e9e0b76971fab7834d8af621f"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">size_t Individual::poisson_offsprings </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>generates poisson random number with \(\lambda\) = <a class="el" href="group__biol__param.html#gab200c753ce4b534c676acf396b6b5dbd" title=" in  ">Individual::AVG_NUM_OFFSPINRGS_</a> </p>
-<dl class="section return"><dt>Returns</dt><dd>the number of offsprings </dd></dl>
 
 </div>
 </div>

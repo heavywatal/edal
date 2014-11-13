@@ -114,9 +114,6 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga8a7330aa68e101eaa7e342e9215bffdf">mating_probability</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;male) const </td></tr>
 <tr class="memdesc:ga8a7330aa68e101eaa7e342e9215bffdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">\( P(I, I&#39;) = \Xi(I, I&#39;) C(I, I&#39;)\) <br /></td></tr>
 <tr class="separator:ga8a7330aa68e101eaa7e342e9215bffdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga99e3d89e9e0b76971fab7834d8af621f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga99e3d89e9e0b76971fab7834d8af621f">poisson_offsprings</a> () const </td></tr>
-<tr class="memdesc:ga99e3d89e9e0b76971fab7834d8af621f"><td class="mdescLeft">&#160;</td><td class="mdescRight">generates poisson random number with \(\lambda\) = <a class="el" href="group__biol__param.html#gab200c753ce4b534c676acf396b6b5dbd" title=" in  ">Individual::AVG_NUM_OFFSPINRGS_</a>  <a href="group__mating.html#ga99e3d89e9e0b76971fab7834d8af621f">More...</a><br /></td></tr>
-<tr class="separator:ga99e3d89e9e0b76971fab7834d8af621f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga9173a285fda6e2026898f993498ed903"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="class_individual.html#aff1f663813da7b118f258cfcada48c8e">Loci</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga9173a285fda6e2026898f993498ed903">gametogenesis</a> () const </td></tr>
 <tr class="memdesc:ga9173a285fda6e2026898f993498ed903"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gametogenesis with free recombination and mutation.  <a href="group__mating.html#ga9173a285fda6e2026898f993498ed903">More...</a><br /></td></tr>
 <tr class="separator:ga9173a285fda6e2026898f993498ed903"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -135,6 +132,10 @@ Static Public Member Functions</h2></td></tr>
 static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__proc.html#gad71185c8f5a848386459468983855a3a">MIGRATION_RATE</a> ()</td></tr>
 <tr class="memdesc:gad71185c8f5a848386459468983855a3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter. <br /></td></tr>
 <tr class="separator:gad71185c8f5a848386459468983855a3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga29873268c015b7d23c98b5aacc0645af"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga29873268c015b7d23c98b5aacc0645af"></a>
+static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__proc.html#ga29873268c015b7d23c98b5aacc0645af">AVG_NUM_OFFSPINRGS</a> ()</td></tr>
+<tr class="memdesc:ga29873268c015b7d23c98b5aacc0645af"><td class="mdescLeft">&#160;</td><td class="mdescRight">Getter. <br /></td></tr>
+<tr class="separator:ga29873268c015b7d23c98b5aacc0645af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d2adedf96a0616443cf0c02be71500e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0d2adedf96a0616443cf0c02be71500e"></a>
 static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_individual.html#a0d2adedf96a0616443cf0c02be71500e">header</a> ()</td></tr>
 <tr class="memdesc:a0d2adedf96a0616443cf0c02be71500e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The header correspongs to str() <br /></td></tr>
@@ -227,10 +228,10 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__param.html#gaef84fc86b8cb6e5af42878e3537da600">CARRYING_CAPACITY_</a> = 160</td></tr>
 <tr class="memdesc:gaef84fc86b8cb6e5af42878e3537da600"><td class="mdescLeft">&#160;</td><td class="mdescRight">\( K_0 \) in \( K_e(I)\) &mdash; <b>NEW in anolis_v3a.pdf</b> <br /></td></tr>
 <tr class="separator:gaef84fc86b8cb6e5af42878e3537da600"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab200c753ce4b534c676acf396b6b5dbd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gab200c753ce4b534c676acf396b6b5dbd"></a>
-static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__param.html#gab200c753ce4b534c676acf396b6b5dbd">AVG_NUM_OFFSPINRGS_</a> = 4</td></tr>
-<tr class="memdesc:gab200c753ce4b534c676acf396b6b5dbd"><td class="mdescLeft">&#160;</td><td class="mdescRight">\( b \) in \( w(I) \) <br /></td></tr>
-<tr class="separator:gab200c753ce4b534c676acf396b6b5dbd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga02b305c8c4dfb02750b65c157fb7b508"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga02b305c8c4dfb02750b65c157fb7b508"></a>
+static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__param.html#ga02b305c8c4dfb02750b65c157fb7b508">AVG_NUM_OFFSPINRGS_</a> = 4</td></tr>
+<tr class="memdesc:ga02b305c8c4dfb02750b65c157fb7b508"><td class="mdescLeft">&#160;</td><td class="mdescRight">\( b \) in \( w(I) \) <br /></td></tr>
+<tr class="separator:ga02b305c8c4dfb02750b65c157fb7b508"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaeb92d69e51e3774d8def15aaaa10269e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaeb92d69e51e3774d8def15aaaa10269e"></a>
 static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__param.html#gaeb92d69e51e3774d8def15aaaa10269e">HEIGHT_PREFERENCE_</a> = 0.05</td></tr>
 <tr class="memdesc:gaeb92d69e51e3774d8def15aaaa10269e"><td class="mdescLeft">&#160;</td><td class="mdescRight">\( h_0 \) in \( \Xi(y_0,y_1|u,v) \) <br /></td></tr>
@@ -376,7 +377,7 @@ template&lt;class Func &gt; </td></tr>
 <p>calculates phenotypic values from genotype </p>
 <dl class="section return"><dt>Returns</dt><dd>phenotypic values </dd></dl>
 
-<p>Definition at line <a class="el" href="individual_8h_source.html#l00403">403</a> of file <a class="el" href="individual_8h_source.html">individual.h</a>.</p>
+<p>Definition at line <a class="el" href="individual_8h_source.html#l00400">400</a> of file <a class="el" href="individual_8h_source.html">individual.h</a>.</p>
 
 </div>
 </div>
