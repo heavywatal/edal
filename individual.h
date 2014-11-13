@@ -74,7 +74,7 @@ class Individual {
     static size_t CARRYING_CAPACITY_;
 
     //! \f$ b \f$ in \f$ w(I) \f$
-    static size_t AVG_NUM_OFFSPINRGS_;
+    static double AVG_NUM_OFFSPINRGS_;
 
     //! \f$ h_0 \f$ in \f$ \Xi(y_0,y_1|u,v) \f$
     static double HEIGHT_PREFERENCE_;
@@ -254,12 +254,6 @@ class Individual {
         return mating_preference(male) * preference_overlap(male);
     };
 
-    //! generates poisson random number with \f$\lambda\f$ = Individual::AVG_NUM_OFFSPINRGS_
-    /*! @ingroup mating
-        @return the number of offsprings
-    */
-    size_t poisson_offsprings() const;
-
     //! Gametogenesis with free recombination and mutation
     /*! @ingroup mating
         @return a gamete
@@ -268,6 +262,9 @@ class Individual {
 
     //! Getter
     static double MIGRATION_RATE() {return MIGRATION_RATE_;}
+
+    //! Getter
+    static size_t AVG_NUM_OFFSPINRGS() {return AVG_NUM_OFFSPINRGS_;}
 
     /** @} biol_proc */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////

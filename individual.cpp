@@ -20,7 +20,7 @@ double Individual::NORMAL_SIGMA_ = 0.3;
 double Individual::C0_ = 1.0;
 double Individual::C1_ = 0.5;
 size_t Individual::CARRYING_CAPACITY_ = 160;
-size_t Individual::AVG_NUM_OFFSPINRGS_ = 4;
+double Individual::AVG_NUM_OFFSPINRGS_ = 4;
 double Individual::HEIGHT_PREFERENCE_ = 0.05;
 double Individual::DIAMETER_PREFERENCE_ = 0.05;
 double Individual::TOEPAD_SELECTION_ = 0.05;
@@ -64,7 +64,7 @@ boost::program_options::options_description& Individual::opt_description() {
     desc.add_options()
         ("beta_param,a", po::value<double>(&BETA_PARAM_)->default_value(BETA_PARAM_))
         ("carrying_capacity,K", po::value<size_t>(&CARRYING_CAPACITY_)->default_value(CARRYING_CAPACITY_))
-        ("birth_rate,b", po::value<size_t>(&AVG_NUM_OFFSPINRGS_)->default_value(AVG_NUM_OFFSPINRGS_))
+        ("birth_rate,b", po::value<double>(&AVG_NUM_OFFSPINRGS_)->default_value(AVG_NUM_OFFSPINRGS_))
         ("height_pref,p", po::value<double>(&HEIGHT_PREFERENCE_)->default_value(HEIGHT_PREFERENCE_))
         ("diameter_pref,P", po::value<double>(&DIAMETER_PREFERENCE_)->default_value(DIAMETER_PREFERENCE_))
         ("toepad_select,s", po::value<double>(&TOEPAD_SELECTION_)->default_value(TOEPAD_SELECTION_))
@@ -334,7 +334,7 @@ double Individual::survival_probability(const double effective_num_competitors) 
 }
 
 double Individual::mating_preference(const Individual& male) const {
-    const double choosiness = phenotype_[trait::choosiness];
+    double choosiness = phenotype_[trait::choosiness];
     if (choosiness == 0.5) {
         // random mating
         return 1.0;
@@ -348,18 +348,13 @@ double Individual::mating_preference(const Individual& male) const {
         exponent -= 1.0;
         exponent += male.phenotype_[trait::male_trait];
     }
-    double true_choosiness = choosiness;
-    true_choosiness *= 2.0;
-    true_choosiness -= 1.0;
-    exponent *= true_choosiness;
+    choosiness *= 2.0;
+    choosiness -= 1.0;
+    exponent *= choosiness;
     exponent /= MATING_SIGMA_;
     exponent *= exponent;
     exponent *= -0.5;
     return std::exp(exponent);
-}
-
-size_t Individual::poisson_offsprings() const {
-    return prandom().poisson(AVG_NUM_OFFSPINRGS_);
 }
 
 Individual::Loci Individual::recombination(const Loci& lhs, const Loci& rhs) {
