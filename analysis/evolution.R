@@ -43,7 +43,7 @@ stopifnot(length(.argv) > 0)
 
 .tr = c(.flags, .traits)
 .axes = matrix(names(.traits), ncol=2, byrow=TRUE)
-.heat_colours = c('#000000', '#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000')
+.heat_colours = c('#333333', '#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000')
 
 .plot = function(x, y, data) {
     .hist_list = data %>>%
@@ -55,24 +55,25 @@ stopifnot(length(.argv) > 0)
     .p = .p + xlim(0, 1) + ylim(0, 1)
     .p = .p + xlab(.tr[[x]]) + ylab(.tr[[y]])
 #    .p = .p + theme(legend.position='none')
-    .p = .p + theme(panel.background=element_rect(fill='#EEEEEE'))
+    .p = .p + theme(panel.background=element_rect(fill='#000000'))
     .p = .p + theme(panel.grid=element_blank())
     .p = .p + theme(axis.text=element_blank())
     .p
 }
 #.plot('toepad_P', 'limb_P', .raw %>>% filter(time==1000))
 
-.plot_time = function(y) {
+.plot_time = function(x) {
     .tidy = .raw %>>%
-        group_by_('time', y) %>>%
+        group_by_('time', x) %>>%
         tally(wt=n)# %>>% (? .)
-    .p = ggplot(.tidy, aes_string(x='time', y=y))
+    .p = ggplot(.tidy, aes_string(x=x, y='time'))
     .p = .p + geom_tile(aes(fill=n))
     .p = .p + scale_fill_gradientn(colours=.heat_colours)
-    .p = .p + ylim(0, 1)
-    .p = .p + ylab(.tr[[y]])
+#    .p = .p + xlim(0, 1)
+    .p = .p + coord_cartesian(c(0, 1), range(.tidy$time))
+    .p = .p + xlab(.tr[[x]])
     .p = .p + theme(legend.position='none')
-    .p = .p + theme(panel.background=element_rect(fill='#EEEEEE'))
+    .p = .p + theme(panel.background=element_rect(fill='#000000'))
     .p = .p + theme(panel.grid=element_blank())
     .p = .p + theme(axis.text=element_blank())
     .p
@@ -81,20 +82,21 @@ stopifnot(length(.argv) > 0)
 
 #.indir = '.'
 #.indir = 's1_p1_c10_20141110_033830_26387@node47'
-
+.force = FALSE
 for (.indir in .argv) {
     if (!file.info(.indir)$isdir) {next}
-    .outfile = file.path(.indir, 'trajectory.pdf')
-    if (!file.exists(.outfile)) {
+    .label = basename(.indir)
+    .outfile = paste0('trajectory_', .label, '.pdf')
+    if (.force || !file.exists(.outfile)) {
         message(.outfile)
         .raw = read.csv(file.path(.indir, 'evolution.csv.gz'), stringsAsFactors=FALSE) %>>% tbl_df()
         .ys = c('toepad_P', 'height_pref_P', 'male_P', 'female_P', 'choosiness_P', 'neutral_P')
         .pl = llply(.ys, .plot_time)
-        .grob = do.call(arrangeGrob, c(.pl, list(ncol=2, main=.indir)))
+        .grob = do.call(arrangeGrob, c(.pl, list(nrow=1, main=.indir)))
         #print(.grob)
-        ggsave(.outfile, .grob, width=2, height=1, scale=6)
+        ggsave(.outfile, .grob, width=4, height=1, scale=3)
     }
-
+    next
     .outfile = file.path(.indir, 'evolution.pdf')
     if (!file.exists(.outfile)) {
         message(.outfile)
