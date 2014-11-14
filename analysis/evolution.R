@@ -86,7 +86,7 @@ stopifnot(length(.argv) > 0)
 for (.indir in .argv) {
     if (!file.info(.indir)$isdir) {next}
     .label = basename(.indir)
-    .outfile = paste0('trajectory_', .label, '.pdf')
+    .outfile = paste0(.label, '.png')
     if (.force || !file.exists(.outfile)) {
         message(.outfile)
         .raw = read.csv(file.path(.indir, 'evolution.csv.gz'), stringsAsFactors=FALSE) %>>% tbl_df()

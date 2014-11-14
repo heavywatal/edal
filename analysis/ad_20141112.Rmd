@@ -1,0 +1,116 @@
+---
+title: "Evolutionary branching on simple condition"
+author: "Watal M. Iwasaki"
+date: "2014-11-12"
+output:
+  html_document:
+    toc: true
+    self_contained: false
+---
+
+Codes
+================================================================================
+
+```{r library, message=FALSE}
+library(plyr)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(pipeR)
+library(ggplot2)
+library(gridExtra)
+library(xtable)
+```
+
+```{r definition}
+.flags = list(
+    h="help",
+    v="verbose",
+    T="time",
+    a="beta_param",
+    K="carrying_capacity",
+    b="birth_rate",
+    p="height_pref",
+    P="diameter_pref",
+    s="toepad_select",
+    S="limb_select",
+    c="pref_compe",
+    C="morph_compe",
+    f="mating_sigma",
+    u="mu_locus",
+    U="mutation_mask",
+    m="migration_rate"
+)
+
+.traits = list(
+    toepad_P=expression(paste('Toepad size ', italic(x[0]))),
+    limb_P=expression(paste('Limb length ', italic(x[1]))),
+    height_pref_P=expression(paste('Height pref. ', italic(y[0]))),
+    diameter_pref_P=expression(paste('Diameter pref. ', italic(y[1]))),
+    male_P=expression(paste('Male trait ', italic(m))),
+    female_P=expression(paste('Female trait ', italic(f))),
+    choosiness_P=expression(paste('Choosiness ', italic(c))),
+    neutral_P='Neutral'
+)
+
+.tr = c(.flags, .traits)
+.heat_colours = c('#333333', '#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000')
+
+.plot_time = function(x) {
+    .tidy = .raw %>>%
+        group_by_('time', x) %>>%
+        tally(wt=n)# %>>% (? .)
+    .p = ggplot(.tidy, aes_string(x=x, y='time'))
+    .p = .p + geom_tile(aes(fill=n))
+    .p = .p + scale_fill_gradientn(colours=.heat_colours)
+#    .p = .p + xlim(0, 1)
+    .p = .p + coord_cartesian(c(0, 1), range(.tidy$time))
+    .p = .p + xlab(.tr[[x]])
+    .p = .p + theme(legend.position='none')
+    .p = .p + theme(panel.background=element_rect(fill='#000000'))
+    .p = .p + theme(panel.grid=element_blank())
+    .p = .p + theme(axis.text=element_blank())
+    .p
+}
+#.plot_time('toepad_P')
+```
+
+
+```{r table}
+.indirs = list.dirs('~/working/anolis20141112', recursive=FALSE)
+.infiles = file.path(.indirs, 'program_options.conf')
+names(.infiles) = basename(.indirs)
+.conf = ldply(.infiles, wtl::read.conf, .id='path')
+.tbl = .conf %>>%
+    select(path, toepad_select, morph_compe, mating_sigma) %>>%
+    mutate(path=paste0('<img src="ad_20141112_files/', path, '.png" alt="', path, '">')) %>>%
+    group_by(toepad_select, morph_compe, mating_sigma) %>>%
+    summarise(path=paste0(path, collapse='<br>')) %>>%
+    ungroup() %>>% # bug will be fixed in dplyr 3.1
+    spread(mating_sigma, path) %>>%
+    arrange(toepad_select, morph_compe) %>>%
+    rename(s=toepad_select, c=morph_compe)
+```
+
+Results
+================================================================================
+
+Limb length ($x_1$), diameter preference ($y_1$), and selection for them ($s_1$, $h_1$) were fixed at $0$ so that evolution occurs on the one-dimensional resource space.
+Also habitat preference $h_0 = 0$.
+Maximum carrying capacity $K_0 = 10000$.
+Migration rate $m = 0$ (only one patch exists).
+Population data were sampled every 100 generations until $T = 10000$.
+[See here for other default values](http://heavywatal.github.io/edal/group__biol__param.html).
+Simulations were performed twice for each altered $s_0$, $c_0$, $\sigma_a$.
+
+<div>
+<style type="text/css">
+<!--
+img {max-width: 800px;}
+-->
+</style>
+```{r xtable, results='asis', echo=FALSE}
+print(.tbl %>>% as.data.frame() %>>% xtable(),
+    type='html', sanitize.text.function = identity, comment=FALSE)
+```
+</div>
