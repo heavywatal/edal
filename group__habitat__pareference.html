@@ -53,10 +53,10 @@
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga18a63a3bac4c5d6a400bcdd98e0dbd09"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__habitat__pareference.html#ga18a63a3bac4c5d6a400bcdd98e0dbd09">Individual::preference_overlap</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;other) const </td></tr>
-<tr class="memdesc:ga18a63a3bac4c5d6a400bcdd98e0dbd09"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(C(I, J)\) for competition and mating  <a href="#ga18a63a3bac4c5d6a400bcdd98e0dbd09">More...</a><br /></td></tr>
+<tr class="memdesc:ga18a63a3bac4c5d6a400bcdd98e0dbd09"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(C_y(I, J)\): competition on habitat preference  <a href="#ga18a63a3bac4c5d6a400bcdd98e0dbd09">More...</a><br /></td></tr>
 <tr class="separator:ga18a63a3bac4c5d6a400bcdd98e0dbd09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7a82540186663c5105a136e0411a98ed"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__habitat__pareference.html#ga7a82540186663c5105a136e0411a98ed">Individual::morphology_overlap</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;other) const </td></tr>
-<tr class="memdesc:ga7a82540186663c5105a136e0411a98ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(C&#39;(I, J)\) for competition  <a href="#ga7a82540186663c5105a136e0411a98ed">More...</a><br /></td></tr>
+<tr class="memdesc:ga7a82540186663c5105a136e0411a98ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(C_x(I, J)\): competition on morphology  <a href="#ga7a82540186663c5105a136e0411a98ed">More...</a><br /></td></tr>
 <tr class="separator:ga7a82540186663c5105a136e0411a98ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga313e74edcfba53662e0b63a09cfa4420"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__habitat__pareference.html#ga313e74edcfba53662e0b63a09cfa4420">Individual::resource_overlap</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;other) const </td></tr>
 <tr class="memdesc:ga313e74edcfba53662e0b63a09cfa4420"><td class="mdescLeft">&#160;</td><td class="mdescRight">Honest \(C(I, J)\) for competition and mating (very slow, unused)  <a href="#ga313e74edcfba53662e0b63a09cfa4420">More...</a><br /></td></tr>
@@ -306,14 +306,14 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>\(C&#39;(I, J)\) for competition </p>
+<p>\(C_x(I, J)\): competition on morphology </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">other</td><td>individual to interact </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>\(C&#39;(I, J)\) </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>\(C_x(I, J)\) </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">1</td><td>for individuals with identical preferences</td></tr>
@@ -321,7 +321,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <p class="formulaDsp">
-\[ C&#39;(I,J) = \exp(-c_0&#39;(x_{0,I} - x_{0,J})^2 - c_1&#39;(x_{1,I} - x_{1,J})^2) \]
+\[ C_x(I,J) = \exp(-c_x(x_{0,I} - x_{0,J})^2 - c_x(x_{1,I} - x_{1,J})^2) \]
 </p>
  
 </div>
@@ -340,14 +340,14 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>\(C(I, J)\) for competition and mating </p>
+<p>\(C_y(I, J)\): competition on habitat preference </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">other</td><td>individual to interact </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>\(C(I, J)\) </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>\(C_y(I, J)\) </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
     <tr><td class="paramname">1</td><td>for individuals with identical preferences</td></tr>
@@ -355,7 +355,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <p>following Roughgarden and others </p><p class="formulaDsp">
-\[ C(I,J) = \exp(-c_0 (y_{0,I} - y_{0,J})^2 - c_1 (y_{1,I} - y_{1,J})^2) \]
+\[ C_y(I,J) = \exp(-c_y(y_{0,I} - y_{0,J})^2 - c_y(y_{1,I} - y_{1,J})^2) \]
 </p>
  
 </div>

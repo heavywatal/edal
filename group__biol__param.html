@@ -69,7 +69,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 <tr class="separator:gaebc021c1d3f6a7a530cf4e9e169a5556"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaef84fc86b8cb6e5af42878e3537da600"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaef84fc86b8cb6e5af42878e3537da600"></a>
 static size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__param.html#gaef84fc86b8cb6e5af42878e3537da600">Individual::CARRYING_CAPACITY_</a> = 160</td></tr>
-<tr class="memdesc:gaef84fc86b8cb6e5af42878e3537da600"><td class="mdescLeft">&#160;</td><td class="mdescRight">\( K_0 \) in \( K_e(I)\) &mdash; <b>NEW in anolis_v3a.pdf</b> <br /></td></tr>
+<tr class="memdesc:gaef84fc86b8cb6e5af42878e3537da600"><td class="mdescLeft">&#160;</td><td class="mdescRight">\( K_{\max} \) in \( K_e(I)\) <br /></td></tr>
 <tr class="separator:gaef84fc86b8cb6e5af42878e3537da600"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga02b305c8c4dfb02750b65c157fb7b508"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga02b305c8c4dfb02750b65c157fb7b508"></a>
 static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__param.html#ga02b305c8c4dfb02750b65c157fb7b508">Individual::AVG_NUM_OFFSPINRGS_</a> = 4</td></tr>
@@ -93,11 +93,11 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 <tr class="separator:gaa616b4de8a82855c6958627bfe09c07b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga20626f5f51e2fa840831db8cdeb67b87"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga20626f5f51e2fa840831db8cdeb67b87"></a>
 static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__param.html#ga20626f5f51e2fa840831db8cdeb67b87">Individual::PREF_COMPETITION_</a> = 0.05</td></tr>
-<tr class="memdesc:ga20626f5f51e2fa840831db8cdeb67b87"><td class="mdescLeft">&#160;</td><td class="mdescRight">\( c_0, c_1 \) in \( C(I,J) \) <br /></td></tr>
+<tr class="memdesc:ga20626f5f51e2fa840831db8cdeb67b87"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(c_y\) in \(C_y(I,J)\) <br /></td></tr>
 <tr class="separator:ga20626f5f51e2fa840831db8cdeb67b87"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2e3c4be079a515eded5df343e324153d"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga2e3c4be079a515eded5df343e324153d"></a>
 static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__param.html#ga2e3c4be079a515eded5df343e324153d">Individual::MORPH_COMPETITION_</a> = 0.05</td></tr>
-<tr class="memdesc:ga2e3c4be079a515eded5df343e324153d"><td class="mdescLeft">&#160;</td><td class="mdescRight">not yet in anolis_v3a.pdf <br /></td></tr>
+<tr class="memdesc:ga2e3c4be079a515eded5df343e324153d"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(c_x\) in \(C_x(I,J)\) <br /></td></tr>
 <tr class="separator:ga2e3c4be079a515eded5df343e324153d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaccf86af7202e7748a3c986d65d99522f"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaccf86af7202e7748a3c986d65d99522f"></a>
 static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__param.html#gaccf86af7202e7748a3c986d65d99522f">Individual::MATING_SIGMA_</a> = 0.05</td></tr>
@@ -117,6 +117,10 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 static constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__param.html#gadb7bec91dab561caac374471928640cb">Individual::NUM_LOCI_</a> = 8</td></tr>
 <tr class="memdesc:gadb7bec91dab561caac374471928640cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of loci per trait. <br /></td></tr>
 <tr class="separator:gadb7bec91dab561caac374471928640cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9805c56bdc56f1e6804effd63990c894"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga9805c56bdc56f1e6804effd63990c894"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__param.html#ga9805c56bdc56f1e6804effd63990c894">Simulation::INITIAL_PATCH_SIZE</a> = 40</td></tr>
+<tr class="memdesc:ga9805c56bdc56f1e6804effd63990c894"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(K_0\), the number of individuals in an initial patch <br /></td></tr>
+<tr class="separator:ga9805c56bdc56f1e6804effd63990c894"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga679885743abadbb6f1068c528690a7bd"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga679885743abadbb6f1068c528690a7bd"></a>
 size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__param.html#ga679885743abadbb6f1068c528690a7bd">Simulation::NUM_ROWS</a> = 8</td></tr>
 <tr class="memdesc:ga679885743abadbb6f1068c528690a7bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of patches on Y axis. <br /></td></tr>
@@ -125,10 +129,6 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__param.html#gac58b819c607094692b3e37cf64755039">Simulation::NUM_COLS</a> = 8</td></tr>
 <tr class="memdesc:gac58b819c607094692b3e37cf64755039"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of patches on X axis. <br /></td></tr>
 <tr class="separator:gac58b819c607094692b3e37cf64755039"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9805c56bdc56f1e6804effd63990c894"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga9805c56bdc56f1e6804effd63990c894"></a>
-size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__param.html#ga9805c56bdc56f1e6804effd63990c894">Simulation::INITIAL_PATCH_SIZE</a> = 40</td></tr>
-<tr class="memdesc:ga9805c56bdc56f1e6804effd63990c894"><td class="mdescLeft">&#160;</td><td class="mdescRight">The number of individuals in an original patch. <br /></td></tr>
-<tr class="separator:ga9805c56bdc56f1e6804effd63990c894"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga01651599b0a2b37916543ea522dfb9e1"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga01651599b0a2b37916543ea522dfb9e1"></a>
 size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__biol__param.html#ga01651599b0a2b37916543ea522dfb9e1">Simulation::DIMENSIONS</a> = 2</td></tr>
 <tr class="memdesc:ga01651599b0a2b37916543ea522dfb9e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dimension number of resources/traits. <br /></td></tr>
@@ -171,6 +171,8 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 <tr>
 <th>Command line option </th><th>Symbol </th><th>Variable  </th></tr>
 <tr>
+<td><code>-k,--patch_size</code> </td><td>\(K_0\) </td><td><a class="el" href="group__biol__param.html#ga9805c56bdc56f1e6804effd63990c894" title=", the number of individuals in an initial patch ">Simulation::INITIAL_PATCH_SIZE</a> </td></tr>
+<tr>
 <td><code>--row,--col</code> </td><td>- </td><td><a class="el" href="group__biol__param.html#gac58b819c607094692b3e37cf64755039" title="The number of patches on X axis. ">Simulation::NUM_COLS</a>, <a class="el" href="group__biol__param.html#ga679885743abadbb6f1068c528690a7bd" title="The number of patches on Y axis. ">Simulation::NUM_ROWS</a> </td></tr>
 <tr>
 <td><code>-T,--time</code> </td><td>- </td><td><a class="el" href="group__biol__param.html#gafe96353b4af1e7076bdeeb000c7ea805" title="The overall number of generations to observe. ">Simulation::ENTIRE_PERIOD</a> </td></tr>
@@ -178,7 +180,7 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 <td><code>-I,--interval</code> </td><td>- </td><td><a class="el" href="group__biol__param.html#ga446ceec49a33278821d5beffaa7fbb9b" title="Interval between snapshots. ">Simulation::OBSERVATION_CYCLE</a> </td></tr>
 </table>
 
-<p>Definition at line <a class="el" href="simulation_8cpp_source.html#l00029">29</a> of file <a class="el" href="simulation_8cpp_source.html">simulation.cpp</a>.</p>
+<p>Definition at line <a class="el" href="simulation_8cpp_source.html#l00030">30</a> of file <a class="el" href="simulation_8cpp_source.html">simulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -209,31 +211,31 @@ size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 <tr>
 <th>Command line option </th><th>Symbol </th><th>Variable  </th></tr>
 <tr>
-<td><code>-a,--beta_param</code> </td><td>\( \alpha \) </td><td><a class="el" href="group__biol__param.html#gaebc021c1d3f6a7a530cf4e9e169a5556" title=" of Beta distribution in  ">Individual::BETA_PARAM_</a> </td></tr>
+<td><code>-a,--beta_param</code> </td><td>\(\alpha\) </td><td><a class="el" href="group__biol__param.html#gaebc021c1d3f6a7a530cf4e9e169a5556" title=" of Beta distribution in  ">Individual::BETA_PARAM_</a> </td></tr>
 <tr>
-<td><code>-K,--carrying_capacity</code> </td><td>\( K_0 \) </td><td><a class="el" href="group__biol__param.html#gaef84fc86b8cb6e5af42878e3537da600" title=" in  — NEW in anolis_v3a.pdf ">Individual::CARRYING_CAPACITY_</a> </td></tr>
+<td><code>-K,--carrying_capacity</code> </td><td>\(K_{\max}\) </td><td><a class="el" href="group__biol__param.html#gaef84fc86b8cb6e5af42878e3537da600" title=" in  ">Individual::CARRYING_CAPACITY_</a> </td></tr>
 <tr>
-<td><code>-b,--birth_rate</code> </td><td>\( b \) </td><td><a class="el" href="group__biol__param.html#ga02b305c8c4dfb02750b65c157fb7b508" title=" in  ">Individual::AVG_NUM_OFFSPINRGS_</a> </td></tr>
+<td><code>-b,--birth_rate</code> </td><td>\(b\) </td><td><a class="el" href="group__biol__param.html#ga02b305c8c4dfb02750b65c157fb7b508" title=" in  ">Individual::AVG_NUM_OFFSPINRGS_</a> </td></tr>
 <tr>
-<td><code>-p,--height_pref</code> </td><td>\( h_0 \) </td><td><a class="el" href="group__biol__param.html#gaeb92d69e51e3774d8def15aaaa10269e" title=" in  ">Individual::HEIGHT_PREFERENCE_</a> </td></tr>
+<td><code>-p,--height_pref</code> </td><td>\(h_0\) </td><td><a class="el" href="group__biol__param.html#gaeb92d69e51e3774d8def15aaaa10269e" title=" in  ">Individual::HEIGHT_PREFERENCE_</a> </td></tr>
 <tr>
-<td><code>-P,--diameter_pref</code> </td><td>\( h_1 \) </td><td><a class="el" href="group__biol__param.html#ga3d3803febe887921700a478fc62a1a7b" title=" in  ">Individual::DIAMETER_PREFERENCE_</a> </td></tr>
+<td><code>-P,--diameter_pref</code> </td><td>\(h_1\) </td><td><a class="el" href="group__biol__param.html#ga3d3803febe887921700a478fc62a1a7b" title=" in  ">Individual::DIAMETER_PREFERENCE_</a> </td></tr>
 <tr>
-<td><code>-s,--toepad_select</code> </td><td>\( s_0 \) </td><td><a class="el" href="group__biol__param.html#gac2415f029480870da8dddbf72b578c7c" title=" in  ">Individual::TOEPAD_SELECTION_</a> </td></tr>
+<td><code>-s,--toepad_select</code> </td><td>\(s_0\) </td><td><a class="el" href="group__biol__param.html#gac2415f029480870da8dddbf72b578c7c" title=" in  ">Individual::TOEPAD_SELECTION_</a> </td></tr>
 <tr>
-<td><code>-S,--limb_select</code> </td><td>\( s_1 \) </td><td><a class="el" href="group__biol__param.html#gaa616b4de8a82855c6958627bfe09c07b" title=" in  ">Individual::LIMB_SELECTION_</a> </td></tr>
+<td><code>-S,--limb_select</code> </td><td>\(s_1\) </td><td><a class="el" href="group__biol__param.html#gaa616b4de8a82855c6958627bfe09c07b" title=" in  ">Individual::LIMB_SELECTION_</a> </td></tr>
 <tr>
-<td><code>-c,--pref_compe</code> </td><td>\( c_0, c_1 \) </td><td><a class="el" href="group__biol__param.html#ga20626f5f51e2fa840831db8cdeb67b87" title=" in  ">Individual::PREF_COMPETITION_</a> </td></tr>
+<td><code>-c,--pref_compe</code> </td><td>\(c_y\) </td><td><a class="el" href="group__biol__param.html#ga20626f5f51e2fa840831db8cdeb67b87" title=" in  ">Individual::PREF_COMPETITION_</a> </td></tr>
 <tr>
-<td><code>-C,--morph_compe</code> </td><td>- </td><td><a class="el" href="group__biol__param.html#ga2e3c4be079a515eded5df343e324153d" title="not yet in anolis_v3a.pdf ">Individual::MORPH_COMPETITION_</a> </td></tr>
+<td><code>-C,--morph_compe</code> </td><td>\(c_x\) </td><td><a class="el" href="group__biol__param.html#ga2e3c4be079a515eded5df343e324153d" title=" in  ">Individual::MORPH_COMPETITION_</a> </td></tr>
 <tr>
-<td><code>-f,--mating_sigma</code> </td><td>\( \sigma_a \) </td><td><a class="el" href="group__biol__param.html#gaccf86af7202e7748a3c986d65d99522f" title=" in  ">Individual::MATING_SIGMA_</a> </td></tr>
+<td><code>-f,--mating_sigma</code> </td><td>\(\sigma_a\) </td><td><a class="el" href="group__biol__param.html#gaccf86af7202e7748a3c986d65d99522f" title=" in  ">Individual::MATING_SIGMA_</a> </td></tr>
 <tr>
 <td><code>-u,--mu_locus</code> </td><td>- </td><td><a class="el" href="group__biol__param.html#ga16ba0280d6a150b02b23b25811ba064f" title="Mutation rate per locus per generation. ">Individual::MU_LOCUS_</a> </td></tr>
 <tr>
 <td><code>-U,--mutation_mask</code> </td><td>- </td><td><a class="el" href="group__biol__param.html#gaa66359fcb11d4b14732919dfbedadc6c" title="Flag set to protect specific traits from mutations. ">Individual::MUTATION_MASK_</a> </td></tr>
 <tr>
-<td><code>-m,--migration_rate</code> </td><td>\( m \) </td><td><a class="el" href="group__biol__param.html#ga563a4ee3ea4ab14f52d14fd5c22d3feb" title="Migration rate  (i.e.,  makes the expected # of migrants) ">Individual::MIGRATION_RATE_</a> </td></tr>
+<td><code>-m,--migration_rate</code> </td><td>\(m\) </td><td><a class="el" href="group__biol__param.html#ga563a4ee3ea4ab14f52d14fd5c22d3feb" title="Migration rate  (i.e.,  makes the expected # of migrants) ">Individual::MIGRATION_RATE_</a> </td></tr>
 </table>
 
 <p>Definition at line <a class="el" href="individual_8cpp_source.html#l00061">61</a> of file <a class="el" href="individual_8cpp_source.html">individual.cpp</a>.</p>
