@@ -73,12 +73,12 @@ class Patch {
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   private:
 
-    //! Calculate \f$N_e(I)\f$ from \f$C(I,J)\f$ and \f$C'(I,J)\f$
+    //! Calculate \f$N_e(I)\f$ from \f$C(I,J)\f$
     /*! @ingroup natural_selection
         @param focal individual
         @return \f$N_e\f$ of the focal individual
         \f[
-            N_e(I) = \sum_J C(I,J) C'(I,J)
+            N_e(I) = \sum_J C(I,J)
         \f]
     */
     double effective_num_competitors(const Individual&) const;

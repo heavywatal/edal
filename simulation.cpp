@@ -20,11 +20,12 @@
 /*! @ingroup biol_param
     @return Program options description
 
-    Command line option | Symbol   | Variable
-    ------------------- | -------- | ------------------------------------------
-    `--row,--col`       | -        | Simulation::NUM_COLS, Simulation::NUM_ROWS
-    `-T,--time`         | -        | Simulation::ENTIRE_PERIOD
-    `-I,--interval`     | -        | Simulation::OBSERVATION_CYCLE
+    Command line option | Symbol    | Variable
+    ------------------- | --------- | ------------------------------------------
+    `-k,--patch_size`   | \f$K_0\f$ | Simulation::INITIAL_PATCH_SIZE
+    `--row,--col`       | -         | Simulation::NUM_COLS, Simulation::NUM_ROWS
+    `-T,--time`         | -         | Simulation::ENTIRE_PERIOD
+    `-I,--interval`     | -         | Simulation::OBSERVATION_CYCLE
 */
 boost::program_options::options_description& Simulation::opt_description() {HERE;
     namespace po = boost::program_options;
@@ -38,6 +39,7 @@ boost::program_options::options_description& Simulation::opt_description() {HERE
         ("ppn", po::value<size_t>(&PPN)->default_value(wtl::num_threads()))
         ("label", po::value<std::string>(&LABEL)->default_value("default"))
         ("top_dir", po::value<std::string>()->default_value(OUT_DIR.string()))
+        ("patch_size,k", po::value<size_t>(&INITIAL_PATCH_SIZE)->default_value(INITIAL_PATCH_SIZE))
         ("row", po::value<size_t>(&NUM_ROWS)->default_value(NUM_ROWS))
         ("col", po::value<size_t>(&NUM_COLS)->default_value(NUM_COLS))
         ("dimensions,D", po::value<size_t>(&DIMENSIONS)->default_value(DIMENSIONS))

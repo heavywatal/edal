@@ -40,14 +40,14 @@ class Simulation {
     /*! @addtogroup biol_param
         @{*/
 
+    //! \f$K_0\f$, the number of individuals in an initial patch
+    size_t INITIAL_PATCH_SIZE = 40;
+
     //! The number of patches on Y axis
     size_t NUM_ROWS = 8;
 
     //! The number of patches on X axis
     size_t NUM_COLS = 8;
-
-    //! The number of individuals in an original patch
-    size_t INITIAL_PATCH_SIZE = 40;
 
     //! Dimension number of resources/traits
     size_t DIMENSIONS = 2;

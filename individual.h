@@ -70,7 +70,7 @@ class Individual {
     //! \f$ \alpha \f$ of Beta distribution in \f$ F(u,v) \f$
     static double BETA_PARAM_;
 
-    //! \f$ K_0 \f$ in \f$ K_e(I)\f$ --- **NEW in anolis_v3a.pdf**
+    //! \f$ K_{\max} \f$ in \f$ K_e(I)\f$
     static size_t CARRYING_CAPACITY_;
 
     //! \f$ b \f$ in \f$ w(I) \f$
@@ -88,10 +88,10 @@ class Individual {
     //! \f$ s_1\f$ in \f$ W(x_0,x_1|u,v) \f$
     static double LIMB_SELECTION_;
 
-    //! \f$ c_0, c_1 \f$ in \f$ C(I,J) \f$
+    //! \f$c_y\f$ in \f$C_y(I,J)\f$
     static double PREF_COMPETITION_;
 
-    //! not yet in anolis_v3a.pdf
+    //! \f$c_x\f$ in \f$C_x(I,J)\f$
     static double MORPH_COMPETITION_;
 
     //! \f$ \sigma_a \f$ in \f$ \Psi(f,c|m) \f$
@@ -187,27 +187,27 @@ class Individual {
     //! Find \f$K_e(I)\f$ in KE_CACHE_ or calculate
     double effective_carrying_capacity_cache() const;
 
-    //! \f$C(I, J)\f$ for competition and mating
+    //! \f$C_y(I, J)\f$: competition on habitat preference
     /*! @ingroup habitat_pareference
         @param other individual to interact
-        @return \f$C(I, J)\f$
+        @return \f$C_y(I, J)\f$
         @retval 1 for individuals with identical preferences
 
         following Roughgarden and others
         \f[
-            C(I,J) = \exp(-c_0 (y_{0,I} - y_{0,J})^2 - c_1 (y_{1,I} - y_{1,J})^2)
+            C_y(I,J) = \exp(-c_y(y_{0,I} - y_{0,J})^2 - c_y(y_{1,I} - y_{1,J})^2)
         \f]
     */
     double preference_overlap(const Individual& other) const;
 
-    //! \f$C'(I, J)\f$ for competition
+    //! \f$C_x(I, J)\f$: competition on morphology
     /*! @ingroup habitat_pareference
         @param other individual to interact
-        @return \f$C'(I, J)\f$
+        @return \f$C_x(I, J)\f$
         @retval 1 for individuals with identical preferences
 
         \f[
-            C'(I,J) = \exp(-c_0'(x_{0,I} - x_{0,J})^2 - c_1'(x_{1,I} - x_{1,J})^2)
+            C_x(I,J) = \exp(-c_x(x_{0,I} - x_{0,J})^2 - c_x(x_{1,I} - x_{1,J})^2)
         \f]
     */
     double morphology_overlap(const Individual& other) const;
@@ -247,7 +247,7 @@ class Individual {
     */
     double survival_probability(const double effective_num_competitors) const;
 
-    //! \f$ P(I, I') = \Xi(I, I') C(I, I')\f$
+    //! \f$ P(I, I') = \Xi(I, I') C_y(I, I')\f$
     /*! @ingroup mating
     */
     double mating_probability(const Individual& male) const {

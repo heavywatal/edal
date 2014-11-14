@@ -42,21 +42,21 @@ std::map<std::vector<double>, double> Individual::KE_CACHE_;
 /*! @ingroup biol_param
     @return Program options description
 
-    Command line option      | Symbol           | Variable
-    ------------------------ | ---------------- | --------------------------------
-    `-a,--beta_param`        | \f$ \alpha \f$   | Individual::BETA_PARAM_
-    `-K,--carrying_capacity` | \f$ K_0 \f$      | Individual::CARRYING_CAPACITY_
-    `-b,--birth_rate`        | \f$ b \f$        | Individual::AVG_NUM_OFFSPINRGS_
-    `-p,--height_pref`       | \f$ h_0 \f$      | Individual::HEIGHT_PREFERENCE_
-    `-P,--diameter_pref`     | \f$ h_1 \f$      | Individual::DIAMETER_PREFERENCE_
-    `-s,--toepad_select`     | \f$ s_0 \f$      | Individual::TOEPAD_SELECTION_
-    `-S,--limb_select`       | \f$ s_1 \f$      | Individual::LIMB_SELECTION_
-    `-c,--pref_compe`        | \f$ c_0, c_1 \f$ | Individual::PREF_COMPETITION_
-    `-C,--morph_compe`       | -                | Individual::MORPH_COMPETITION_
-    `-f,--mating_sigma`      | \f$ \sigma_a \f$ | Individual::MATING_SIGMA_
-    `-u,--mu_locus`          | -                | Individual::MU_LOCUS_
-    `-U,--mutation_mask`     | -                | Individual::MUTATION_MASK_
-    `-m,--migration_rate`    | \f$ m \f$        | Individual::MIGRATION_RATE_
+    Command line option      | Symbol         | Variable
+    ------------------------ | -------------- | --------------------------------
+    `-a,--beta_param`        | \f$\alpha\f$   | Individual::BETA_PARAM_
+    `-K,--carrying_capacity` | \f$K_{\max}\f$ | Individual::CARRYING_CAPACITY_
+    `-b,--birth_rate`        | \f$b\f$        | Individual::AVG_NUM_OFFSPINRGS_
+    `-p,--height_pref`       | \f$h_0\f$      | Individual::HEIGHT_PREFERENCE_
+    `-P,--diameter_pref`     | \f$h_1\f$      | Individual::DIAMETER_PREFERENCE_
+    `-s,--toepad_select`     | \f$s_0\f$      | Individual::TOEPAD_SELECTION_
+    `-S,--limb_select`       | \f$s_1\f$      | Individual::LIMB_SELECTION_
+    `-c,--pref_compe`        | \f$c_y\f$      | Individual::PREF_COMPETITION_
+    `-C,--morph_compe`       | \f$c_x\f$      | Individual::MORPH_COMPETITION_
+    `-f,--mating_sigma`      | \f$\sigma_a\f$ | Individual::MATING_SIGMA_
+    `-u,--mu_locus`          | -              | Individual::MU_LOCUS_
+    `-U,--mutation_mask`     | -              | Individual::MUTATION_MASK_
+    `-m,--migration_rate`    | \f$m\f$        | Individual::MIGRATION_RATE_
 */
 boost::program_options::options_description& Individual::opt_description() {
     namespace po = boost::program_options;
@@ -327,7 +327,7 @@ double Individual::resource_overlap(const Individual& other) const {
 double Individual::survival_probability(const double effective_num_competitors) const {
     double denom = AVG_NUM_OFFSPINRGS_;
     denom -= 1.0;
-    denom *= effective_num_competitors;  // ^ alpha for crowding strength
+    denom *= effective_num_competitors;  // ^ theta for crowding strength
     denom /= ke_;
     denom += 1.0;
     return 1.0 / denom;

@@ -66,7 +66,7 @@ In particular, the natural constraint $\theta^{-1} > 0$ implies $1 \le c_0/c_1$.
 The joint density $F$ is
 \begin{equation} \label{gaus}
   F(u,v) \; = \;
-  k \,\exp (- \sigma (u - \mu)^2 )\exp\Big(\!- \theta  v \Big) \theta,
+  k \,\exp \big(-\sigma (u - \mu)^2 \big) \exp\big(\!- \theta  v \big) \theta,
 \end{equation}
 where $k$ is normalizing constant.
 We can truncate this distribution so it's defined for $0\leq u,v \leq 1$.
@@ -77,7 +77,7 @@ We can also set the mean of $u$ at $\mu=1/2$.
 Height $u$ has a symmetric beta distribution mean 1/2 and with parameter $\alpha>1$ and the diameter has a triangular distribution on the interval $[0,1-u]$ so that the joint density is 
 \begin{equation} \label{beta}
   F(u,v) \; = \;
-  \frac{\Gamma(2\alpha)}{\Gamma(\alpha)^2} (u(1-u))^{\alpha-1}\ \frac{2}{1-u}(1-\frac{v}{1-u}),
+  \frac{\Gamma(2\alpha)}{\Gamma(\alpha)^2} \big(u(1-u)\big)^{\alpha-1}\ \frac{2}{1-u}(1-\frac{v}{1-u}),
 \end{equation}
 where $\Gamma$ is gamma function. The mean of $u$ is 1/2 and the variance is $1/(4(1+2\alpha))$.
 For any given $u$, the mean of $v$ is $(1-u)/3$.
@@ -109,7 +109,7 @@ the probabilities of forward and backward mutations are equal.
 {\bf Habitat preference}.\quad
 The relative preference of an individual with habitat preference traits $y_0,y_1$ for environmental characteristic $(u,v)$ is 
 \begin{equation}
-  \Xi(y_0,y_1\mid u,v) \sim \exp(-h_0(u-y_0)^2-h_1(v-y_1)^2)
+  \Xi(y_0,y_1\mid u,v) \sim \exp\big(-h_0(u-y_0)^2-h_1(v-y_1)^2\big)
 \end{equation}
 We can also consider a quadratic approximation:
 \begin{equation} \label{quad}
@@ -118,7 +118,7 @@ We can also consider a quadratic approximation:
 
 {\bf Viability}.\quad Let viability of genotype $(x_0,x_1)$ in niche $(u,v)$ be Gaussian,
 \begin{equation}
-  W(x_0,x_1 \mid u,v) = \exp(-s_0(u-x_0)^2-s_1(v-x_1)^2),
+  W(x_0,x_1 \mid u,v) = \exp\big(-s_0(u-x_0)^2-s_1(v-x_1)^2\big),
 \end{equation}
 where the $\sigma_{s_i}>0$ are parameters measuring the strength of selection.
 Note that the optimum values of traits $x_0$ and $x_1$ under environmental conditions $(u,v)$ are $x_0 = u$ and $x_1 = v$.\\
@@ -128,12 +128,12 @@ Consider a specific genotype that has an absolute preference for environment $(u
 (so that $\Xi$ is a $\delta$-function).
 Then a natural measure of the carrying capacity of a population of such individuals is
 \[
-    K_0 F(u,v) W(x_0,x_1 \mid u,v),
+    K_{\max} F(u,v) W(x_0,x_1 \mid u,v),
 \]
-where $K_0$ is a scaling parameter, and $K_0 F(u,v)$ can be thought of as the maximum number of individuals with an absolute preference for environment $(u,v)$ is they also have perfect adaptation for this niche (i.e. if $W(x_0,x_1 \mid u,v)=1$).
+where $K_{\max}$ is a scaling parameter, and $K_{\max} F(u,v)$ can be thought of as the maximum number of individuals with an absolute preference for environment $(u,v)$ is they also have perfect adaptation for this niche (i.e. if $W(x_0,x_1 \mid u,v)=1$).
 Naturally, the more common environments can maintain higher densities of individuals that prefer them. Now,
 \begin{equation}
-  K_e(I)= K_0 \iint F(u,v) W(x_0,x_1 \mid u,v) \Xi(y_0,y_1\mid u,v) du dv
+  K_e(I)= K_{\max} \iint F(u,v) W(x_0,x_1 \mid u,v) \Xi(y_0,y_1\mid u,v) du dv
 \end{equation}
 is the average carrying capacity of genotype $(x_0,x_1, y_0, y_1)$.
 
@@ -142,10 +142,12 @@ is the average carrying capacity of genotype $(x_0,x_1, y_0, y_1)$.
 
 Following Roughgarden and others, we define the competition coefficient for individual $I$ and $J$ as
 \begin{subequations}
-  \begin{equation}
-    C(I,J)=exp( -c_0(y_{0,I}-y_{0,J})^2-c_1(y_{1,I}-y_{1,J})^2).
-  \end{equation}
-  That is, competition strength is evaluated  on the basis of their habitat preferences.
+  \begin{equation}\begin{aligned}
+    C(I,J)   &= C_x(I,J) C_y(I,J)\\
+    C_x(I,J) &= exp\big( -c_{x0}(x_{0,I}-x_{0,J})^2-c_{x1}(x_{1,I}-x_{1,J})^2\big)\\
+    C_y(I,J) &= exp\big( -c_{y0}(y_{0,I}-y_{0,J})^2-c_{y1}(y_{1,I}-y_{1,J})^2\big).
+  \end{aligned}\end{equation}
+  That is, competition strength is evaluated  on the basis of their morphology and habitat preferences.
   For individuals with identical preferences, $C(I,J)=1$, that is competition is the strongest.
 
   For individual $I$, the effective number of competitors is
@@ -158,11 +160,11 @@ Following Roughgarden and others, we define the competition coefficient for indi
 
 The probability that an individual survives to the age of reproduction is
 \begin{equation} \label{BH}
-  w(I)=\frac{1}{1+(b-1)\frac{N_e(I)^\alpha}{K_e(I)}},
+  w(I)=\frac{1}{1+(b-1)\frac{N_e(I)^\theta}{K_e(I)}},
 \end{equation}
-where the parameter $\alpha$ controls the strength of crowding, and $b>0$ is a parameter
+where the parameter $\theta$ controls the strength of crowding, and $b>0$ is a parameter
 (average number of offspring per female; see below).
-Equation~(\ref{BH}) is the Beverton-Holt model which represents a discrete-time analog of the logistic model.
+Equation~(\ref{BH}) with $\theta = 1$ is the Beverton-Holt model which represents a discrete-time analog of the logistic model.
 If $N_e(I) \ll K_e(I)$, then $w(I)=1$ (survival probability is one),
 and if $N_e(I)=K_e(I)$, then $w(I)=1/b$.
 
@@ -192,9 +194,9 @@ Under this parameterization, females with $c=0.5$ mate randomly, females with $c
 The pseudo probability that female
 $I = \langle f,c,\ldots \rangle$ mates with male $I^{\prime}= \langle m,\ldots \rangle$ is
 \begin{equation}
-  P(I,I^{\prime}) = \psi(I,I^{\prime})\ C(I,J) \\
+  P(I,I^{\prime}) = \psi(I,I^{\prime})\ C_y(I,J) \\
 \end{equation}
-This is the preference of $I$ for $I^{\prime}$, multiplied by their correlation (with respect to habitat preferences $C(I,J)$).
+This is the preference of $I$ for $I^{\prime}$, multiplied by their correlation (with respect to habitat preferences $C_y(I,J)$).
 These ``pseudo probabilities'' are scaled to sum to one (by summing over the available males $I^\prime$).
 
 
@@ -230,7 +232,7 @@ still, the best bet is that it occurs when they are young.]}
 
 \section{Initial conditions}
 
-$K_{init}$ offsprings populate each patch in a small square of patches in the upper left corner.
+$K_0$ offsprings populate a patch in the upper left corner.
 All individuals are identical homozygotes such that all traits are exactly in the middle of their range (i.e., $x_i=y_i=0.5$ for all $i$).
 These initial conditions correspond to the colonization of a system by a small number of genetically similar, poorly adapted generalists.
 
