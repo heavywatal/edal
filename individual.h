@@ -308,7 +308,8 @@ class Individual {
         @param diameter habitat environment
         @return \f$\Xi(I, u, v)\f$ before normalization
         \f[
-            \Xi(I,u,v) \propto \exp(-h_0 (u - y_0)^2 - h_1 (v - y_1)^2)
+            \Xi(I,u,v) \propto \exp(-\frac{(u - y_0)^2}{2h_0^2}
+                                    -\frac{(v - y_1)^2}{2h_1^2})
         \f]
     */
     double habitat_preference_exp(const double height, const double diameter) const;

@@ -109,11 +109,11 @@ the probabilities of forward and backward mutations are equal.
 {\bf Habitat preference}.\quad
 The relative preference of an individual with habitat preference traits $y_0,y_1$ for environmental characteristic $(u,v)$ is
 \begin{equation}
-  \Xi(y_0,y_1\mid u,v) \sim \exp\big(-h_0(u-y_0)^2-h_1(v-y_1)^2\big)
+  \Xi(y_0,y_1\mid u,v) = \exp\big(-\frac{(u-y_0)^2}{2h_0^2} -\frac{(v-y_1)^2}{2h_1^2}\big)
 \end{equation}
 We can also consider a quadratic approximation:
 \begin{equation} \label{quad}
-  \Xi(y_0,y_1\mid u,v) \sim 1-h_0(u-y_0)^2-h_1(v-y_1)^2.
+  \Xi(y_0,y_1\mid u,v) = 1-h_0(u-y_0)^2-h_1(v-y_1)^2.
 \end{equation}
 
 {\bf Viability}.\quad Let viability of genotype $(x_0,x_1)$ in niche $(u,v)$ be Gaussian,

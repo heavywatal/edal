@@ -21,8 +21,8 @@ double Individual::C0_ = 1.0;
 double Individual::C1_ = 0.5;
 size_t Individual::CARRYING_CAPACITY_ = 160;
 double Individual::AVG_NUM_OFFSPINRGS_ = 4;
-double Individual::HEIGHT_PREFERENCE_ = 0.05;
-double Individual::DIAMETER_PREFERENCE_ = 0.05;
+double Individual::HEIGHT_PREFERENCE_ = 2.0;
+double Individual::DIAMETER_PREFERENCE_ = 2.0;
 double Individual::TOEPAD_SELECTION_ = 2.0;
 double Individual::LIMB_SELECTION_ = 2.0;
 double Individual::PREF_COMPETITION_ = 2.0;
@@ -145,8 +145,8 @@ double integrate_square(Func&& func) {
     }, 0.0, 1.0, Individual::NUM_STEPS_);
 }
 
-//! Gaussian function \f$\exp(-\frac {(x-\mu)^2} {2\sigma^2})\f$
-inline double gaussian(double x, const double mu, const double sigma) {
+//! Make exponent of Gaussian function
+inline double gaussian_exponent(double x, const double mu, const double sigma) {
     x -= mu;
     x /= sigma;
     x *= x;
@@ -171,13 +171,10 @@ Individual::Individual(const std::vector<unsigned long>& flags): genotype_{{}, {
 }
 
 double Individual::habitat_preference_exp(const double height, const double diameter) const {
-    auto impl = [](double u, const double y, const double h) {
-        u -= y;
-        u *= u;
-        return u *= h;
-    };
-    double exponent = -impl(phenotype_[trait::height_preference], height, HEIGHT_PREFERENCE_);
-    exponent -= impl(phenotype_[trait::diameter_preference], diameter, DIAMETER_PREFERENCE_);
+    double exponent = gaussian_exponent(phenotype_[trait::height_preference],
+                                        height, HEIGHT_PREFERENCE_);
+    exponent += gaussian_exponent(phenotype_[trait::diameter_preference],
+                                  diameter, DIAMETER_PREFERENCE_);
     return std::exp(exponent);
 }
 
@@ -236,10 +233,10 @@ double Individual::calc_Dxi_numerical() const {
 }
 
 double Individual::fitness(const double height, const double diameter) const {
-    double exponent = gaussian(phenotype_[trait::toepad_size],
-                               height, TOEPAD_SELECTION_);
-    exponent += gaussian(phenotype_[trait::limb_length],
-                         diameter, LIMB_SELECTION_);
+    double exponent = gaussian_exponent(phenotype_[trait::toepad_size],
+                                        height, TOEPAD_SELECTION_);
+    exponent += gaussian_exponent(phenotype_[trait::limb_length],
+                                  diameter, LIMB_SELECTION_);
     return std::exp(exponent);
 }
 
@@ -274,7 +271,7 @@ double Individual::effective_carrying_capacity_cache() const {
     static std::mutex mtx;
     std::vector<double> ecol_traits(phenotype_.begin(), phenotype_.begin()+4);
     if (KE_CACHE_.find(ecol_traits) == KE_CACHE_.end()) {
-        const double ke = effective_carrying_capacity_quad_unnormalized();
+        const double ke = effective_carrying_capacity_exp_unnormalized();
         std::lock_guard<std::mutex> lck(mtx);
         return KE_CACHE_[ecol_traits] = ke;
     } else {
@@ -284,22 +281,22 @@ double Individual::effective_carrying_capacity_cache() const {
 }
 
 double Individual::preference_overlap(const Individual& other) const {
-    double exponent = gaussian(phenotype_[trait::height_preference],
-                               other.phenotype_[trait::height_preference],
-                               PREF_COMPETITION_);
-    exponent += gaussian(phenotype_[trait::diameter_preference],
-                         other.phenotype_[trait::diameter_preference],
-                         PREF_COMPETITION_);
+    double exponent = gaussian_exponent(phenotype_[trait::height_preference],
+                                        other.phenotype_[trait::height_preference],
+                                        PREF_COMPETITION_);
+    exponent += gaussian_exponent(phenotype_[trait::diameter_preference],
+                                  other.phenotype_[trait::diameter_preference],
+                                  PREF_COMPETITION_);
     return std::exp(exponent);
 }
 
 double Individual::morphology_overlap(const Individual& other) const {
-    double exponent = gaussian(phenotype_[trait::toepad_size],
-                               other.phenotype_[trait::toepad_size],
-                               MORPH_COMPETITION_);
-    exponent += gaussian(phenotype_[trait::limb_length],
-                         other.phenotype_[trait::limb_length],
-                         MORPH_COMPETITION_);
+    double exponent = gaussian_exponent(phenotype_[trait::toepad_size],
+                                        other.phenotype_[trait::toepad_size],
+                                        MORPH_COMPETITION_);
+    exponent += gaussian_exponent(phenotype_[trait::limb_length],
+                                  other.phenotype_[trait::limb_length],
+                                  MORPH_COMPETITION_);
     return std::exp(exponent);
 }
 
