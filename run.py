@@ -46,9 +46,9 @@ def simple_trait1d_patch0d():
 def adaptive_dynamics():
     const = ['-D1', '--row=1', '--col=1', '-m0', '-K10000', '-p0', '-c0']
     params = dict()
-    params.update(s=[0.02, 0.06, 0.1, 0.14])
-    params.update(C=[0.02, 0.06, 0.1, 0.14])
-    params.update(f=[0.01, 0.03, 0.05, 0.07])
+    params.update(s=[1.0, 2.0, 3.0])
+    params.update(C=[1.0, 2.0, 3.0])
+    params.update(f=[0.02, 0.03, 0.04])
     return [const + x + [make_label(x)] for x in product(params)]
 
 
