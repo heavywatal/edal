@@ -23,10 +23,10 @@ size_t Individual::CARRYING_CAPACITY_ = 160;
 double Individual::AVG_NUM_OFFSPINRGS_ = 4;
 double Individual::HEIGHT_PREFERENCE_ = 0.05;
 double Individual::DIAMETER_PREFERENCE_ = 0.05;
-double Individual::TOEPAD_SELECTION_ = 0.05;
-double Individual::LIMB_SELECTION_ = 0.05;
-double Individual::PREF_COMPETITION_ = 0.05;
-double Individual::MORPH_COMPETITION_ = 0.05;
+double Individual::TOEPAD_SELECTION_ = 2.0;
+double Individual::LIMB_SELECTION_ = 2.0;
+double Individual::PREF_COMPETITION_ = 2.0;
+double Individual::MORPH_COMPETITION_ = 2.0;
 double Individual::MATING_SIGMA_ = 0.05;
 double Individual::MU_LOCUS_ = 1e-4;
 unsigned long Individual::MUTATION_MASK_ = 0;
@@ -145,6 +145,14 @@ double integrate_square(Func&& func) {
     }, 0.0, 1.0, Individual::NUM_STEPS_);
 }
 
+//! Gaussian function \f$\exp(-\frac {(x-\mu)^2} {2\sigma^2})\f$
+inline double gaussian(double x, const double mu, const double sigma) {
+    x -= mu;
+    x /= sigma;
+    x *= x;
+    return x *= -0.5;
+}
+
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
 Individual::Individual(const std::vector<unsigned long>& flags): genotype_{{}, {}} {
@@ -228,14 +236,10 @@ double Individual::calc_Dxi_numerical() const {
 }
 
 double Individual::fitness(const double height, const double diameter) const {
-    auto impl = [](const double x, const double mu, const double selection) {
-        double exponent = x;
-        exponent -= mu;
-        exponent *= exponent;
-        return exponent *= -selection;
-    };
-    double exponent = impl(phenotype_[trait::toepad_size], height, TOEPAD_SELECTION_);
-    exponent += impl(phenotype_[trait::limb_length], diameter, LIMB_SELECTION_);
+    double exponent = gaussian(phenotype_[trait::toepad_size],
+                               height, TOEPAD_SELECTION_);
+    exponent += gaussian(phenotype_[trait::limb_length],
+                         diameter, LIMB_SELECTION_);
     return std::exp(exponent);
 }
 
@@ -280,34 +284,22 @@ double Individual::effective_carrying_capacity_cache() const {
 }
 
 double Individual::preference_overlap(const Individual& other) const {
-    auto impl = [](const double yi, const double yj, const double c) {
-        double exponent = yi;
-        exponent -= yj;
-        exponent *= exponent;
-        return exponent *= -c;
-    };
-    double exponent = impl(phenotype_[trait::height_preference],
-                           other.phenotype_[trait::height_preference],
-                           PREF_COMPETITION_);
-    exponent += impl(phenotype_[trait::diameter_preference],
-                     other.phenotype_[trait::diameter_preference],
-                     PREF_COMPETITION_);
+    double exponent = gaussian(phenotype_[trait::height_preference],
+                               other.phenotype_[trait::height_preference],
+                               PREF_COMPETITION_);
+    exponent += gaussian(phenotype_[trait::diameter_preference],
+                         other.phenotype_[trait::diameter_preference],
+                         PREF_COMPETITION_);
     return std::exp(exponent);
 }
 
 double Individual::morphology_overlap(const Individual& other) const {
-    auto impl = [](const double yi, const double yj, const double c) {
-        double exponent = yi;
-        exponent -= yj;
-        exponent *= exponent;
-        return exponent *= -c;
-    };
-    double exponent = impl(phenotype_[trait::toepad_size],
-                     other.phenotype_[trait::toepad_size],
-                     MORPH_COMPETITION_);
-    exponent += impl(phenotype_[trait::limb_length],
-                     other.phenotype_[trait::limb_length],
-                     MORPH_COMPETITION_);
+    double exponent = gaussian(phenotype_[trait::toepad_size],
+                               other.phenotype_[trait::toepad_size],
+                               MORPH_COMPETITION_);
+    exponent += gaussian(phenotype_[trait::limb_length],
+                         other.phenotype_[trait::limb_length],
+                         MORPH_COMPETITION_);
     return std::exp(exponent);
 }
 

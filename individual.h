@@ -195,7 +195,8 @@ class Individual {
 
         following Roughgarden and others
         \f[
-            C_y(I,J) = \exp(-c_y(y_{0,I} - y_{0,J})^2 - c_y(y_{1,I} - y_{1,J})^2)
+            C_y(I,J) = \exp(-\frac{(y_{0,I} - y_{0,J})^2}{2c_y^2}
+                            -\frac{(y_{1,I} - y_{1,J})^2}{2c_y^2})
         \f]
     */
     double preference_overlap(const Individual& other) const;
@@ -207,7 +208,8 @@ class Individual {
         @retval 1 for individuals with identical preferences
 
         \f[
-            C_x(I,J) = \exp(-c_x(x_{0,I} - x_{0,J})^2 - c_x(x_{1,I} - x_{1,J})^2)
+            C_x(I,J) = \exp(-\frac{(x_{0,I} - x_{0,J})^2}{2c_x^2}
+                            -\frac{(x_{1,I} - x_{1,J})^2}{2c_x^2})
         \f]
     */
     double morphology_overlap(const Individual& other) const;
@@ -377,9 +379,10 @@ class Individual {
         @param height habitat environmant
         @param diameter habitat environment
 
-        The optimum values of traits \f$ x_0 \f$ and \f$ x_1 \f$
-        under environmental conditions \f$(u, v)\f$ are
-        \f$x_0 = u\f$ and \f$ x_1 = v \f$
+        \f[
+            W(x_0,x_1|u,v) = \exp(-\frac{(x_0 - u)^2}{2s_0^2}
+                                  -\frac{(x_1 - v)^2}{2s_1^2})
+        \f]
     */
     double fitness(const double height, const double diameter) const;
 

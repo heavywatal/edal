@@ -59,7 +59,7 @@ There are $2$ environmental characteristics corresponding to the height ($u$) at
 Each patch is characterized by a frequency distribution $F(u,v)$. We can consider 2 possibilities.
 
 {\em Old version}.\quad
-The distribution of $u$ is normal with mean $\mu$ and variance $\sigma^2$, 
+The distribution of $u$ is normal with mean $\mu$ and variance $\sigma^2$,
 and $v$ has an exponential distribution with mean $\theta^{-1} = c_0 - c_1 u$,
 where $c_0$ and $c_1$ are positive constants.
 In particular, the natural constraint $\theta^{-1} > 0$ implies $1 \le c_0/c_1$.
@@ -107,7 +107,7 @@ the probabilities of forward and backward mutations are equal.
 \section{Habitat preference and carrying capacity}
 
 {\bf Habitat preference}.\quad
-The relative preference of an individual with habitat preference traits $y_0,y_1$ for environmental characteristic $(u,v)$ is 
+The relative preference of an individual with habitat preference traits $y_0,y_1$ for environmental characteristic $(u,v)$ is
 \begin{equation}
   \Xi(y_0,y_1\mid u,v) \sim \exp\big(-h_0(u-y_0)^2-h_1(v-y_1)^2\big)
 \end{equation}
@@ -118,7 +118,7 @@ We can also consider a quadratic approximation:
 
 {\bf Viability}.\quad Let viability of genotype $(x_0,x_1)$ in niche $(u,v)$ be Gaussian,
 \begin{equation}
-  W(x_0,x_1 \mid u,v) = \exp\big(-s_0(u-x_0)^2-s_1(v-x_1)^2\big),
+  W(x_0,x_1 \mid u,v) = \exp\big(-\frac{(u-x_0)^2}{2s_0^2} -\frac{(v-x_1)^2}{2s_1^2}\big),
 \end{equation}
 where the $\sigma_{s_i}>0$ are parameters measuring the strength of selection.
 Note that the optimum values of traits $x_0$ and $x_1$ under environmental conditions $(u,v)$ are $x_0 = u$ and $x_1 = v$.\\
@@ -144,8 +144,8 @@ Following Roughgarden and others, we define the competition coefficient for indi
 \begin{subequations}
   \begin{equation}\begin{aligned}
     C(I,J)   &= C_x(I,J) C_y(I,J)\\
-    C_x(I,J) &= exp\big( -c_{x0}(x_{0,I}-x_{0,J})^2-c_{x1}(x_{1,I}-x_{1,J})^2\big)\\
-    C_y(I,J) &= exp\big( -c_{y0}(y_{0,I}-y_{0,J})^2-c_{y1}(y_{1,I}-y_{1,J})^2\big).
+    C_x(I,J) &= exp\big( -\frac{(x_{0,I}-x_{0,J})^2}{2c_x^2} -\frac{(x_{1,I}-x_{1,J})^2}{2c_x^2}\big)\\
+    C_y(I,J) &= exp\big( -\frac{(y_{0,I}-y_{0,J})^2}{2c_y^2} -\frac{(y_{1,I}-y_{1,J})^2}{2c_y^2}\big).
   \end{aligned}\end{equation}
   That is, competition strength is evaluated  on the basis of their morphology and habitat preferences.
   For individuals with identical preferences, $C(I,J)=1$, that is competition is the strongest.
