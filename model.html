@@ -39,7 +39,7 @@
 <p><span class="math">\[\label{quad}
   \Xi(y_0,y_1\mid u,v) \sim 1-h_0(u-y_0)^2-h_1(v-y_1)^2.\]</span></p>
 <p><span><strong>Viability</strong></span>.Let viability of genotype <span class="math">\((x_0,x_1)\)</span> in niche <span class="math">\((u,v)\)</span> be Gaussian,</p>
-<p><span class="math">\[W(x_0,x_1 \mid u,v) = \exp\big(-s_0(u-x_0)^2-s_1(v-x_1)^2\big),\]</span></p>
+<p><span class="math">\[W(x_0,x_1 \mid u,v) = \exp\big(-\frac{(u-x_0)^2}{2s_0^2} -\frac{(v-x_1)^2}{2s_1^2}\big),\]</span></p>
 <p>where the <span class="math">\(\sigma_{s_i}&gt;0\)</span> are parameters measuring the strength of selection. Note that the optimum values of traits <span class="math">\(x_0\)</span> and <span class="math">\(x_1\)</span> under environmental conditions <span class="math">\((u,v)\)</span> are <span class="math">\(x_0 = u\)</span> and <span class="math">\(x_1 = v\)</span>.<br /></p>
 <p><span><strong>Carrying capacity</strong></span>.Consider a specific genotype that has an absolute preference for environment <span class="math">\((u,v)\)</span> (so that <span class="math">\(\Xi\)</span> is a <span class="math">\(\delta\)</span>-function). Then a natural measure of the carrying capacity of a population of such individuals is <span class="math">\[K_{\max} F(u,v) W(x_0,x_1 \mid u,v),\]</span> where <span class="math">\(K_{\max}\)</span> is a scaling parameter, and <span class="math">\(K_{\max} F(u,v)\)</span> can be thought of as the maximum number of individuals with an absolute preference for environment <span class="math">\((u,v)\)</span> is they also have perfect adaptation for this niche (i.e. if <span class="math">\(W(x_0,x_1 \mid u,v)=1\)</span>). Naturally, the more common environments can maintain higher densities of individuals that prefer them. Now,</p>
 <p><span class="math">\[K_e(I)= K_{\max} \iint F(u,v) W(x_0,x_1 \mid u,v) \Xi(y_0,y_1\mid u,v) du dv\]</span></p>
@@ -48,8 +48,8 @@
 <p>Following Roughgarden and others, we define the competition coefficient for individual <span class="math">\(I\)</span> and <span class="math">\(J\)</span> as</p>
 <p><span class="math">\[\begin{aligned}
     C(I,J)   &amp;= C_x(I,J) C_y(I,J)\\
-    C_x(I,J) &amp;= exp\big( -c_{x0}(x_{0,I}-x_{0,J})^2-c_{x1}(x_{1,I}-x_{1,J})^2\big)\\
-    C_y(I,J) &amp;= exp\big( -c_{y0}(y_{0,I}-y_{0,J})^2-c_{y1}(y_{1,I}-y_{1,J})^2\big).
+    C_x(I,J) &amp;= exp\big( -\frac{(x_{0,I}-x_{0,J})^2}{2c_x^2} -\frac{(x_{1,I}-x_{1,J})^2}{2c_x^2}\big)\\
+    C_y(I,J) &amp;= exp\big( -\frac{(y_{0,I}-y_{0,J})^2}{2c_y^2} -\frac{(y_{1,I}-y_{1,J})^2}{2c_y^2}\big).
   \end{aligned}\]</span></p>
 <p>That is, competition strength is evaluated on the basis of their morphology and habitat preferences. For individuals with identical preferences, <span class="math">\(C(I,J)=1\)</span>, that is competition is the strongest.</p>
 <p>For individual <span class="math">\(I\)</span>, the effective number of competitors is</p>
