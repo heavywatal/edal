@@ -34,10 +34,10 @@
 <p>The male display trait <span class="math">\(m\)</span> is expressed in males only, whereas female mating preference <span class="math">\(f\)</span> and tolerance <span class="math">\(c\)</span> are expressed in females only. Other traits are expressed in both sexes. All traits are scaled to be between 0 and 1 and are controlled by different unlinked diallelic loci with equal effects. Mutations occur at equal rates across all loci; the probabilities of forward and backward mutations are equal.</p>
 <h1 id="habitat-preference-and-carrying-capacity">Habitat preference and carrying capacity</h1>
 <p><span><strong>Habitat preference</strong></span>.The relative preference of an individual with habitat preference traits <span class="math">\(y_0,y_1\)</span> for environmental characteristic <span class="math">\((u,v)\)</span> is</p>
-<p><span class="math">\[\Xi(y_0,y_1\mid u,v) \sim \exp\big(-h_0(u-y_0)^2-h_1(v-y_1)^2\big)\]</span></p>
+<p><span class="math">\[\Xi(y_0,y_1\mid u,v) = \exp\big(-\frac{(u-y_0)^2}{2h_0^2} -\frac{(v-y_1)^2}{2h_1^2}\big)\]</span></p>
 <p>We can also consider a quadratic approximation:</p>
 <p><span class="math">\[\label{quad}
-  \Xi(y_0,y_1\mid u,v) \sim 1-h_0(u-y_0)^2-h_1(v-y_1)^2.\]</span></p>
+  \Xi(y_0,y_1\mid u,v) = 1-h_0(u-y_0)^2-h_1(v-y_1)^2.\]</span></p>
 <p><span><strong>Viability</strong></span>.Let viability of genotype <span class="math">\((x_0,x_1)\)</span> in niche <span class="math">\((u,v)\)</span> be Gaussian,</p>
 <p><span class="math">\[W(x_0,x_1 \mid u,v) = \exp\big(-\frac{(u-x_0)^2}{2s_0^2} -\frac{(v-x_1)^2}{2s_1^2}\big),\]</span></p>
 <p>where the <span class="math">\(\sigma_{s_i}&gt;0\)</span> are parameters measuring the strength of selection. Note that the optimum values of traits <span class="math">\(x_0\)</span> and <span class="math">\(x_1\)</span> under environmental conditions <span class="math">\((u,v)\)</span> are <span class="math">\(x_0 = u\)</span> and <span class="math">\(x_1 = v\)</span>.<br /></p>
