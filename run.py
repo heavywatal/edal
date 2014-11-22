@@ -44,7 +44,7 @@ def simple_trait1d_patch0d():
 
 
 def adaptive_dynamics():
-    const = ['-D1', '--row=1', '--col=1', '-m0', '-K10000', '-p0', '-c0']
+    const = ['-D1', '--row=1', '--col=1', '-m0', '-K10000', '-p1e6', '-c1e6']
     params = dict()
     params.update(s=[1.0, 2.0, 3.0])
     params.update(C=[1.0, 2.0, 3.0])

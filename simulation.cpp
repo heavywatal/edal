@@ -77,8 +77,8 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
     prandom().seed(SEED); // TODO: want to read seed?
     if (DIMENSIONS == 1) {
         std::ostringstream ost;
-        ost << "diameter_pref = 0\n"
-            << "limb_select = 0\n"
+        ost << "diameter_pref = 1e6\n"
+            << "limb_select = 1e6\n"
             << "mutation_mask = 10\n";
         std::istringstream ist(ost.str());
         po::store(po::parse_config_file(ist, description, false), vm);
