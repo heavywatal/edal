@@ -117,8 +117,8 @@
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    prandom().seed(<a class="code" href="class_simulation.html#a61ea57b43955c1acedb388ea406addf2">SEED</a>); <span class="comment">// TODO: want to read seed?</span></div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="group__biol__param.html#ga01651599b0a2b37916543ea522dfb9e1">DIMENSIONS</a> == 1) {</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        std::ostringstream ost;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        ost &lt;&lt; <span class="stringliteral">&quot;diameter_pref = 0\n&quot;</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            &lt;&lt; <span class="stringliteral">&quot;limb_select = 0\n&quot;</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        ost &lt;&lt; <span class="stringliteral">&quot;diameter_pref = 1e6\n&quot;</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;            &lt;&lt; <span class="stringliteral">&quot;limb_select = 1e6\n&quot;</span></div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;            &lt;&lt; <span class="stringliteral">&quot;mutation_mask = 10\n&quot;</span>;</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        std::istringstream ist(ost.str());</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        po::store(po::parse_config_file(ist, description, <span class="keyword">false</span>), vm);</div>
