@@ -24,3 +24,4 @@ Results
 - [Simulation results with sojourn time normalization (anolis_v3)](http://meme.biology.tohoku.ac.jp/edal/results/sim_v3.html)
 - [Possible Ke values with habitat preference normalization (anolis_v3a)](http://meme.biology.tohoku.ac.jp/edal/results/ke_v3a.html)
 - [Evolutionary branching on simple condition](http://meme.biology.tohoku.ac.jp/edal/results/ad_20141112.html)
+- [Evolutionary branching on simple condition (Gaussian form)](http://meme.biology.tohoku.ac.jp/edal/results/ad_20141122.html)

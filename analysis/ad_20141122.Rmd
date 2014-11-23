@@ -1,7 +1,7 @@
 ---
-title: "Evolutionary branching on simple condition"
+title: "Evolutionary branching on simple condition (Gaussian form)"
 author: "Watal M. Iwasaki"
-date: "2014-11-12"
+date: "2014-11-22"
 output:
   html_document:
     toc: true
@@ -21,13 +21,13 @@ library(xtable)
 ```
 
 ```{r table}
-.indirs = list.dirs('~/working/anolis20141112', recursive=FALSE)
+.indirs = list.dirs('~/working/anolis20141122', recursive=FALSE)
 .infiles = file.path(.indirs, 'program_options.conf')
 names(.infiles) = basename(.indirs)
 .conf = ldply(.infiles, wtl::read.conf, .id='path')
 .tbl = .conf %>>%
     select(path, toepad_select, morph_compe, mating_sigma) %>>%
-    mutate(path=paste0('<img src="ad_20141112_files/', path, '.png" alt="', path, '">')) %>>%
+    mutate(path=paste0('<img src="ad_20141122_files/', path, '.png" alt="', path, '">')) %>>%
     group_by(toepad_select, morph_compe, mating_sigma) %>>%
     summarise(path=paste0(path, collapse='<br>')) %>>%
     ungroup() %>>% # bug will be fixed in dplyr 3.1
