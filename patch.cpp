@@ -18,7 +18,7 @@
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
 void Patch::append(Individual&& ind) {
-    if (random_.bernoulli(0.5)) {
+    if (std::bernoulli_distribution(0.5)(rng_)) {
         females_.push_back(std::move(ind));
     } else {
         males_.push_back(std::move(ind));
@@ -26,6 +26,7 @@ void Patch::append(Individual&& ind) {
 }
 
 std::vector<Individual> Patch::mate_and_reproduce() const {
+    std::poisson_distribution<size_t> poisson(Individual::AVG_NUM_OFFSPINRGS());
     std::vector<Individual> offsprings;
     if (males_.empty()) {return offsprings;}
     offsprings.reserve(females_.size() * Individual::AVG_NUM_OFFSPINRGS());
@@ -37,14 +38,14 @@ std::vector<Individual> Patch::mate_and_reproduce() const {
         }
         std::vector<double> upper_bounds(males_.size());
         std::partial_sum(prefs.begin(), prefs.end(), upper_bounds.begin());
-        const double dart = random_.uniform(upper_bounds.back());
+        std::uniform_real_distribution<> uniform(0.0, upper_bounds.back());
+        const double dart = uniform(rng_);
         size_t father_i = 0;
         while (upper_bounds[father_i] < dart) {++father_i;}
         const Individual& father = males_[father_i];
-        const size_t num_children =
-            random_.poisson(Individual::AVG_NUM_OFFSPINRGS());
+        const size_t num_children = poisson(rng_);
         for (size_t i=0; i<num_children; ++i) {
-            offsprings.push_back(Individual(mother.gametogenesis(random_), father.gametogenesis(random_)));
+            offsprings.push_back(Individual(mother.gametogenesis(rng_), father.gametogenesis(rng_)));
         }
     }
     return offsprings;
@@ -69,7 +70,8 @@ void Patch::viability_selection() {
         indices.reserve(members.size());
         size_t i = 0;
         for (auto& ind: members) {
-            if (random_.bernoulli(ind.survival_probability(effective_num_competitors(ind)))) {
+            const double p = ind.survival_probability(effective_num_competitors(ind));
+            if (std::bernoulli_distribution(p)(rng_)) {
                 indices.push_back(i);
             }
             ++i;
@@ -94,8 +96,9 @@ void Patch::viability_selection() {
 }
 
 std::pair<size_t, size_t> Patch::choose_patch(size_t row, size_t col) const {
-    if (!random_.bernoulli(Individual::MIGRATION_RATE())) {return {row, col};}
-    switch (random_.randrange(8)) {
+    if (!std::bernoulli_distribution(Individual::MIGRATION_RATE())(rng_))
+        {return {row, col};}
+    switch (std::uniform_int_distribution<size_t>(0, 7)(rng_)) {
       case 0:        ++col; break;
       case 1: ++row; ++col; break;
       case 2: ++row;        break;

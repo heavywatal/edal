@@ -22,13 +22,13 @@ class Patch {
   public:
 
     //! Construct an empty patch
-    Patch(): random_{prandom()()} {};
+    Patch(): rng_{wtl::prandom()()} {};
     
     //! Construct a patch with the same number of females and males
     /*! @param n The number of inital individuals in this patch
     */
     Patch(const size_t n): females_(n / 2), males_(n - females_.size()),
-        random_{prandom()()} {}
+        rng_{wtl::prandom()()} {}
 
     //! Construct a patch with a non-default Individual
     /*! @param n The number of inital individuals in this patch
@@ -36,11 +36,11 @@ class Patch {
     */
     Patch(const size_t n, const Individual& founder):
         females_(n / 2, founder), males_(n - females_.size(), founder),
-        random_{prandom()()} {}
+        rng_{wtl::prandom()()} {}
 
     //! Copy constructor
     Patch(const Patch& obj):
-        females_{obj.females_}, males_{obj.males_}, random_{prandom()()} {}
+        females_{obj.females_}, males_{obj.males_}, rng_{wtl::prandom()()} {}
 
     //! Add an individual to this patch
     /*! @param ind New individual to add
@@ -110,7 +110,7 @@ class Patch {
     std::vector<Individual> males_;
 
     //! Random number generator
-    mutable Random random_;
+    mutable wtl::sfmt19937 rng_;
 };
 
 //! Stream operator for Patch

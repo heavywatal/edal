@@ -261,7 +261,7 @@ class Individual {
     /*! @ingroup mating
         @return a gamete
     */
-    std::vector<Loci> gametogenesis(Random& prandom) const;
+    std::vector<Loci> gametogenesis(wtl::sfmt19937&) const;
 
     //! Getter
     static double MIGRATION_RATE() {return MIGRATION_RATE_;}

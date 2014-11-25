@@ -74,7 +74,7 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
         exit(0);
     }
     OUT_DIR = fs::path(vm["top_dir"].as<std::string>());
-    prandom().seed(SEED);
+    wtl::prandom().seed(SEED);
     if (DIMENSIONS == 1) {
         std::ostringstream ost;
         ost << "diameter_pref = 1e6\n"

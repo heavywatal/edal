@@ -346,9 +346,11 @@ double Individual::mating_preference(const Individual& male) const {
     return std::exp(exponent);
 }
 
-std::vector<Individual::Loci> Individual::gametogenesis(Random& prandom) const {
+std::vector<Individual::Loci> Individual::gametogenesis(wtl::sfmt19937& rng) const {
+    std::uniform_int_distribution<unsigned long> uniform_filter(0, FULL_BITS);
+    std::bernoulli_distribution bernoulli(MU_LOCUS_ * NUM_LOCI_);
+    std::uniform_int_distribution<size_t> uniform_pos(0, NUM_LOCI_ - 1);
     static const std::bitset<8> mask(MUTATION_MASK_);
-    const double mu_trait = MU_LOCUS_ * NUM_LOCI_;
     std::vector<Loci> gamete;
     gamete.reserve(trait::size);
     for (size_t i=0; i<trait::size; ++i) {
@@ -357,11 +359,11 @@ std::vector<Individual::Loci> Individual::gametogenesis(Random& prandom) const {
             continue;
         }
         // recombination
-        const Loci filter(prandom.randrange(wtl::pow<NUM_LOCI_>(2)));
+        const Loci filter(uniform_filter(rng));
         gamete.push_back((genotype_.first[i] & filter) | (genotype_.second[i] & ~filter));
         // mutation
-        if (prandom.bernoulli(mu_trait)) {
-            gamete.back().flip(prandom.randrange(NUM_LOCI_));
+        if (bernoulli(rng)) {
+            gamete.back().flip(uniform_pos(rng));
         }
     }
     return gamete;
