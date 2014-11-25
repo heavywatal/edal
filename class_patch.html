@@ -63,16 +63,20 @@
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ae5283ae5a7fde0049272dbd3a69d00fb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae5283ae5a7fde0049272dbd3a69d00fb"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_patch.html#ae5283ae5a7fde0049272dbd3a69d00fb">Patch</a> ()=default</td></tr>
-<tr class="memdesc:ae5283ae5a7fde0049272dbd3a69d00fb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an empty patch. <br /></td></tr>
-<tr class="separator:ae5283ae5a7fde0049272dbd3a69d00fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65fdd4bb128b8f50c1b9dcc008f20360"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a65fdd4bb128b8f50c1b9dcc008f20360"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_patch.html#a65fdd4bb128b8f50c1b9dcc008f20360">Patch</a> ()</td></tr>
+<tr class="memdesc:a65fdd4bb128b8f50c1b9dcc008f20360"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct an empty patch. <br /></td></tr>
+<tr class="separator:a65fdd4bb128b8f50c1b9dcc008f20360"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a496db6a561aa2dd34e559f851db818b3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_patch.html#a496db6a561aa2dd34e559f851db818b3">Patch</a> (const size_t n)</td></tr>
 <tr class="memdesc:a496db6a561aa2dd34e559f851db818b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a patch with the same number of females and males.  <a href="#a496db6a561aa2dd34e559f851db818b3">More...</a><br /></td></tr>
 <tr class="separator:a496db6a561aa2dd34e559f851db818b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a296f4b2eddfd5c24c1250cb020df9e09"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_patch.html#a296f4b2eddfd5c24c1250cb020df9e09">Patch</a> (const size_t n, const <a class="el" href="class_individual.html">Individual</a> &amp;founder)</td></tr>
 <tr class="memdesc:a296f4b2eddfd5c24c1250cb020df9e09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a patch with a non-default <a class="el" href="class_individual.html" title="sexual, diploid, additive, unlinked, diallelic ">Individual</a>.  <a href="#a296f4b2eddfd5c24c1250cb020df9e09">More...</a><br /></td></tr>
 <tr class="separator:a296f4b2eddfd5c24c1250cb020df9e09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac928cec0f7ea30f7c053a84bfa984c15"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac928cec0f7ea30f7c053a84bfa984c15"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_patch.html#ac928cec0f7ea30f7c053a84bfa984c15">Patch</a> (const <a class="el" href="class_patch.html">Patch</a> &amp;obj)</td></tr>
+<tr class="memdesc:ac928cec0f7ea30f7c053a84bfa984c15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor. <br /></td></tr>
+<tr class="separator:ac928cec0f7ea30f7c053a84bfa984c15"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abcf6963450131343cc2e7fa74be721d9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_patch.html#abcf6963450131343cc2e7fa74be721d9">append</a> (<a class="el" href="class_individual.html">Individual</a> &amp;&amp;)</td></tr>
 <tr class="memdesc:abcf6963450131343cc2e7fa74be721d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Add an individual to this patch.  <a href="#abcf6963450131343cc2e7fa74be721d9">More...</a><br /></td></tr>
 <tr class="separator:abcf6963450131343cc2e7fa74be721d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -91,6 +95,9 @@ std::map&lt; <a class="el" href="class_individual.html">Individual</a>, size_t &
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__natural__selection.html#gaba3c1ab2eff35d22af2576b0a8a1acf5">viability_selection</a> ()</td></tr>
 <tr class="memdesc:gaba3c1ab2eff35d22af2576b0a8a1acf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Some individuals die depending on <a class="el" href="group__natural__selection.html#gaf44e8ab657a5ff87f5d4f029e9c2a1cb" title="Probability of survival . ">Individual::survival_probability()</a> <br /></td></tr>
 <tr class="separator:gaba3c1ab2eff35d22af2576b0a8a1acf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5302e89ea5615b7e9b63ff4f83bb951c"><td class="memItemLeft" align="right" valign="top">std::pair&lt; size_t, size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_patch.html#a5302e89ea5615b7e9b63ff4f83bb951c">choose_patch</a> (size_t row, size_t col) const </td></tr>
+<tr class="memdesc:a5302e89ea5615b7e9b63ff4f83bb951c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change row/col with probability \(m\) = <a class="el" href="group__biol__param.html#ga563a4ee3ea4ab14f52d14fd5c22d3feb" title="Migration rate  (i.e.,  makes the expected # of migrants) ">Individual::MIGRATION_RATE_</a>.  <a href="#a5302e89ea5615b7e9b63ff4f83bb951c">More...</a><br /></td></tr>
+<tr class="separator:a5302e89ea5615b7e9b63ff4f83bb951c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -115,10 +122,14 @@ std::vector&lt; <a class="el" href="class_individual.html">Individual</a> &gt;&#
 std::vector&lt; <a class="el" href="class_individual.html">Individual</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_patch.html#a4fcf1d1b0754d40707eedc01fe90df4b">males_</a></td></tr>
 <tr class="memdesc:a4fcf1d1b0754d40707eedc01fe90df4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">male individuals <br /></td></tr>
 <tr class="separator:a4fcf1d1b0754d40707eedc01fe90df4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f6b852c5acc3622dd69dc83ba2c0a9e"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9f6b852c5acc3622dd69dc83ba2c0a9e"></a>
+Random&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_patch.html#a9f6b852c5acc3622dd69dc83ba2c0a9e">random_</a></td></tr>
+<tr class="memdesc:a9f6b852c5acc3622dd69dc83ba2c0a9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Random number generator. <br /></td></tr>
+<tr class="separator:a9f6b852c5acc3622dd69dc83ba2c0a9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p>Definition at line <a class="el" href="patch_8h_source.html#l00019">19</a> of file <a class="el" href="patch_8h_source.html">patch.h</a>.</p>
+<p>Definition at line <a class="el" href="patch_8h_source.html#l00021">21</a> of file <a class="el" href="patch_8h_source.html">patch.h</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a496db6a561aa2dd34e559f851db818b3"></a>
 <div class="memitem">
@@ -150,7 +161,7 @@ std::vector&lt; <a class="el" href="class_individual.html">Individual</a> &gt;&#
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="patch_8h_source.html#l00028">28</a> of file <a class="el" href="patch_8h_source.html">patch.h</a>.</p>
+<p>Definition at line <a class="el" href="patch_8h_source.html#l00030">30</a> of file <a class="el" href="patch_8h_source.html">patch.h</a>.</p>
 
 </div>
 </div>
@@ -195,7 +206,7 @@ std::vector&lt; <a class="el" href="class_individual.html">Individual</a> &gt;&#
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="patch_8h_source.html#l00034">34</a> of file <a class="el" href="patch_8h_source.html">patch.h</a>.</p>
+<p>Definition at line <a class="el" href="patch_8h_source.html#l00037">37</a> of file <a class="el" href="patch_8h_source.html">patch.h</a>.</p>
 
 </div>
 </div>
@@ -226,6 +237,39 @@ std::vector&lt; <a class="el" href="class_individual.html">Individual</a> &gt;&#
 
 </div>
 </div>
+<a class="anchor" id="a5302e89ea5615b7e9b63ff4f83bb951c"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt; size_t, size_t &gt; Patch::choose_patch </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>row</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>col</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Change row/col with probability \(m\) = <a class="el" href="group__biol__param.html#ga563a4ee3ea4ab14f52d14fd5c22d3feb" title="Migration rate  (i.e.,  makes the expected # of migrants) ">Individual::MIGRATION_RATE_</a>. </p>
+<blockquote class="doxtable">
+<p>With probability \( m &gt; 0 \), each offspring becomes a "migrant." Each migrant goes to one of the 8 neighboring patches. For patches at the boundary, the probability \( m \) is reduced according to the number of neighbors they have.</p>
+</blockquote>
+
+<p>Definition at line <a class="el" href="patch_8cpp_source.html#l00096">96</a> of file <a class="el" href="patch_8cpp_source.html">patch.cpp</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="af5dbea09fb81cc80f7a730ba75f7e76b"></a>
 <div class="memitem">
 <div class="memproto">
@@ -248,7 +292,7 @@ std::vector&lt; <a class="el" href="class_individual.html">Individual</a> &gt;&#
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>Whether this patch is empty or not </dd></dl>
 
-<p>Definition at line <a class="el" href="patch_8h_source.html#l00046">46</a> of file <a class="el" href="patch_8h_source.html">patch.h</a>.</p>
+<p>Definition at line <a class="el" href="patch_8h_source.html#l00054">54</a> of file <a class="el" href="patch_8h_source.html">patch.h</a>.</p>
 
 </div>
 </div>
@@ -274,7 +318,7 @@ std::vector&lt; <a class="el" href="class_individual.html">Individual</a> &gt;&#
 </div><div class="memdoc">
 <dl class="section return"><dt>Returns</dt><dd>The number of individuals in this patch </dd></dl>
 
-<p>Definition at line <a class="el" href="patch_8h_source.html#l00043">43</a> of file <a class="el" href="patch_8h_source.html">patch.h</a>.</p>
+<p>Definition at line <a class="el" href="patch_8h_source.html#l00051">51</a> of file <a class="el" href="patch_8h_source.html">patch.h</a>.</p>
 
 </div>
 </div>

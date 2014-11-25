@@ -56,30 +56,28 @@ Functions</h2></td></tr>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga8a7330aa68e101eaa7e342e9215bffdf">Individual::mating_probability</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;male) const </td></tr>
 <tr class="memdesc:ga8a7330aa68e101eaa7e342e9215bffdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">\( P(I, I&#39;) = \Xi(I, I&#39;) C_y(I, I&#39;)\) <br /></td></tr>
 <tr class="separator:ga8a7330aa68e101eaa7e342e9215bffdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9173a285fda6e2026898f993498ed903"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Loci &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga9173a285fda6e2026898f993498ed903">Individual::gametogenesis</a> () const </td></tr>
-<tr class="memdesc:ga9173a285fda6e2026898f993498ed903"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gametogenesis with free recombination and mutation.  <a href="#ga9173a285fda6e2026898f993498ed903">More...</a><br /></td></tr>
-<tr class="separator:ga9173a285fda6e2026898f993498ed903"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabeb9b6f95a02e1bcd491b5892881f7a3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Loci &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#gabeb9b6f95a02e1bcd491b5892881f7a3">Individual::gametogenesis</a> (Random &amp;prandom) const </td></tr>
+<tr class="memdesc:gabeb9b6f95a02e1bcd491b5892881f7a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gametogenesis with free recombination and mutation.  <a href="#gabeb9b6f95a02e1bcd491b5892881f7a3">More...</a><br /></td></tr>
+<tr class="separator:gabeb9b6f95a02e1bcd491b5892881f7a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga88bd35bb4b4977518fe10af9e7662baf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga88bd35bb4b4977518fe10af9e7662baf"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga88bd35bb4b4977518fe10af9e7662baf">Individual::mating_preference</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;male) const </td></tr>
 <tr class="memdesc:ga88bd35bb4b4977518fe10af9e7662baf"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(\Psi(I, I&#39;)\) <br /></td></tr>
 <tr class="separator:ga88bd35bb4b4977518fe10af9e7662baf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga240edc859512109f8f19821345d30cb4"><td class="memItemLeft" align="right" valign="top">static Loci&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga240edc859512109f8f19821345d30cb4">Individual::recombination</a> (const Loci &amp;lhs, const Loci &amp;rhs)</td></tr>
-<tr class="memdesc:ga240edc859512109f8f19821345d30cb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free recombination among unlinked loci.  <a href="#ga240edc859512109f8f19821345d30cb4">More...</a><br /></td></tr>
-<tr class="separator:ga240edc859512109f8f19821345d30cb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaea85d2e4ee0b40003f002d5931fba2d5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="class_individual.html">Individual</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#gaea85d2e4ee0b40003f002d5931fba2d5">Patch::mate_and_reproduce</a> () const </td></tr>
 <tr class="memdesc:gaea85d2e4ee0b40003f002d5931fba2d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">All females mate with someone according to mating probability.  <a href="#gaea85d2e4ee0b40003f002d5931fba2d5">More...</a><br /></td></tr>
 <tr class="separator:gaea85d2e4ee0b40003f002d5931fba2d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
-<a class="anchor" id="ga9173a285fda6e2026898f993498ed903"></a>
+<a class="anchor" id="gabeb9b6f95a02e1bcd491b5892881f7a3"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">std::vector&lt;Loci&gt; Individual::gametogenesis </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">Random &amp;&#160;</td>
+          <td class="paramname"><em>prandom</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -108,50 +106,6 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 <p>Each mating results in a number of offspring drawn from a Poisson distribution with parameter b. We assume that all adult females mate. This assumption implies that any costs of mate choice, which can easily prevent divergence and speciation, are absent. This assumption also means that the effective population size is increased relative to the actual number of adults. </p>
 
 <p>Definition at line <a class="el" href="patch_8cpp_source.html#l00028">28</a> of file <a class="el" href="patch_8cpp_source.html">patch.cpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="ga240edc859512109f8f19821345d30cb4"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static Loci Individual::recombination </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_individual.html#aff1f663813da7b118f258cfcada48c8e">Loci</a> &amp;&#160;</td>
-          <td class="paramname"><em>lhs</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_individual.html#aff1f663813da7b118f258cfcada48c8e">Loci</a> &amp;&#160;</td>
-          <td class="paramname"><em>rhs</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Free recombination among unlinked loci. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">lhs</td><td>left arm of a chromosome </td></tr>
-    <tr><td class="paramname">rhs</td><td>right arm of a chromosome </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>haplotype after recombination </dd></dl>
 
 </div>
 </div>

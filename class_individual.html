@@ -55,7 +55,6 @@
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pri-methods">Private Member Functions</a> &#124;
-<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
 <a href="#pri-attribs">Private Attributes</a> &#124;
 <a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="#friends">Friends</a> &#124;
@@ -114,9 +113,9 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga8a7330aa68e101eaa7e342e9215bffdf">mating_probability</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;male) const </td></tr>
 <tr class="memdesc:ga8a7330aa68e101eaa7e342e9215bffdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">\( P(I, I&#39;) = \Xi(I, I&#39;) C_y(I, I&#39;)\) <br /></td></tr>
 <tr class="separator:ga8a7330aa68e101eaa7e342e9215bffdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9173a285fda6e2026898f993498ed903"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="class_individual.html#aff1f663813da7b118f258cfcada48c8e">Loci</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga9173a285fda6e2026898f993498ed903">gametogenesis</a> () const </td></tr>
-<tr class="memdesc:ga9173a285fda6e2026898f993498ed903"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gametogenesis with free recombination and mutation.  <a href="group__mating.html#ga9173a285fda6e2026898f993498ed903">More...</a><br /></td></tr>
-<tr class="separator:ga9173a285fda6e2026898f993498ed903"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabeb9b6f95a02e1bcd491b5892881f7a3"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="class_individual.html#aff1f663813da7b118f258cfcada48c8e">Loci</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#gabeb9b6f95a02e1bcd491b5892881f7a3">gametogenesis</a> (Random &amp;prandom) const </td></tr>
+<tr class="memdesc:gabeb9b6f95a02e1bcd491b5892881f7a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gametogenesis with free recombination and mutation.  <a href="group__mating.html#gabeb9b6f95a02e1bcd491b5892881f7a3">More...</a><br /></td></tr>
+<tr class="separator:gabeb9b6f95a02e1bcd491b5892881f7a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab9de01c3dc062062e91592cf94a6b8f7"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab9de01c3dc062062e91592cf94a6b8f7"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_individual.html#ab9de01c3dc062062e91592cf94a6b8f7">operator&lt;</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;other) const </td></tr>
 <tr class="memdesc:ab9de01c3dc062062e91592cf94a6b8f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Operator required to be std::map key. <br /></td></tr>
@@ -195,12 +194,6 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_individual.html#a3d5dbeb06023247f1aca9a4d97bfb885">intermediate_phenotypes</a> () const </td></tr>
 <tr class="memdesc:a3d5dbeb06023247f1aca9a4d97bfb885"><td class="mdescLeft">&#160;</td><td class="mdescRight">aggregation of intermediate phenotype values <br /></td></tr>
 <tr class="separator:a3d5dbeb06023247f1aca9a4d97bfb885"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
-Static Private Member Functions</h2></td></tr>
-<tr class="memitem:ga240edc859512109f8f19821345d30cb4"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_individual.html#aff1f663813da7b118f258cfcada48c8e">Loci</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga240edc859512109f8f19821345d30cb4">recombination</a> (const <a class="el" href="class_individual.html#aff1f663813da7b118f258cfcada48c8e">Loci</a> &amp;lhs, const <a class="el" href="class_individual.html#aff1f663813da7b118f258cfcada48c8e">Loci</a> &amp;rhs)</td></tr>
-<tr class="memdesc:ga240edc859512109f8f19821345d30cb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Free recombination among unlinked loci.  <a href="group__mating.html#ga240edc859512109f8f19821345d30cb4">More...</a><br /></td></tr>
-<tr class="separator:ga240edc859512109f8f19821345d30cb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-attribs"></a>
 Private Attributes</h2></td></tr>
@@ -351,7 +344,7 @@ template&lt;class Func &gt; </td></tr>
 </ul>
 <p>The male display trait \( m \) is expressed in males only, whereas female mating preference \( f \) and tolerance \( c \) are expressed in females only. Other traits are expressed in both sexes. All traits are scaled to be between 0 and 1, and are controlled by different unlinked diallelic loci with equal effects. Mutations occur at equal rates across all loci; the probabilities of forward and backward mutations are equal. </p>
 
-<p>Definition at line <a class="el" href="individual_8h_source.html#l00064">64</a> of file <a class="el" href="individual_8h_source.html">individual.h</a>.</p>
+<p>Definition at line <a class="el" href="individual_8h_source.html#l00065">65</a> of file <a class="el" href="individual_8h_source.html">individual.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a60a0e9a89c2cf02cd0014c8fa4e2bf46"></a>
 <div class="memitem">
@@ -377,7 +370,7 @@ template&lt;class Func &gt; </td></tr>
 <p>calculates phenotypic values from genotype </p>
 <dl class="section return"><dt>Returns</dt><dd>phenotypic values </dd></dl>
 
-<p>Definition at line <a class="el" href="individual_8h_source.html#l00404">404</a> of file <a class="el" href="individual_8h_source.html">individual.h</a>.</p>
+<p>Definition at line <a class="el" href="individual_8h_source.html#l00397">397</a> of file <a class="el" href="individual_8h_source.html">individual.h</a>.</p>
 
 </div>
 </div>
