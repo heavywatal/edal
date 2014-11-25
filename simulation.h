@@ -121,15 +121,6 @@ class Simulation {
     */
     void life_cycle();
 
-    /*! @brief Change row/col with probability \f$m\f$ = Individual::MIGRATION_RATE_
-
-        > With probability \f$ m > 0 \f$, each offspring becomes a "migrant."
-        > Each migrant goes to one of the 8 neighboring patches.
-        > For patches at the boundary,
-        > the probability \f$ m \f$ is reduced according to the number of neighbors they have.
-    */
-    void choose_patch(size_t* row, size_t* col) const;
-
     /** @} life_cycle */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 

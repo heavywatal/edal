@@ -74,7 +74,7 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
         exit(0);
     }
     OUT_DIR = fs::path(vm["top_dir"].as<std::string>());
-    prandom().seed(SEED); // TODO: want to read seed?
+    prandom().seed(SEED);
     if (DIMENSIONS == 1) {
         std::ostringstream ost;
         ost << "diameter_pref = 1e6\n"
@@ -164,14 +164,24 @@ void Simulation::life_cycle() {
     std::vector<std::vector<Patch> > parents(population);
     wtl::Semaphore sem(PPN);
     std::mutex mtx;
-    auto patch_task = [&](const size_t row, const size_t col) {
+    auto reproduction = [&](const size_t row, const size_t col) {
         auto offsprings = parents[row][col].mate_and_reproduce();
+        auto& patch = population[row][col];
+        std::vector<std::pair<size_t, size_t> > destinations;
+        destinations.reserve(offsprings.size());
+        for (size_t i=0; i<offsprings.size(); ++i) {
+            const auto dst = patch.choose_patch(row, col);
+            if ((dst.first >= NUM_ROWS) | (dst.second >= NUM_COLS)) {
+                destinations.emplace_back(row, col);
+            } else {
+                destinations.push_back(std::move(dst));
+            }
+        }
         std::lock_guard<std::mutex> lck(mtx);
-        for (auto& child: offsprings) {
-            size_t dest_row = row;
-            size_t dest_col = col;
-            choose_patch(&dest_row, &dest_col);
-            population[dest_row][dest_col].append(std::move(child));
+        //! @todo Reproduce the same results from a specified seed
+        for (size_t i=0; i<offsprings.size(); ++i) {
+            const auto& dst = destinations[i];
+            population[dst.first][dst.second].append(std::move(offsprings[i]));
         }
         sem.unlock();
     };
@@ -179,7 +189,7 @@ void Simulation::life_cycle() {
     for (size_t row=0; row<NUM_ROWS; ++row) {
         for (size_t col=0; col<NUM_COLS; ++col) {
             sem.lock();
-            threads.emplace_back(patch_task, row, col);
+            threads.emplace_back(reproduction, row, col);
         }
     }
     for (auto& th: threads) {th.join();}
@@ -194,25 +204,6 @@ void Simulation::life_cycle() {
         }
     }
     for (auto& th: threads) {th.join();}
-}
-
-void Simulation::choose_patch(size_t* row, size_t* col) const {
-    if (!prandom().bernoulli(Individual::MIGRATION_RATE())) {return;}
-    size_t r = *row;
-    size_t c = *col;
-    switch (prandom().randrange(8)) {
-      case 0:      ++c; break;
-      case 1: ++r; ++c; break;
-      case 2: ++r;      break;
-      case 3: ++r; --c; break;
-      case 4:      --c; break;
-      case 5: --r; --c; break;
-      case 6: --r;      break;
-      case 7: --r; ++c; break;
-    }
-    // size_t(-1) also makes true
-    if ((r >= NUM_ROWS) | (c >= NUM_COLS)) {return;}
-    *row = r; *col = c;
 }
 
 void Simulation::write_snapshot(const size_t time, std::ostream& ost) const {

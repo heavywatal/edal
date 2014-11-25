@@ -8,6 +8,8 @@
 
 #include <vector>
 
+#include "cxxwtils/prandom.hpp"
+
 #include "individual.h"
 
 namespace boost {
@@ -20,19 +22,25 @@ class Patch {
   public:
 
     //! Construct an empty patch
-    Patch() = default;
+    Patch(): random_{prandom()()} {};
     
     //! Construct a patch with the same number of females and males
     /*! @param n The number of inital individuals in this patch
     */
-    Patch(const size_t n): females_(n / 2), males_(n - females_.size()) {}
+    Patch(const size_t n): females_(n / 2), males_(n - females_.size()),
+        random_{prandom()()} {}
 
     //! Construct a patch with a non-default Individual
     /*! @param n The number of inital individuals in this patch
         @param founder The individual to be copied
     */
     Patch(const size_t n, const Individual& founder):
-        females_(n / 2, founder), males_(n - females_.size(), founder) {}
+        females_(n / 2, founder), males_(n - females_.size(), founder),
+        random_{prandom()()} {}
+
+    //! Copy constructor
+    Patch(const Patch& obj):
+        females_{obj.females_}, males_{obj.males_}, random_{prandom()()} {}
 
     //! Add an individual to this patch
     /*! @param ind New individual to add
@@ -67,6 +75,16 @@ class Patch {
     */
     void viability_selection();
 
+
+    /*! @brief Change row/col with probability \f$m\f$ = Individual::MIGRATION_RATE_
+
+        > With probability \f$ m > 0 \f$, each offspring becomes a "migrant."
+        > Each migrant goes to one of the 8 neighboring patches.
+        > For patches at the boundary,
+        > the probability \f$ m \f$ is reduced according to the number of neighbors they have.
+    */
+    std::pair<size_t, size_t> choose_patch(size_t row, size_t col) const;
+
     //! Unit test for Patch
     static void unit_test();
 
@@ -90,6 +108,9 @@ class Patch {
 
     //! male individuals
     std::vector<Individual> males_;
+
+    //! Random number generator
+    mutable Random random_;
 };
 
 //! Stream operator for Patch

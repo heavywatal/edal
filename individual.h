@@ -11,6 +11,7 @@
 #include <string>
 
 #include "cxxwtils/algorithm.hpp"
+#include "cxxwtils/prandom.hpp"
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
@@ -260,7 +261,7 @@ class Individual {
     /*! @ingroup mating
         @return a gamete
     */
-    std::vector<Loci> gametogenesis() const;
+    std::vector<Loci> gametogenesis(Random& prandom) const;
 
     //! Getter
     static double MIGRATION_RATE() {return MIGRATION_RATE_;}
@@ -386,14 +387,6 @@ class Individual {
         \f]
     */
     double fitness(const double height, const double diameter) const;
-
-    //! Free recombination among unlinked loci
-    /*! @ingroup mating
-        @param lhs left arm of a chromosome
-        @param rhs right arm of a chromosome
-        @return haplotype after recombination
-    */
-    static Loci recombination(const Loci& lhs, const Loci& rhs);
 
     /** @} biol_proc */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////

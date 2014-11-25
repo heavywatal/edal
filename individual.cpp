@@ -346,12 +346,7 @@ double Individual::mating_preference(const Individual& male) const {
     return std::exp(exponent);
 }
 
-Individual::Loci Individual::recombination(const Loci& lhs, const Loci& rhs) {
-    const Loci filter(prandom().randrange(wtl::pow<NUM_LOCI_>(2)));
-    return (lhs & filter) | (rhs & ~filter);
-}
-
-std::vector<Individual::Loci> Individual::gametogenesis() const {
+std::vector<Individual::Loci> Individual::gametogenesis(Random& prandom) const {
     static const std::bitset<8> mask(MUTATION_MASK_);
     const double mu_trait = MU_LOCUS_ * NUM_LOCI_;
     std::vector<Loci> gamete;
@@ -361,9 +356,12 @@ std::vector<Individual::Loci> Individual::gametogenesis() const {
             gamete.push_back(genotype_.first[i]);
             continue;
         }
-        gamete.push_back(recombination(genotype_.first[i], genotype_.second[i]));
-        if (prandom().bernoulli(mu_trait)) {
-            gamete.back().flip(prandom().randrange(NUM_LOCI_));
+        // recombination
+        const Loci filter(prandom.randrange(wtl::pow<NUM_LOCI_>(2)));
+        gamete.push_back((genotype_.first[i] & filter) | (genotype_.second[i] & ~filter));
+        // mutation
+        if (prandom.bernoulli(mu_trait)) {
+            gamete.back().flip(prandom.randrange(NUM_LOCI_));
         }
     }
     return gamete;
@@ -425,7 +423,6 @@ std::string Individual::str_detail() const {
     std::ostringstream ost;
     ost << Individual::header() << std::endl;
     ost << *this << std::endl;
-    ost << gametogenesis() << std::endl;
     const auto values = Individual::intermediate_phenotypes();
     for (size_t i=0; i<values.size(); ++i) {
         ost << Individual::INTERMEDIATE_KEYS_[i] << ": "
@@ -530,7 +527,4 @@ void Individual::unit_test() {
     std::cerr.precision(15);
     Individual ind;
     std::cerr << ind.str_detail();
-    Individual offspring(ind.gametogenesis(), ind.gametogenesis());
-    std::cerr << offspring << std::endl;
-    std::map<std::vector<double>, double> cache;
 }

@@ -18,7 +18,7 @@
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
 void Patch::append(Individual&& ind) {
-    if (prandom().bernoulli(0.5)) {
+    if (random_.bernoulli(0.5)) {
         females_.push_back(std::move(ind));
     } else {
         males_.push_back(std::move(ind));
@@ -37,14 +37,14 @@ std::vector<Individual> Patch::mate_and_reproduce() const {
         }
         std::vector<double> upper_bounds(males_.size());
         std::partial_sum(prefs.begin(), prefs.end(), upper_bounds.begin());
-        const double dart = prandom().uniform(upper_bounds.back());
+        const double dart = random_.uniform(upper_bounds.back());
         size_t father_i = 0;
         while (upper_bounds[father_i] < dart) {++father_i;}
         const Individual& father = males_[father_i];
         const size_t num_children =
-            prandom().poisson(Individual::AVG_NUM_OFFSPINRGS());
+            random_.poisson(Individual::AVG_NUM_OFFSPINRGS());
         for (size_t i=0; i<num_children; ++i) {
-            offsprings.push_back(Individual(mother.gametogenesis(), father.gametogenesis()));
+            offsprings.push_back(Individual(mother.gametogenesis(random_), father.gametogenesis(random_)));
         }
     }
     return offsprings;
@@ -66,10 +66,10 @@ double Patch::effective_num_competitors(const Individual& focal) const {
 void Patch::viability_selection() {
     auto choose = [this] (const std::vector<Individual>& members) {
         std::vector<size_t> indices;
-        indices.reserve(members.size());  // TODO
+        indices.reserve(members.size());
         size_t i = 0;
         for (auto& ind: members) {
-            if (prandom().bernoulli(ind.survival_probability(effective_num_competitors(ind)))) {
+            if (random_.bernoulli(ind.survival_probability(effective_num_competitors(ind)))) {
                 indices.push_back(i);
             }
             ++i;
@@ -92,6 +92,22 @@ void Patch::viability_selection() {
     extract(indices_female, &females_);
     extract(indices_male, &males_);
 }
+
+std::pair<size_t, size_t> Patch::choose_patch(size_t row, size_t col) const {
+    if (!random_.bernoulli(Individual::MIGRATION_RATE())) {return {row, col};}
+    switch (random_.randrange(8)) {
+      case 0:        ++col; break;
+      case 1: ++row; ++col; break;
+      case 2: ++row;        break;
+      case 3: ++row; --col; break;
+      case 4:        --col; break;
+      case 5: --row; --col; break;
+      case 6: --row;        break;
+      case 7: --row; ++col; break;
+    }
+    return {row, col};
+}
+
 
 std::map<Individual, size_t> Patch::summarize() const {
     std::map<Individual, size_t> genotypes;
