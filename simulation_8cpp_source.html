@@ -114,7 +114,7 @@
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        exit(0);</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    }</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <a class="code" href="class_simulation.html#a1102be0f75289a2bf1d44db7a817fe01">OUT_DIR</a> = fs::path(vm[<span class="stringliteral">&quot;top_dir&quot;</span>].as&lt;std::string&gt;());</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    wtl::prandom().seed(<a class="code" href="class_simulation.html#a61ea57b43955c1acedb388ea406addf2">SEED</a>);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    wtl::sfmt().seed(<a class="code" href="class_simulation.html#a61ea57b43955c1acedb388ea406addf2">SEED</a>);</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="group__biol__param.html#ga01651599b0a2b37916543ea522dfb9e1">DIMENSIONS</a> == 1) {</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        std::ostringstream ost;</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        ost &lt;&lt; <span class="stringliteral">&quot;diameter_pref = 1e6\n&quot;</span></div>
