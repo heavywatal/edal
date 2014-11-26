@@ -22,13 +22,13 @@ class Patch {
   public:
 
     //! Construct an empty patch
-    Patch(): rng_{wtl::prandom()()} {};
+    Patch(): rng_{wtl::sfmt()()} {};
     
     //! Construct a patch with the same number of females and males
     /*! @param n The number of inital individuals in this patch
     */
     Patch(const size_t n): females_(n / 2), males_(n - females_.size()),
-        rng_{wtl::prandom()()} {}
+        rng_{wtl::sfmt()()} {}
 
     //! Construct a patch with a non-default Individual
     /*! @param n The number of inital individuals in this patch
@@ -36,11 +36,11 @@ class Patch {
     */
     Patch(const size_t n, const Individual& founder):
         females_(n / 2, founder), males_(n - females_.size(), founder),
-        rng_{wtl::prandom()()} {}
+        rng_{wtl::sfmt()()} {}
 
     //! Copy constructor
     Patch(const Patch& obj):
-        females_{obj.females_}, males_{obj.males_}, rng_{wtl::prandom()()} {}
+        females_{obj.females_}, males_{obj.males_}, rng_{wtl::sfmt()()} {}
 
     //! Add an individual to this patch
     /*! @param ind New individual to add
