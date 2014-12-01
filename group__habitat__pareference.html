@@ -53,16 +53,17 @@
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ga18a63a3bac4c5d6a400bcdd98e0dbd09"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__habitat__pareference.html#ga18a63a3bac4c5d6a400bcdd98e0dbd09">Individual::preference_overlap</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;other) const </td></tr>
-<tr class="memdesc:ga18a63a3bac4c5d6a400bcdd98e0dbd09"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(C_y(I, J)\): competition on habitat preference  <a href="#ga18a63a3bac4c5d6a400bcdd98e0dbd09">More...</a><br /></td></tr>
+<tr class="memdesc:ga18a63a3bac4c5d6a400bcdd98e0dbd09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exponent of \(C_y(I, J)\): competition on habitat preference.  <a href="#ga18a63a3bac4c5d6a400bcdd98e0dbd09">More...</a><br /></td></tr>
 <tr class="separator:ga18a63a3bac4c5d6a400bcdd98e0dbd09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7a82540186663c5105a136e0411a98ed"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__habitat__pareference.html#ga7a82540186663c5105a136e0411a98ed">Individual::morphology_overlap</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;other) const </td></tr>
-<tr class="memdesc:ga7a82540186663c5105a136e0411a98ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(C_x(I, J)\): competition on morphology  <a href="#ga7a82540186663c5105a136e0411a98ed">More...</a><br /></td></tr>
+<tr class="memdesc:ga7a82540186663c5105a136e0411a98ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exponent of \(C_x(I, J)\): competition on morphology.  <a href="#ga7a82540186663c5105a136e0411a98ed">More...</a><br /></td></tr>
 <tr class="separator:ga7a82540186663c5105a136e0411a98ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga313e74edcfba53662e0b63a09cfa4420"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__habitat__pareference.html#ga313e74edcfba53662e0b63a09cfa4420">Individual::resource_overlap</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;other) const </td></tr>
-<tr class="memdesc:ga313e74edcfba53662e0b63a09cfa4420"><td class="mdescLeft">&#160;</td><td class="mdescRight">Honest \(C(I, J)\) for competition and mating (very slow, unused)  <a href="#ga313e74edcfba53662e0b63a09cfa4420">More...</a><br /></td></tr>
+<tr class="memitem:ga313e74edcfba53662e0b63a09cfa4420"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga313e74edcfba53662e0b63a09cfa4420"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__habitat__pareference.html#ga313e74edcfba53662e0b63a09cfa4420">Individual::resource_overlap</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;other) const </td></tr>
+<tr class="memdesc:ga313e74edcfba53662e0b63a09cfa4420"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(C(I, J) = C_x(I,J) C_y(I,J)\) for competition <br /></td></tr>
 <tr class="separator:ga313e74edcfba53662e0b63a09cfa4420"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaff4354e0cc80ca1cc3b9defbed52efb6"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__habitat__pareference.html#gaff4354e0cc80ca1cc3b9defbed52efb6">Individual::habitat_preference_exp</a> (const double height, const double diameter) const </td></tr>
-<tr class="memdesc:gaff4354e0cc80ca1cc3b9defbed52efb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(\Xi(I, u, v)\) in anolis_v2  <a href="#gaff4354e0cc80ca1cc3b9defbed52efb6">More...</a><br /></td></tr>
+<tr class="memdesc:gaff4354e0cc80ca1cc3b9defbed52efb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exponent of \(\Xi(I, u, v)\) in anolis_v2.  <a href="#gaff4354e0cc80ca1cc3b9defbed52efb6">More...</a><br /></td></tr>
 <tr class="separator:gaff4354e0cc80ca1cc3b9defbed52efb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0269f13dc427cf2106d3dc75418cb241"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__habitat__pareference.html#ga0269f13dc427cf2106d3dc75418cb241">Individual::habitat_preference_quadratic</a> (const double height, const double diameter) const </td></tr>
 <tr class="memdesc:ga0269f13dc427cf2106d3dc75418cb241"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(\Xi(I, u, v)\) quadratic approximation in anolis_v3  <a href="#ga0269f13dc427cf2106d3dc75418cb241">More...</a><br /></td></tr>
@@ -230,7 +231,7 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>\(\Xi(I, u, v)\) in anolis_v2 </p>
+<p>Exponent of \(\Xi(I, u, v)\) in anolis_v2. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">height</td><td>habitat environment </td></tr>
@@ -306,7 +307,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>\(C_x(I, J)\): competition on morphology </p>
+<p>Exponent of \(C_x(I, J)\): competition on morphology. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">other</td><td>individual to interact </td></tr>
@@ -340,7 +341,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>\(C_y(I, J)\): competition on habitat preference </p>
+<p>Exponent of \(C_y(I, J)\): competition on habitat preference. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">other</td><td>individual to interact </td></tr>
@@ -356,40 +357,6 @@ Functions</h2></td></tr>
 </dl>
 <p>following Roughgarden and others </p><p class="formulaDsp">
 \[ C_y(I,J) = \exp(-\frac{(y_{0,I} - y_{0,J})^2}{2c_y^2} -\frac{(y_{1,I} - y_{1,J})^2}{2c_y^2}) \]
-</p>
- 
-</div>
-</div>
-<a class="anchor" id="ga313e74edcfba53662e0b63a09cfa4420"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double Individual::resource_overlap </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_individual.html">Individual</a> &amp;&#160;</td>
-          <td class="paramname"><em>other</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Honest \(C(I, J)\) for competition and mating (very slow, unused) </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">other</td><td>individual to interact </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>\(C(I, J)\) </dd></dl>
-<dl class="retval"><dt>Return values</dt><dd>
-  <table class="retval">
-    <tr><td class="paramname">1</td><td>for individuals with identical preferences</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Competition and mating frequencies decrease with increasing the total difference of the resource consumption, \(F(u,v) \Xi(x_0,x_1|u,v) W(y_0,y_1|u,v)\), over the resource range. </p><p class="formulaDsp">
-\[ C(I,J) = \exp[-c_0\{\iint F(u,v)(\Xi(I|u,v) W(I|u,v) - \Xi(J|u,v) W(J|u,v)) du dv\}^2] \]
 </p>
  
 </div>

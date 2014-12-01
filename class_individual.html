@@ -98,13 +98,14 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 <tr class="memdesc:gaea1e46d83bfadc50efbdd1dd6adc4dbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find \(K_e(I)\) in KE_CACHE_ or calculate. <br /></td></tr>
 <tr class="separator:gaea1e46d83bfadc50efbdd1dd6adc4dbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga18a63a3bac4c5d6a400bcdd98e0dbd09"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__habitat__pareference.html#ga18a63a3bac4c5d6a400bcdd98e0dbd09">preference_overlap</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;other) const </td></tr>
-<tr class="memdesc:ga18a63a3bac4c5d6a400bcdd98e0dbd09"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(C_y(I, J)\): competition on habitat preference  <a href="group__habitat__pareference.html#ga18a63a3bac4c5d6a400bcdd98e0dbd09">More...</a><br /></td></tr>
+<tr class="memdesc:ga18a63a3bac4c5d6a400bcdd98e0dbd09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exponent of \(C_y(I, J)\): competition on habitat preference.  <a href="group__habitat__pareference.html#ga18a63a3bac4c5d6a400bcdd98e0dbd09">More...</a><br /></td></tr>
 <tr class="separator:ga18a63a3bac4c5d6a400bcdd98e0dbd09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga7a82540186663c5105a136e0411a98ed"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__habitat__pareference.html#ga7a82540186663c5105a136e0411a98ed">morphology_overlap</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;other) const </td></tr>
-<tr class="memdesc:ga7a82540186663c5105a136e0411a98ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(C_x(I, J)\): competition on morphology  <a href="group__habitat__pareference.html#ga7a82540186663c5105a136e0411a98ed">More...</a><br /></td></tr>
+<tr class="memdesc:ga7a82540186663c5105a136e0411a98ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exponent of \(C_x(I, J)\): competition on morphology.  <a href="group__habitat__pareference.html#ga7a82540186663c5105a136e0411a98ed">More...</a><br /></td></tr>
 <tr class="separator:ga7a82540186663c5105a136e0411a98ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga313e74edcfba53662e0b63a09cfa4420"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__habitat__pareference.html#ga313e74edcfba53662e0b63a09cfa4420">resource_overlap</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;other) const </td></tr>
-<tr class="memdesc:ga313e74edcfba53662e0b63a09cfa4420"><td class="mdescLeft">&#160;</td><td class="mdescRight">Honest \(C(I, J)\) for competition and mating (very slow, unused)  <a href="group__habitat__pareference.html#ga313e74edcfba53662e0b63a09cfa4420">More...</a><br /></td></tr>
+<tr class="memitem:ga313e74edcfba53662e0b63a09cfa4420"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga313e74edcfba53662e0b63a09cfa4420"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__habitat__pareference.html#ga313e74edcfba53662e0b63a09cfa4420">resource_overlap</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;other) const </td></tr>
+<tr class="memdesc:ga313e74edcfba53662e0b63a09cfa4420"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(C(I, J) = C_x(I,J) C_y(I,J)\) for competition <br /></td></tr>
 <tr class="separator:ga313e74edcfba53662e0b63a09cfa4420"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf44e8ab657a5ff87f5d4f029e9c2a1cb"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__natural__selection.html#gaf44e8ab657a5ff87f5d4f029e9c2a1cb">survival_probability</a> (const double effective_num_competitors) const </td></tr>
 <tr class="memdesc:gaf44e8ab657a5ff87f5d4f029e9c2a1cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Probability of survival \(w(I)\).  <a href="group__natural__selection.html#gaf44e8ab657a5ff87f5d4f029e9c2a1cb">More...</a><br /></td></tr>
@@ -163,7 +164,7 @@ boost::program_options::options_description &amp;&#160;</td><td class="memItemRi
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-methods"></a>
 Private Member Functions</h2></td></tr>
 <tr class="memitem:gaff4354e0cc80ca1cc3b9defbed52efb6"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__habitat__pareference.html#gaff4354e0cc80ca1cc3b9defbed52efb6">habitat_preference_exp</a> (const double height, const double diameter) const </td></tr>
-<tr class="memdesc:gaff4354e0cc80ca1cc3b9defbed52efb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(\Xi(I, u, v)\) in anolis_v2  <a href="group__habitat__pareference.html#gaff4354e0cc80ca1cc3b9defbed52efb6">More...</a><br /></td></tr>
+<tr class="memdesc:gaff4354e0cc80ca1cc3b9defbed52efb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exponent of \(\Xi(I, u, v)\) in anolis_v2.  <a href="group__habitat__pareference.html#gaff4354e0cc80ca1cc3b9defbed52efb6">More...</a><br /></td></tr>
 <tr class="separator:gaff4354e0cc80ca1cc3b9defbed52efb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga0269f13dc427cf2106d3dc75418cb241"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__habitat__pareference.html#ga0269f13dc427cf2106d3dc75418cb241">habitat_preference_quadratic</a> (const double height, const double diameter) const </td></tr>
 <tr class="memdesc:ga0269f13dc427cf2106d3dc75418cb241"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(\Xi(I, u, v)\) quadratic approximation in anolis_v3  <a href="group__habitat__pareference.html#ga0269f13dc427cf2106d3dc75418cb241">More...</a><br /></td></tr>
@@ -185,7 +186,7 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 <tr class="memdesc:ga88bd35bb4b4977518fe10af9e7662baf"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(\Psi(I, I&#39;)\) <br /></td></tr>
 <tr class="separator:ga88bd35bb4b4977518fe10af9e7662baf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga04b5a235f3e1b0e5b1121d1ef3b7c75e"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__natural__selection.html#ga04b5a235f3e1b0e5b1121d1ef3b7c75e">fitness</a> (const double height, const double diameter) const </td></tr>
-<tr class="memdesc:ga04b5a235f3e1b0e5b1121d1ef3b7c75e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Measure adaptation to habitat \(W(x_0, x_1| u, v)\).  <a href="group__natural__selection.html#ga04b5a235f3e1b0e5b1121d1ef3b7c75e">More...</a><br /></td></tr>
+<tr class="memdesc:ga04b5a235f3e1b0e5b1121d1ef3b7c75e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exponent of \(W(x_0, x_1| u, v)\): measure adaptation to habitat.  <a href="group__natural__selection.html#ga04b5a235f3e1b0e5b1121d1ef3b7c75e">More...</a><br /></td></tr>
 <tr class="separator:ga04b5a235f3e1b0e5b1121d1ef3b7c75e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60a0e9a89c2cf02cd0014c8fa4e2bf46"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_individual.html#a60a0e9a89c2cf02cd0014c8fa4e2bf46">calc_phenotype</a> () const </td></tr>
 <tr class="memdesc:a60a0e9a89c2cf02cd0014c8fa4e2bf46"><td class="mdescLeft">&#160;</td><td class="mdescRight">calculates phenotypic values from genotype  <a href="#a60a0e9a89c2cf02cd0014c8fa4e2bf46">More...</a><br /></td></tr>
@@ -344,7 +345,7 @@ template&lt;class Func &gt; </td></tr>
 </ul>
 <p>The male display trait \( m \) is expressed in males only, whereas female mating preference \( f \) and tolerance \( c \) are expressed in females only. Other traits are expressed in both sexes. All traits are scaled to be between 0 and 1, and are controlled by different unlinked diallelic loci with equal effects. Mutations occur at equal rates across all loci; the probabilities of forward and backward mutations are equal. </p>
 
-<p>Definition at line <a class="el" href="individual_8h_source.html#l00065">65</a> of file <a class="el" href="individual_8h_source.html">individual.h</a>.</p>
+<p>Definition at line <a class="el" href="individual_8h_source.html#l00066">66</a> of file <a class="el" href="individual_8h_source.html">individual.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a60a0e9a89c2cf02cd0014c8fa4e2bf46"></a>
 <div class="memitem">
@@ -370,7 +371,7 @@ template&lt;class Func &gt; </td></tr>
 <p>calculates phenotypic values from genotype </p>
 <dl class="section return"><dt>Returns</dt><dd>phenotypic values </dd></dl>
 
-<p>Definition at line <a class="el" href="individual_8h_source.html#l00397">397</a> of file <a class="el" href="individual_8h_source.html">individual.h</a>.</p>
+<p>Definition at line <a class="el" href="individual_8h_source.html#l00389">389</a> of file <a class="el" href="individual_8h_source.html">individual.h</a>.</p>
 
 </div>
 </div>
