@@ -62,30 +62,23 @@ help:
 	./${PROGRAM} --help
 
 
-.PHONY: debug release llvm instruments
+.PHONY: debug release instruments
 debug:
 	${MAKE} CXXDBG="-g" all
 
 release:
-	${MAKE} CXX=${GXX} CPPDBG="-DNDEBUG" all
-#	${MAKE} CXXDBG="-flto" CPPDBG="-DNDEBUG" all
-
-llvm:
-	${MAKE} CXX=clang++ CPPDBG="-DNDEBUG" all
+	${MAKE} CPPDBG="-DNDEBUG" all
 
 instruments: release
 	@echo $(shell gdate +%F_%T)
-	instruments -t "/Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/Resources/templates/Time Profiler.tracetemplate" -D ~/tmp/profile$(shell gdate +%F_%T) ${PROGRAM}
+	instruments -t "/Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/Resources/templates/Time Profiler.tracetemplate" -D ~/tmp/profile$(shell gdate +%F_%T) ${PROGRAM} -T200
 
 
-.PHONY: doxygen sync pdf
+.PHONY: doxygen pdf pandoc
 doxygen:
 	$(RM) -r html/*.html
 	doxygen
 	$(MAKE) pandoc
-
-sync:
-	rsync -auv --delete html/ meme:~/Default/edal
 
 pdf:
 	pdflatex --output-directory=tex tex/anolis.tex && open tex/anolis.pdf
