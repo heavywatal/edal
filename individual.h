@@ -5,6 +5,7 @@
 #pragma once
 #ifndef INDIVIDUAL_H_
 #define INDIVIDUAL_H_
+#include <cmath>
 #include <iostream>
 #include <vector>
 #include <bitset>
@@ -188,7 +189,7 @@ class Individual {
     //! Find \f$K_e(I)\f$ in KE_CACHE_ or calculate
     double effective_carrying_capacity_cache() const;
 
-    //! \f$C_y(I, J)\f$: competition on habitat preference
+    //! Exponent of \f$C_y(I, J)\f$: competition on habitat preference
     /*! @ingroup habitat_pareference
         @param other individual to interact
         @return \f$C_y(I, J)\f$
@@ -202,7 +203,7 @@ class Individual {
     */
     double preference_overlap(const Individual& other) const;
 
-    //! \f$C_x(I, J)\f$: competition on morphology
+    //! Exponent of \f$C_x(I, J)\f$: competition on morphology
     /*! @ingroup habitat_pareference
         @param other individual to interact
         @return \f$C_x(I, J)\f$
@@ -215,21 +216,12 @@ class Individual {
     */
     double morphology_overlap(const Individual& other) const;
 
-    //! Honest \f$C(I, J)\f$ for competition and mating (very slow, unused)
+    //! \f$C(I, J) = C_x(I,J) C_y(I,J)\f$ for competition
     /*! @ingroup habitat_pareference
-        @param other individual to interact
-        @return \f$C(I, J)\f$
-        @retval 1 for individuals with identical preferences
-
-        Competition and mating frequencies decrease with
-        increasing the total difference of the resource consumption,
-        \f$F(u,v) \Xi(x_0,x_1|u,v) W(y_0,y_1|u,v)\f$,
-        over the resource range.
-        \f[
-            C(I,J) = \exp[-c_0\{\iint F(u,v)(\Xi(I|u,v) W(I|u,v) - \Xi(J|u,v) W(J|u,v)) du dv\}^2]
-        \f]
     */
-    double resource_overlap(const Individual& other) const;
+    double resource_overlap(const Individual& other) const {
+        return std::exp(preference_overlap(other) + morphology_overlap(other));
+    }
 
     //! Probability of survival \f$w(I)\f$
     /*! @ingroup natural_selection
@@ -254,7 +246,7 @@ class Individual {
     /*! @ingroup mating
     */
     double mating_probability(const Individual& male) const {
-        return mating_preference(male) * preference_overlap(male);
+        return std::exp(mating_preference(male) + preference_overlap(male));
     };
 
     //! Gametogenesis with free recombination and mutation
@@ -303,7 +295,7 @@ class Individual {
     /** @addtogroup biol_proc
         @{*/
 
-    //! \f$\Xi(I, u, v)\f$ in anolis_v2
+    //! Exponent of \f$\Xi(I, u, v)\f$ in anolis_v2
     /*! @ingroup habitat_pareference
         @param height habitat environment
         @param diameter habitat environment
@@ -376,7 +368,7 @@ class Individual {
     */
     double mating_preference(const Individual& male) const;
 
-    //! Measure adaptation to habitat \f$W(x_0, x_1| u, v)\f$
+    //! Exponent of \f$W(x_0, x_1| u, v)\f$: measure adaptation to habitat
     /*! @ingroup natural_selection
         @param height habitat environmant
         @param diameter habitat environment

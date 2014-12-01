@@ -173,9 +173,8 @@ Individual::Individual(const std::vector<unsigned long>& flags): genotype_{{}, {
 double Individual::habitat_preference_exp(const double height, const double diameter) const {
     double exponent = gaussian_exponent(phenotype_[trait::height_preference],
                                         height, HEIGHT_PREFERENCE_);
-    exponent += gaussian_exponent(phenotype_[trait::diameter_preference],
-                                  diameter, DIAMETER_PREFERENCE_);
-    return std::exp(exponent);
+    return exponent += gaussian_exponent(phenotype_[trait::diameter_preference],
+                                         diameter, DIAMETER_PREFERENCE_);
 }
 
 double Individual::habitat_preference_quadratic(const double height, const double diameter) const {
@@ -235,15 +234,14 @@ double Individual::calc_Dxi_numerical() const {
 double Individual::fitness(const double height, const double diameter) const {
     double exponent = gaussian_exponent(phenotype_[trait::toepad_size],
                                         height, TOEPAD_SELECTION_);
-    exponent += gaussian_exponent(phenotype_[trait::limb_length],
+    return exponent += gaussian_exponent(phenotype_[trait::limb_length],
                                   diameter, LIMB_SELECTION_);
-    return std::exp(exponent);
 }
 
 double Individual::effective_carrying_capacity_quad_unnormalized() const {
     double result = CARRYING_CAPACITY_;
     return result *= integrate_triangle([this](const double u, const double v) {
-        double result = fitness(u, v);
+        double result = std::exp(fitness(u, v));
         result *= habitat_preference_quadratic(u, v);
         return result *= abundance(u, v);
     });
@@ -253,8 +251,8 @@ double Individual::effective_carrying_capacity_exp_unnormalized() const {
     double result = CARRYING_CAPACITY_;
     return result *= integrate_triangle([this](const double u, const double v) {
         double result = fitness(u, v);
-        result *= habitat_preference_exp(u, v);
-        return result *= abundance(u, v);
+        result += habitat_preference_exp(u, v);
+        return std::exp(result) * abundance(u, v);
     });
 }
 
@@ -262,8 +260,8 @@ double Individual::effective_carrying_capacity_old_exp_unnormalized() const {
     double result = CARRYING_CAPACITY_;
     return result *= integrate_square([this](const double u, const double v) {
         double result = fitness(u, v);
-        result *= habitat_preference_exp(u, v);
-        return result *= abundance_old(u, v);
+        result += habitat_preference_exp(u, v);
+        return std::exp(result) * abundance_old(u, v);
     });
 }
 
@@ -282,35 +280,20 @@ double Individual::effective_carrying_capacity_cache() const {
 
 double Individual::preference_overlap(const Individual& other) const {
     double exponent = gaussian_exponent(phenotype_[trait::height_preference],
-                                        other.phenotype_[trait::height_preference],
-                                        PREF_COMPETITION_);
-    exponent += gaussian_exponent(phenotype_[trait::diameter_preference],
-                                  other.phenotype_[trait::diameter_preference],
+                                  other.phenotype_[trait::height_preference],
                                   PREF_COMPETITION_);
-    return std::exp(exponent);
+    return exponent += gaussian_exponent(phenotype_[trait::diameter_preference],
+                                   other.phenotype_[trait::diameter_preference],
+                                   PREF_COMPETITION_);
 }
 
 double Individual::morphology_overlap(const Individual& other) const {
     double exponent = gaussian_exponent(phenotype_[trait::toepad_size],
-                                        other.phenotype_[trait::toepad_size],
-                                        MORPH_COMPETITION_);
-    exponent += gaussian_exponent(phenotype_[trait::limb_length],
-                                  other.phenotype_[trait::limb_length],
+                                  other.phenotype_[trait::toepad_size],
                                   MORPH_COMPETITION_);
-    return std::exp(exponent);
-}
-
-double Individual::resource_overlap(const Individual& other) const {
-    double exponent = -PREF_COMPETITION_;
-    exponent *= integrate_triangle([this, &other](const double u, const double v) {
-        double consumption = this->habitat_preference_quadratic(u, v);
-        consumption *= this->fitness(u, v);
-        double other_consumption = other.habitat_preference_quadratic(u, v);
-        other_consumption *= other.fitness(u, v);
-        consumption -= other_consumption;
-        return consumption *= abundance(u, v);
-    });
-    return std::exp(exponent);
+    return exponent += gaussian_exponent(phenotype_[trait::limb_length],
+                                   other.phenotype_[trait::limb_length],
+                                   MORPH_COMPETITION_);
 }
 
 double Individual::survival_probability(const double effective_num_competitors) const {
@@ -343,7 +326,7 @@ double Individual::mating_preference(const Individual& male) const {
     exponent /= MATING_SIGMA_;
     exponent *= exponent;
     exponent *= -0.5;
-    return std::exp(exponent);
+    return exponent;
 }
 
 std::vector<Individual::Loci> Individual::gametogenesis(wtl::sfmt19937& rng) const {
