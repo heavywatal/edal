@@ -9,7 +9,6 @@
 #include "cxxwtils/prandom.hpp"
 #include "cxxwtils/os.hpp"
 #include "cxxwtils/gz.hpp"
-#include "cxxwtils/multiprocessing.hpp"
 
 #include "individual.h"
 
@@ -36,7 +35,6 @@ boost::program_options::options_description& Simulation::opt_description() {HERE
             ->default_value(VERBOSE)->implicit_value(true), "verbose output")
         ("test", po::value<int>()->default_value(0)->implicit_value(1))
         ("mode", po::value<int>(&MODE)->default_value(MODE))
-        ("ppn", po::value<size_t>(&PPN)->default_value(wtl::num_threads()))
         ("label", po::value<std::string>(&LABEL)->default_value("default"))
         ("top_dir", po::value<std::string>()->default_value(OUT_DIR.string()))
         ("patch_size,k", po::value<size_t>(&INITIAL_PATCH_SIZE)->default_value(INITIAL_PATCH_SIZE))
@@ -162,8 +160,6 @@ void Simulation::evolve() {HERE;
 
 void Simulation::life_cycle() {
     std::vector<std::vector<Patch> > parents(population);
-    wtl::Semaphore sem(PPN);
-    std::mutex mtx;
     auto reproduction = [&](const size_t row, const size_t col) {
         auto offsprings = parents[row][col].mate_and_reproduce();
         auto& patch = population[row][col];
@@ -177,33 +173,21 @@ void Simulation::life_cycle() {
                 destinations.push_back(std::move(dst));
             }
         }
-        std::lock_guard<std::mutex> lck(mtx);
-        //! @todo Reproduce the same results from a specified seed
         for (size_t i=0; i<offsprings.size(); ++i) {
             const auto& dst = destinations[i];
             population[dst.first][dst.second].append(std::move(offsprings[i]));
         }
-        sem.unlock();
     };
-    std::vector<std::thread> threads;
     for (size_t row=0; row<NUM_ROWS; ++row) {
         for (size_t col=0; col<NUM_COLS; ++col) {
-            sem.lock();
-            threads.emplace_back(reproduction, row, col);
+            reproduction(row, col);
         }
     }
-    for (auto& th: threads) {th.join();}
-    threads.clear();
     for (size_t row=0; row<NUM_ROWS; ++row) {
         for (size_t col=0; col<NUM_COLS; ++col) {
-            sem.lock();
-            threads.emplace_back([row, col, &sem, this] {
-                population[row][col].viability_selection();
-                sem.unlock();
-            });
+            population[row][col].viability_selection();
         }
     }
-    for (auto& th: threads) {th.join();}
 }
 
 void Simulation::write_snapshot(const size_t time, std::ostream& ost) const {

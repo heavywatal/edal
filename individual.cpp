@@ -7,7 +7,6 @@
 #include <cmath>
 #include <iostream>
 #include <sstream>
-#include <mutex>
 
 #include <boost/program_options.hpp>
 
@@ -266,14 +265,11 @@ double Individual::effective_carrying_capacity_old_exp_unnormalized() const {
 }
 
 double Individual::effective_carrying_capacity_cache() const {
-    static std::mutex mtx;
     std::vector<double> ecol_traits(phenotype_.begin(), phenotype_.begin()+4);
     if (KE_CACHE_.find(ecol_traits) == KE_CACHE_.end()) {
         const double ke = effective_carrying_capacity_exp_unnormalized();
-        std::lock_guard<std::mutex> lck(mtx);
         return KE_CACHE_[ecol_traits] = ke;
     } else {
-        std::lock_guard<std::mutex> lck(mtx);
         return KE_CACHE_[ecol_traits];
     }
 }

@@ -61,9 +61,6 @@ class Simulation {
     /** @} endgroup */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
-    //! The number of CPU cores to use
-    size_t PPN;
-
     //! Print extra information
     bool VERBOSE = false;
 

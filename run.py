@@ -99,7 +99,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-n', '--dry-run', action='store_true')
-    parser.add_argument('--ppn', type=int, default=min(4, multiprocessing.cpu_count()))
     parser.add_argument('-q', '--queue',
                         choices=['low', 'batch', 'high'], default='batch')
     parser.add_argument('-r', '--repeat', type=int, default=1)
@@ -111,7 +110,6 @@ if __name__ == '__main__':
     constargs = [program]
     constargs.append('--mode={}'.format(args.mode))
     constargs.append('--top_dir=' + os.getcwd())
-    constargs.append('--ppn={}'.format(args.ppn))
     constargs.append('-T10000')
     constargs.append('-I100')
 
@@ -123,4 +121,4 @@ if __name__ == '__main__':
     rex = re.compile('--label=(\S+)')
     for cmd in commands:
         qargs['-N'] = rex.search(' '.join(cmd)).group(1)
-        torque.qsub(cmd, args.dry_run, ppn=args.ppn, **qargs)
+        torque.qsub(cmd, args.dry_run, ppn=1, **qargs)
