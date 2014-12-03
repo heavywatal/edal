@@ -95,7 +95,6 @@ class Patch {
 
     //! Calculate \f$N_e(I)\f$ from \f$C(I,J)\f$
     /*! @ingroup natural_selection
-        @param focal individual
         @return \f$N_e\f$ of the focal individual
         \f[
             N_e(I) = \sum_J C(I,J)
@@ -103,6 +102,7 @@ class Patch {
     */
     std::vector<double> effective_num_competitors() const;
 
+    //! Change sex of second half members
     void change_sex_half(size_t n);
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
