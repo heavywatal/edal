@@ -101,7 +101,7 @@ class Patch {
             N_e(I) = \sum_J C(I,J)
         \f]
     */
-    double effective_num_competitors(const Individual&) const;
+    std::vector<double> effective_num_competitors() const;
 
     void change_sex_half(size_t n);
 

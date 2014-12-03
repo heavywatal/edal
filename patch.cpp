@@ -60,23 +60,26 @@ std::vector<Individual> Patch::mate_and_reproduce() const {
     return offsprings;
 }
 
-double Patch::effective_num_competitors(const Individual& focal) const {
-    double n = 0;
-    auto impl = [&] (const std::vector<Individual>& members) {
-        for (const auto& ind: members) {
-            n += focal.resource_overlap(ind);
+std::vector<double> Patch::effective_num_competitors() const {
+    std::vector<double> results(members_.size());
+    for (size_t i=0; i<members_.size(); ++i) {
+        results[i] += 1.0;
+        for (size_t j=0; j<i; ++j) {
+            const double value = members_[i].resource_overlap(members_[j]);
+            results[i] += value;
+            results[j] += value;
         }
-    };
-    impl(members_);
-    return n;
+    }
+    return results;
 }
 
 void Patch::viability_selection() {
     std::vector<size_t> indices;
     indices.reserve(members_.size());
     size_t i = 0;
+    const auto ne = effective_num_competitors();
     for (auto& ind: members_) {
-        const double p = ind.survival_probability(effective_num_competitors(ind));
+        const double p = ind.survival_probability(ne[i]);
         if (std::bernoulli_distribution(p)(rng_)) {
             indices.push_back(i);
         }
