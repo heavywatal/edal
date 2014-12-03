@@ -73,9 +73,9 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__natural__selection.html#gaba3c1ab2eff35d22af2576b0a8a1acf5">Patch::viability_selection</a> ()</td></tr>
 <tr class="memdesc:gaba3c1ab2eff35d22af2576b0a8a1acf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Some individuals die depending on <a class="el" href="group__natural__selection.html#gaf44e8ab657a5ff87f5d4f029e9c2a1cb" title="Probability of survival . ">Individual::survival_probability()</a> <br /></td></tr>
 <tr class="separator:gaba3c1ab2eff35d22af2576b0a8a1acf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad66c69e3f4d4e719deac84ad676842d2"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__natural__selection.html#gad66c69e3f4d4e719deac84ad676842d2">Patch::effective_num_competitors</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;) const </td></tr>
-<tr class="memdesc:gad66c69e3f4d4e719deac84ad676842d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate \(N_e(I)\) from \(C(I,J)\).  <a href="#gad66c69e3f4d4e719deac84ad676842d2">More...</a><br /></td></tr>
-<tr class="separator:gad66c69e3f4d4e719deac84ad676842d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9d624c2dbd9fced3214c8b7e13471403"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__natural__selection.html#ga9d624c2dbd9fced3214c8b7e13471403">Patch::effective_num_competitors</a> () const </td></tr>
+<tr class="memdesc:ga9d624c2dbd9fced3214c8b7e13471403"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate \(N_e(I)\) from \(C(I,J)\).  <a href="#ga9d624c2dbd9fced3214c8b7e13471403">More...</a><br /></td></tr>
+<tr class="separator:ga9d624c2dbd9fced3214c8b7e13471403"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
@@ -99,7 +99,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
  
 </div>
 </div>
-<a class="anchor" id="gad66c69e3f4d4e719deac84ad676842d2"></a>
+<a class="anchor" id="ga9d624c2dbd9fced3214c8b7e13471403"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -107,10 +107,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">double Patch::effective_num_competitors </td>
+          <td class="memname">std::vector&lt; double &gt; Patch::effective_num_competitors </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="class_individual.html">Individual</a> &amp;&#160;</td>
-          <td class="paramname"><em>focal</em></td><td>)</td>
+          <td class="paramname"></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -122,18 +121,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 </div><div class="memdoc">
 
 <p>Calculate \(N_e(I)\) from \(C(I,J)\). </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">focal</td><td>individual </td></tr>
-  </table>
-  </dd>
-</dl>
 <dl class="section return"><dt>Returns</dt><dd>\(N_e\) of the focal individual <p class="formulaDsp">
 \[ N_e(I) = \sum_J C(I,J) \]
 </p>
  </dd></dl>
 
-<p>Definition at line <a class="el" href="patch_8cpp_source.html#l00054">54</a> of file <a class="el" href="patch_8cpp_source.html">patch.cpp</a>.</p>
+<p>Definition at line <a class="el" href="patch_8cpp_source.html#l00063">63</a> of file <a class="el" href="patch_8cpp_source.html">patch.cpp</a>.</p>
 
 </div>
 </div>
