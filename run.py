@@ -53,11 +53,11 @@ def adaptive_dynamics():
 
 
 def stepping_stone():
-    const = ['-D1', '--row=1', '--col=8', '-K1000', '-p1e6', '-c1e6', '-f0.03']
+    const = ['-D1', '--row=1', '--col=6', '-K2000', '-p1e6', '-c1e6', '-f0.03']
     params = dict()
     params.update(s=[2.0, 3.0])
     params.update(C=[1.0, 2.0])
-    params.update(m=[0.0005, 0.001, 0.002, 0.004])
+    params.update(m=[0.001, 0.002, 0.003, 0.004])
     return [const + x + [make_label(x)] for x in product(params)]
 
 
