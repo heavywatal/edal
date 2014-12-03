@@ -27,31 +27,33 @@ class Patch {
     //! Construct a patch with the same number of females and males
     /*! @param n The number of inital individuals in this patch
     */
-    Patch(const size_t n): females_(n / 2), males_(n - females_.size()),
-        rng_{wtl::sfmt()()} {}
+    Patch(const size_t n): members_(n), rng_{wtl::sfmt()()} {
+        change_sex_half(n);
+    }
 
     //! Construct a patch with a non-default Individual
     /*! @param n The number of inital individuals in this patch
         @param founder The individual to be copied
     */
     Patch(const size_t n, const Individual& founder):
-        females_(n / 2, founder), males_(n - females_.size(), founder),
-        rng_{wtl::sfmt()()} {}
+        members_(n, founder), rng_{wtl::sfmt()()} {
+        change_sex_half(n);
+    }
 
     //! Copy constructor
     Patch(const Patch& obj):
-        females_{obj.females_}, males_{obj.males_}, rng_{wtl::sfmt()()} {}
+        members_{obj.members_}, rng_{wtl::sfmt()()} {}
 
     //! Add an individual to this patch
     /*! @param ind New individual to add
     */
-    void append(Individual&&);
+    void append(Individual&& ind) {members_.push_back(std::move(ind));}
 
     //! @return The number of individuals in this patch
-    size_t size() const {return females_.size() + males_.size();}
+    size_t size() const {return members_.size();}
 
     //! @return Whether this patch is empty or not
-    bool empty() const {return females_.empty() && males_.empty();}
+    bool empty() const {return members_.empty();}
 
     //! Count genotypes
     std::map<Individual, size_t> summarize() const;
@@ -101,13 +103,12 @@ class Patch {
     */
     double effective_num_competitors(const Individual&) const;
 
+    void change_sex_half(size_t n);
+
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
     // data member
-    //! female individuals
-    std::vector<Individual> females_;
-
-    //! male individuals
-    std::vector<Individual> males_;
+    //! Individuals
+    std::vector<Individual> members_;
 
     //! Random number generator
     mutable wtl::sfmt19937 rng_;

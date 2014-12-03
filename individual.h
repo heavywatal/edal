@@ -155,9 +155,12 @@ class Individual {
         {HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS, HALF_BITS}} {}
 
     //! Constructor for sexual reproduction
-    Individual(const std::vector<Loci>& egg, const std::vector<Loci>& sperm):
+    Individual(const std::vector<Loci>& egg,
+               const std::vector<Loci>& sperm,
+               const bool is_male=false):
         genotype_{egg, sperm},
         phenotype_(calc_phenotype()),
+        sex_(is_male),
         ke_(effective_carrying_capacity_cache()) {}
 
     //! Homozygous initialization by bit values
@@ -263,6 +266,12 @@ class Individual {
 
     /** @} biol_proc */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
+
+    //! Get sex_
+    bool is_male() const {return sex_;}
+
+    //! Change sex_
+    void change_sex() {sex_ = !sex_;}
 
     //! Operator required to be std::map key
     bool operator<(const Individual& other) const {
@@ -415,6 +424,9 @@ class Individual {
 
     //! All traits are scaled to be between 0 and 1
     std::vector<double> phenotype_;
+
+    //! female=0, male=1
+    bool sex_ = false;
 
     //! \f$K_e(I)\f$ calculated in advance
     double ke_;

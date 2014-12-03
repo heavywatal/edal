@@ -17,35 +17,44 @@
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
-void Patch::append(Individual&& ind) {
-    if (std::bernoulli_distribution(0.5)(rng_)) {
-        females_.push_back(std::move(ind));
-    } else {
-        males_.push_back(std::move(ind));
+void Patch::change_sex_half(size_t n) {
+    n /= 2;
+    for (auto it=members_.begin()+n; it!=members_.end(); ++it) {
+        it->change_sex();
     }
 }
 
 std::vector<Individual> Patch::mate_and_reproduce() const {
     std::poisson_distribution<size_t> poisson(Individual::AVG_NUM_OFFSPINRGS());
     std::vector<Individual> offsprings;
-    if (males_.empty()) {return offsprings;}
-    offsprings.reserve(females_.size() * Individual::AVG_NUM_OFFSPINRGS());
-    for (const auto& mother: females_) {
-        std::vector<double> prefs;
-        prefs.reserve(males_.size());
-        for (const auto& male: males_) {
-            prefs.push_back(mother.mating_probability(male));
+    std::vector<size_t> male_indices;
+    male_indices.reserve(members_.size());
+    for (size_t i=0; i<members_.size(); ++i) {
+        if (members_[i].is_male()) {
+            male_indices.push_back(i);
         }
-        std::vector<double> upper_bounds(males_.size());
+    }
+    if (male_indices.empty()) {return offsprings;}
+    offsprings.reserve(members_.size() * Individual::AVG_NUM_OFFSPINRGS());
+    for (const auto& mother: members_) {
+        if (mother.is_male()) continue;
+        std::vector<double> prefs;
+        prefs.reserve(male_indices.size());
+        for (const size_t i: male_indices) {
+            prefs.push_back(mother.mating_probability(members_[i]));
+        }
+        std::vector<double> upper_bounds(male_indices.size());
         std::partial_sum(prefs.begin(), prefs.end(), upper_bounds.begin());
         std::uniform_real_distribution<> uniform(0.0, upper_bounds.back());
         const double dart = uniform(rng_);
         size_t father_i = 0;
         while (upper_bounds[father_i] < dart) {++father_i;}
-        const Individual& father = males_[father_i];
+        const Individual& father = members_[male_indices[father_i]];
         const size_t num_children = poisson(rng_);
         for (size_t i=0; i<num_children; ++i) {
-            offsprings.push_back(Individual(mother.gametogenesis(rng_), father.gametogenesis(rng_)));
+            offsprings.emplace_back(
+                mother.gametogenesis(rng_), father.gametogenesis(rng_),
+                std::bernoulli_distribution(0.5)(rng_));
         }
     }
     return offsprings;
@@ -58,40 +67,27 @@ double Patch::effective_num_competitors(const Individual& focal) const {
             n += focal.resource_overlap(ind);
         }
     };
-    impl(females_);
-    impl(males_);
+    impl(members_);
     return n;
 }
 
 void Patch::viability_selection() {
-    auto choose = [this] (const std::vector<Individual>& members) {
-        std::vector<size_t> indices;
-        indices.reserve(members.size());
-        size_t i = 0;
-        for (auto& ind: members) {
-            const double p = ind.survival_probability(effective_num_competitors(ind));
-            if (std::bernoulli_distribution(p)(rng_)) {
-                indices.push_back(i);
-            }
-            ++i;
+    std::vector<size_t> indices;
+    indices.reserve(members_.size());
+    size_t i = 0;
+    for (auto& ind: members_) {
+        const double p = ind.survival_probability(effective_num_competitors(ind));
+        if (std::bernoulli_distribution(p)(rng_)) {
+            indices.push_back(i);
         }
-        return indices;
-    };
-    const auto indices_female = choose(females_);
-    const auto indices_male = choose(males_);
+        ++i;
+    }
     std::vector<Individual> tmp;
-    tmp.reserve(std::max(females_.capacity(), males_.capacity()));
-    // to prevent re-allocation, not indices.size()
-    auto extract = [&tmp](
-        const std::vector<size_t>& indices, std::vector<Individual>* members) {
-        for (auto i: indices) {
-            tmp.push_back(std::move(members->operator[](i)));
-        }
-        members->swap(tmp);
-        tmp.clear();
-    };
-    extract(indices_female, &females_);
-    extract(indices_male, &males_);
+    tmp.reserve(members_.size());
+    for (auto i: indices) {
+        tmp.push_back(std::move(members_[i]));
+    }
+    members_.swap(tmp);
 }
 
 std::pair<size_t, size_t> Patch::choose_patch(size_t row, size_t col) const {
@@ -110,13 +106,9 @@ std::pair<size_t, size_t> Patch::choose_patch(size_t row, size_t col) const {
     return {row, col};
 }
 
-
 std::map<Individual, size_t> Patch::summarize() const {
     std::map<Individual, size_t> genotypes;
-    for (const auto& ind: females_) {
-        ++genotypes[ind];
-    }
-    for (const auto& ind: males_) {
+    for (const auto& ind: members_) {
         ++genotypes[ind];
     }
     return genotypes;
