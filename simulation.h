@@ -41,13 +41,13 @@ class Simulation {
         @{*/
 
     //! \f$K_0\f$, the number of individuals in an initial patch
-    size_t INITIAL_PATCH_SIZE = 40;
+    size_t INITIAL_PATCH_SIZE = 100;
 
     //! The number of patches on Y axis
-    size_t NUM_ROWS = 8;
+    size_t NUM_ROWS = 4;
 
     //! The number of patches on X axis
-    size_t NUM_COLS = 8;
+    size_t NUM_COLS = 4;
 
     //! Dimension number of resources/traits
     size_t DIMENSIONS = 2;

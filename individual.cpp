@@ -18,7 +18,7 @@ double Individual::BETA_PARAM_ = 3.0;
 double Individual::NORMAL_SIGMA_ = 0.3;
 double Individual::C0_ = 1.0;
 double Individual::C1_ = 0.5;
-size_t Individual::CARRYING_CAPACITY_ = 160;
+size_t Individual::CARRYING_CAPACITY_ = 1000;
 double Individual::AVG_NUM_OFFSPINRGS_ = 4;
 double Individual::HEIGHT_PREFERENCE_ = 2.0;
 double Individual::DIAMETER_PREFERENCE_ = 2.0;
@@ -29,7 +29,7 @@ double Individual::MORPH_COMPETITION_ = 2.0;
 double Individual::MATING_SIGMA_ = 0.05;
 double Individual::MU_LOCUS_ = 1e-4;
 unsigned long Individual::MUTATION_MASK_ = 0;
-double Individual::MIGRATION_RATE_ = 0.05;
+double Individual::MIGRATION_RATE_ = 0.005;
 
 constexpr size_t Individual::NUM_LOCI_;
 constexpr unsigned long Individual::FULL_BITS;
