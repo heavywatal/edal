@@ -52,6 +52,15 @@ def adaptive_dynamics():
     return [const + x + [make_label(x)] for x in product(params)]
 
 
+def stepping_stone():
+    const = ['-D1', '--row=1', '--col=8', '-K1000', '-p1e6', '-c1e6', '-f0.03']
+    params = dict()
+    params.update(s=[2.0, 3.0])
+    params.update(C=[1.0, 2.0])
+    params.update(m=[0.0005, 0.001, 0.002, 0.004])
+    return [const + x + [make_label(x)] for x in product(params)]
+
+
 def upperlower(params):
     ret = []
     for (key, vals) in params.items():
@@ -113,7 +122,7 @@ if __name__ == '__main__':
     constargs.append('-T10000')
     constargs.append('-I100')
 
-    args_list = adaptive_dynamics()
+    args_list = stepping_stone()
     commands = [constargs + x for x in args_list] * args.repeat
 
     qargs = dict()
