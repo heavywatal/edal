@@ -27,7 +27,7 @@ names(.infiles) = basename(.indirs)
 .conf = ldply(.infiles, wtl::read.conf, .id='path')
 .tbl = .conf %>>%
     select(path, toepad_select, morph_compe, mating_sigma) %>>%
-    mutate(path=paste0('<img src="ad_20141122_files/', path, '.png" alt="', path, '">')) %>>%
+    mutate(path=paste0('<img class="time" src="ad_20141122_files/', path, '.png" alt="', path, '">')) %>>%
     group_by(toepad_select, morph_compe, mating_sigma) %>>%
     summarise(path=paste0(path, collapse='<br>')) %>>%
     ungroup() %>>% # bug will be fixed in dplyr 3.1
@@ -50,7 +50,16 @@ Simulations were performed twice for each altered $s_0$, $c_0$, $\sigma_a$.
 <div>
 <style type="text/css">
 <!--
-img {max-width: 800px;}
+img.time {
+  max-width: 800px;
+  margin: 8px;
+}
+tr:nth-child(2n) {
+  background: #ddd;
+}
+tr:nth-child(2n-1) {
+  background: #bbb;
+}
 -->
 </style>
 ```{r xtable, results='asis', echo=FALSE}

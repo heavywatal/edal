@@ -29,7 +29,7 @@ names(.infiles) = basename(.indirs)
     filter(migration_rate %in% c(0.002, 0.006, 0.010)) %>>%
     mutate(path=as.character(path))
 .tbl = .conf %>>%
-    mutate(path=paste0('<img src="ibd_20141203_files/', path, '.png" alt="', path, '">')) %>>%
+    mutate(path=paste0('<img class="time" src="ibd_20141203_files/', path, '.png" alt="', path, '">')) %>>%
     group_by(toepad_select, morph_compe, migration_rate) %>>%
     summarise(path=paste0(path, collapse='<br>')) %>>%
     ungroup() %>>% # bug will be fixed in dplyr 3.1
@@ -56,9 +56,15 @@ Simulations were performed four times for each parameter combination: selection 
 <div>
 <style type="text/css">
 <!--
-img {max-width: 600px;}
+img.time {
+  max-width: 600px;
+  margin: 8px;
+}
+tr:nth-child(2n) {
+  background: #ddd;
+}
 tr:nth-child(2n-1) {
- background: #eee;
+  background: #bbb;
 }
 -->
 </style>
