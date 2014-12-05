@@ -41,6 +41,9 @@ names(.infiles) = basename(.indirs)
 Results
 ================================================================================
 
+Evolutionary trajectory
+-----------------------
+
 Patches were aligned horizontally (`--row=1`, `--col=6`).
 Limb length ($x_1$), diameter preference ($y_1$), and selection for them ($s_1$, $h_1$) were fixed at $0$ so that evolution occurs on the one-dimensional resource space.
 Also habitat preference $h_0 = 0$.
@@ -48,7 +51,7 @@ Maximum carrying capacity $K_0 = 2000$.
 Mating coefficient $\sigma_a = 0.03$.
 Population data were sampled every 100 generations until $T = 10000$.
 [See here for other default values](http://heavywatal.github.io/edal/group__biol__param.html).
-Simulations were performed twice for each altered selection $s_0$, competition $c_0$, and migration rate $m$.
+Simulations were performed four times for each parameter combination: selection $s_0$, competition $c_0$, and migration rate $m$.
 
 <div>
 <style type="text/css">
@@ -64,3 +67,9 @@ print(.tbl %>>% as.data.frame() %>>% xtable(),
     type='html', sanitize.text.function = identity, comment=FALSE)
 ```
 </div>
+
+
+Pairwise Fst and geographic distance at the final generation
+------------------------------------------------------------
+
+<img src="ibd_20141203_files/ibd_20141203.png">
