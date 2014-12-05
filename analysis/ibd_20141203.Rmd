@@ -1,0 +1,66 @@
+---
+title: "Isolation by distance in one-dimensional stepping-stone"
+author: "Watal M. Iwasaki"
+date: "2014-12-03"
+output:
+  html_document:
+    toc: true
+    self_contained: false
+---
+
+Codes
+================================================================================
+
+```{r library, message=FALSE}
+library(plyr)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(pipeR)
+library(xtable)
+```
+
+```{r table}
+.indirs = list.dirs('~/working/anolis20141203', recursive=FALSE)
+.infiles = file.path(.indirs, 'program_options.conf')
+names(.infiles) = basename(.indirs)
+.conf = ldply(.infiles, wtl::read.conf, .id='path') %>>%
+    select(path, toepad_select, morph_compe, migration_rate) %>>%
+    filter(migration_rate %in% c(0.002, 0.006, 0.010)) %>>%
+    mutate(path=as.character(path))
+.tbl = .conf %>>%
+    mutate(path=paste0('<img src="ibd_20141203_files/', path, '.png" alt="', path, '">')) %>>%
+    group_by(toepad_select, morph_compe, migration_rate) %>>%
+    summarise(path=paste0(path, collapse='<br>')) %>>%
+    ungroup() %>>% # bug will be fixed in dplyr 3.1
+    spread(migration_rate, path) %>>%
+    arrange(toepad_select, morph_compe) %>>%
+    rename(s=toepad_select, c=morph_compe)
+```
+
+Results
+================================================================================
+
+Patches were aligned horizontally (`--row=1`, `--col=6`).
+Limb length ($x_1$), diameter preference ($y_1$), and selection for them ($s_1$, $h_1$) were fixed at $0$ so that evolution occurs on the one-dimensional resource space.
+Also habitat preference $h_0 = 0$.
+Maximum carrying capacity $K_0 = 2000$.
+Mating coefficient $\sigma_a = 0.03$.
+Population data were sampled every 100 generations until $T = 10000$.
+[See here for other default values](http://heavywatal.github.io/edal/group__biol__param.html).
+Simulations were performed twice for each altered selection $s_0$, competition $c_0$, and migration rate $m$.
+
+<div>
+<style type="text/css">
+<!--
+img {max-width: 600px;}
+tr:nth-child(2n-1) {
+ background: #eee;
+}
+-->
+</style>
+```{r xtable, results='asis', echo=FALSE}
+print(.tbl %>>% as.data.frame() %>>% xtable(),
+    type='html', sanitize.text.function = identity, comment=FALSE)
+```
+</div>

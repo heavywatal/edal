@@ -25,3 +25,4 @@ Results
 - [Possible Ke values with habitat preference normalization (anolis_v3a)](http://meme.biology.tohoku.ac.jp/edal/results/ke_v3a.html)
 - [Evolutionary branching on simple condition](http://meme.biology.tohoku.ac.jp/edal/results/ad_20141112.html)
 - [Evolutionary branching on simple condition (Gaussian form)](http://meme.biology.tohoku.ac.jp/edal/results/ad_20141122.html)
+- [Isolation by distance in one-dimensional stepping-stone](http://meme.biology.tohoku.ac.jp/edal/results/ibd_20141203.html)
