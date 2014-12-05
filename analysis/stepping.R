@@ -100,7 +100,8 @@ library(diveRsity)
     mutate(female = sprintf('%03d%03d', female_L, female_R)) %>>%
     mutate(choosiness = sprintf('%03d%03d', choosiness_L, choosiness_R)) %>>%
     mutate(neutral = sprintf('%03d%03d', neutral_L, neutral_R)) %>>%
-    select(-matches('_L$|_R$')) %>>% (? .)
+    select(-matches('_L$|_R$')) %>>%
+    ungroup() %>>% (? .)
 
 #data(Test_data, package = "diveRsity")
 #head(Test_data, 41)
@@ -148,3 +149,21 @@ as.bins(c(15, 42))
 
 .u = as.bits(.v) %>>% (? head(.))
 .d = as.bins(.v) %>>% (? head(.))
+
+
+
+library(adegenet)
+
+.genind = df2genind(.final %>>% select(-patch), pop=.final$patch)
+pairwise.fst(.genind)
+
+.traits = colnames(.final)[-1]
+names(.traits) = .traits
+llply(.traits, function(trait){
+    .final %>>%
+        select_(trait) %>>%
+        df2genind(pop=.final$patch) %>>%
+        pairwise.fst()
+})
+
+
