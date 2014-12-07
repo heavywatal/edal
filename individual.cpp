@@ -325,6 +325,31 @@ double Individual::mating_preference(const Individual& male) const {
     return exponent;
 }
 
+double Individual::mating_preference_debarre(const Individual& male) const {
+    double choosiness = phenotype_[trait::choosiness];
+    if (choosiness == 0.5) {
+        // random mating
+        return 1.0;
+    }
+    choosiness *= 2.0;
+    choosiness -= 1.0;
+    choosiness *= choosiness;
+    double exponent = phenotype_[trait::female_trait];
+    exponent -= male.phenotype_[trait::male_trait];
+    exponent /= MATING_SIGMA_;
+    exponent *= exponent;
+    exponent *= -0.5;
+    if (choosiness > 0.5) {
+        // assortative mating
+        choosiness *= (1.0 - std::exp(exponent));
+    } else {
+        // disassortative mating
+        choosiness *= std::exp(exponent);
+    }
+    choosiness -= 1.0;
+    return -choosiness;
+}
+
 std::vector<Individual::Loci> Individual::gametogenesis(wtl::sfmt19937& rng) const {
     std::uniform_int_distribution<unsigned long> uniform_filter(0, FULL_BITS);
     std::bernoulli_distribution bernoulli(MU_LOCUS_ * NUM_LOCI_);

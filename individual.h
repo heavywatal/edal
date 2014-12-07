@@ -78,16 +78,16 @@ class Individual {
     //! \f$ b \f$ in \f$ w(I) \f$
     static double AVG_NUM_OFFSPINRGS_;
 
-    //! \f$ h_0 \f$ in \f$ \Xi(y_0,y_1|u,v) \f$
+    //! \f$ h_0 \f$ in \f$ \Xi(y_0,y_1 \mid u,v) \f$
     static double HEIGHT_PREFERENCE_;
 
-    //! \f$ h_1 \f$ in \f$ \Xi(y_0,y_1|u,v) \f$
+    //! \f$ h_1 \f$ in \f$ \Xi(y_0,y_1 \mid u,v) \f$
     static double DIAMETER_PREFERENCE_;
 
-    //! \f$ s_0 \f$ in \f$ W(x_0,x_1|u,v) \f$
+    //! \f$ s_0 \f$ in \f$ W(x_0,x_1 \mid u,v) \f$
     static double TOEPAD_SELECTION_;
 
-    //! \f$ s_1\f$ in \f$ W(x_0,x_1|u,v) \f$
+    //! \f$ s_1\f$ in \f$ W(x_0,x_1 \mid u,v) \f$
     static double LIMB_SELECTION_;
 
     //! \f$c_y\f$ in \f$C_y(I,J)\f$
@@ -96,7 +96,7 @@ class Individual {
     //! \f$c_x\f$ in \f$C_x(I,J)\f$
     static double MORPH_COMPETITION_;
 
-    //! \f$ \sigma_a \f$ in \f$ \Psi(f,c|m) \f$
+    //! \f$ \sigma_a \f$ in \f$ \psi(f,c \mid m) \f$
     static double MATING_SIGMA_;
 
     //! Mutation rate per locus per generation
@@ -174,7 +174,7 @@ class Individual {
     /*! @ingroup natural_selection
         \f[
             K_e(I) = K_0 \int_0^1 \int_0^{1-u}
-                F(u,v) W(x_0,x_1|u,v) \Xi(y_0,y_1|u,v) dv du
+                F(u,v) W(x_0,x_1 \mid u,v) \Xi(y_0,y_1 \mid u,v) dv du
         \f]
     */
     double effective_carrying_capacity_quad_unnormalized() const;
@@ -245,11 +245,18 @@ class Individual {
     */
     double survival_probability(const double effective_num_competitors) const;
 
-    //! \f$ P(I, I') = \Xi(I, I') C_y(I, I')\f$
+    //! \f$P(I,I') = \psi(I,I') C_y(I,I')\f$
     /*! @ingroup mating
     */
     double mating_probability(const Individual& male) const {
         return std::exp(mating_preference(male) + preference_overlap(male));
+    };
+
+    //! \f$P(I,I') = \psi(I,I') C_y(I,I')\f$ with Debarre 2012
+    /*! @ingroup mating
+    */
+    double mating_probability_debarre(const Individual& male) const {
+        return mating_preference_debarre(male) * std::exp(preference_overlap(male));
     };
 
     //! Gametogenesis with free recombination and mutation
@@ -346,7 +353,7 @@ class Individual {
     /*! @ingroup habitat_pareference
         @return \f$D_I\f$
         \f[
-            D_I = \int_0^1 \int_0^{1-u} \Xi(y_0,y_1|u,v) F(u,v) dv du
+            D_I = \int_0^1 \int_0^{1-u} \Xi(y_0,y_1 \mid u,v) F(u,v) dv du
         \f]
     */
     double calc_DI_numerical() const;
@@ -366,24 +373,49 @@ class Individual {
     //! Numerical integration of quadratic \f$\xi(I, u, v)\f$
     /*! @ingroup habitat_pareference
         \f[
-            \int_0^1 \int_0^{1-u} \xi(y_0,y_1|u,v) dv du =
+            \int_0^1 \int_0^{1-u} \xi(y_0,y_1 \mid u,v) dv du =
             \int_0^1 \int_0^{1-u} \{1 - h_0 (u - y_0)^2 - h_1 (v - y_1)^2\} dv du
         \f]
     */
     double calc_Dxi_numerical() const;
 
-    //! \f$\Psi(I, I')\f$
+    //! \f$\psi(f,c \mid m)\f$
     /*! @ingroup mating
+        \f[
+            \psi(f,c\mid m) = \left\{
+              \begin{array}{ll}
+                \exp \left( -(2c-1)^2 \frac{(f-m)^2}{2\sigma_a^2}\right)
+                  & \mbox{if}\ c > 0.5,\\
+                1 & \mbox{if}\ c=0.5,\\
+                \exp \left( -(2c-1)^2 \frac{(f-(1-m))^2}{2\sigma_a^2}\right)
+                  & \mbox{if}\ c<0.5,
+            \end{array} \right.
+        \f]
     */
     double mating_preference(const Individual& male) const;
 
-    //! Exponent of \f$W(x_0, x_1| u, v)\f$: measure adaptation to habitat
+    //! \f$\psi(f,c \mid m)\f$ by Debarre 2012
+    /*! @ingroup mating
+        \f[
+            \psi(f,c\mid m) = \left\{
+              \begin{array}{ll}
+                1 - (2c-1)^2\Big[1 - \exp\Big(-\frac {(f-m)^2}{2\sigma_a}\Big)\Big]
+                  & \mbox{if}\ c > 0.5,\\
+                1 & \mbox{if}\ c=0.5,\\
+                1 - (2c-1)^2\Big[    \exp\Big(-\frac {(f-m)^2}{2\sigma_a}\Big)\Big]
+                  & \mbox{if}\ c<0.5,
+            \end{array} \right.
+        \f]
+    */
+    double mating_preference_debarre(const Individual& male) const;
+
+    //! Exponent of \f$W(x_0, x_1 \mid u, v)\f$: measure adaptation to habitat
     /*! @ingroup natural_selection
         @param height habitat environmant
         @param diameter habitat environment
 
         \f[
-            W(x_0,x_1|u,v) = \exp(-\frac{(x_0 - u)^2}{2s_0^2}
+            W(x_0,x_1 \mid u,v) = \exp(-\frac{(x_0 - u)^2}{2s_0^2}
                                   -\frac{(x_1 - v)^2}{2s_1^2})
         \f]
     */

@@ -122,7 +122,7 @@ if __name__ == '__main__':
     constargs.append('-T10000')
     constargs.append('-I100')
 
-    args_list = stepping_stone()
+    args_list = adaptive_dynamics()
     commands = [constargs + x for x in args_list] * args.repeat
 
     qargs = dict()
