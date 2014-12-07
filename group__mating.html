@@ -54,15 +54,21 @@
 Functions</h2></td></tr>
 <tr class="memitem:ga8a7330aa68e101eaa7e342e9215bffdf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga8a7330aa68e101eaa7e342e9215bffdf"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga8a7330aa68e101eaa7e342e9215bffdf">Individual::mating_probability</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;male) const </td></tr>
-<tr class="memdesc:ga8a7330aa68e101eaa7e342e9215bffdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">\( P(I, I&#39;) = \Xi(I, I&#39;) C_y(I, I&#39;)\) <br /></td></tr>
+<tr class="memdesc:ga8a7330aa68e101eaa7e342e9215bffdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(P(I,I&#39;) = \psi(I,I&#39;) C_y(I,I&#39;)\) <br /></td></tr>
 <tr class="separator:ga8a7330aa68e101eaa7e342e9215bffdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa8cd7aa215c491fb71ba73d9b9cc2ad0"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaa8cd7aa215c491fb71ba73d9b9cc2ad0"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#gaa8cd7aa215c491fb71ba73d9b9cc2ad0">Individual::mating_probability_debarre</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;male) const </td></tr>
+<tr class="memdesc:gaa8cd7aa215c491fb71ba73d9b9cc2ad0"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(P(I,I&#39;) = \psi(I,I&#39;) C_y(I,I&#39;)\) with Debarre 2012 <br /></td></tr>
+<tr class="separator:gaa8cd7aa215c491fb71ba73d9b9cc2ad0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga648d48b208a30c69955e7eab63ab1f5e"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Loci &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga648d48b208a30c69955e7eab63ab1f5e">Individual::gametogenesis</a> (wtl::sfmt19937 &amp;) const </td></tr>
 <tr class="memdesc:ga648d48b208a30c69955e7eab63ab1f5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gametogenesis with free recombination and mutation.  <a href="#ga648d48b208a30c69955e7eab63ab1f5e">More...</a><br /></td></tr>
 <tr class="separator:ga648d48b208a30c69955e7eab63ab1f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga88bd35bb4b4977518fe10af9e7662baf"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga88bd35bb4b4977518fe10af9e7662baf"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga88bd35bb4b4977518fe10af9e7662baf">Individual::mating_preference</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;male) const </td></tr>
-<tr class="memdesc:ga88bd35bb4b4977518fe10af9e7662baf"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(\Psi(I, I&#39;)\) <br /></td></tr>
+<tr class="memitem:ga88bd35bb4b4977518fe10af9e7662baf"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga88bd35bb4b4977518fe10af9e7662baf">Individual::mating_preference</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;male) const </td></tr>
+<tr class="memdesc:ga88bd35bb4b4977518fe10af9e7662baf"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(\psi(f,c \mid m)\)  <a href="#ga88bd35bb4b4977518fe10af9e7662baf">More...</a><br /></td></tr>
 <tr class="separator:ga88bd35bb4b4977518fe10af9e7662baf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga32333ee0b37aff4e776bd2c8ada290b1"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga32333ee0b37aff4e776bd2c8ada290b1">Individual::mating_preference_debarre</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;male) const </td></tr>
+<tr class="memdesc:ga32333ee0b37aff4e776bd2c8ada290b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(\psi(f,c \mid m)\) by Debarre 2012  <a href="#ga32333ee0b37aff4e776bd2c8ada290b1">More...</a><br /></td></tr>
+<tr class="separator:ga32333ee0b37aff4e776bd2c8ada290b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaea85d2e4ee0b40003f002d5931fba2d5"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="class_individual.html">Individual</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#gaea85d2e4ee0b40003f002d5931fba2d5">Patch::mate_and_reproduce</a> () const </td></tr>
 <tr class="memdesc:gaea85d2e4ee0b40003f002d5931fba2d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">All females mate with someone according to mating probability.  <a href="#gaea85d2e4ee0b40003f002d5931fba2d5">More...</a><br /></td></tr>
 <tr class="separator:gaea85d2e4ee0b40003f002d5931fba2d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -107,6 +113,64 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 
 <p>Definition at line <a class="el" href="patch_8cpp_source.html#l00027">27</a> of file <a class="el" href="patch_8cpp_source.html">patch.cpp</a>.</p>
 
+</div>
+</div>
+<a class="anchor" id="ga88bd35bb4b4977518fe10af9e7662baf"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double Individual::mating_preference </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_individual.html">Individual</a> &amp;&#160;</td>
+          <td class="paramname"><em>male</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>\(\psi(f,c \mid m)\) </p>
+<p class="formulaDsp">
+\[ \psi(f,c\mid m) = \left\{ \begin{array}{ll} \exp \left( -(2c-1)^2 \frac{(f-m)^2}{2\sigma_a^2}\right) &amp; \mbox{if}\ c &gt; 0.5,\\ 1 &amp; \mbox{if}\ c=0.5,\\ \exp \left( -(2c-1)^2 \frac{(f-(1-m))^2}{2\sigma_a^2}\right) &amp; \mbox{if}\ c&lt;0.5, \end{array} \right. \]
+</p>
+ 
+</div>
+</div>
+<a class="anchor" id="ga32333ee0b37aff4e776bd2c8ada290b1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double Individual::mating_preference_debarre </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_individual.html">Individual</a> &amp;&#160;</td>
+          <td class="paramname"><em>male</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>\(\psi(f,c \mid m)\) by Debarre 2012 </p>
+<p class="formulaDsp">
+\[ \psi(f,c\mid m) = \left\{ \begin{array}{ll} 1 - (2c-1)^2\Big[1 - \exp\Big(-\frac {(f-m)^2}{2\sigma_a}\Big)\Big] &amp; \mbox{if}\ c &gt; 0.5,\\ 1 &amp; \mbox{if}\ c=0.5,\\ 1 - (2c-1)^2\Big[ \exp\Big(-\frac {(f-m)^2}{2\sigma_a}\Big)\Big] &amp; \mbox{if}\ c&lt;0.5, \end{array} \right. \]
+</p>
+ 
 </div>
 </div>
 </div><!-- contents -->
