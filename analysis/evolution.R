@@ -6,6 +6,8 @@ library(tidyr)
 library(pipeR)
 library(ggplot2)
 library(gridExtra)
+library(doMC)
+doMC::registerDoMC(min(parallel::detectCores(), 12))
 #########1#########2#########3#########4#########5#########6#########7#########
 .argv = commandArgs(trailingOnly=TRUE)
 stopifnot(length(.argv) > 0)
@@ -45,6 +47,45 @@ stopifnot(length(.argv) > 0)
 .axes = matrix(names(.traits), ncol=2, byrow=TRUE)
 .heat_colours = c('#333333', '#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000')
 
+label_tr = function(variable, value) {.tr[as.character(value)]}
+
+#.indir = '.'
+#.indir = 's1_p1_c10_20141110_033830_26387@node47'
+.force = TRUE
+main = function(.indir) {
+    if (!file.info(.indir)$isdir) {next}
+    .label = basename(.indir)
+    .outfile = paste0(.label, '.png')
+    if (.force || !file.exists(.outfile)) {
+        message(.outfile)
+        .raw = read.csv(file.path(.indir, 'evolution.csv.gz'), stringsAsFactors=FALSE) %>>% tbl_df()
+        .tidy = .raw %>>%
+            select(time, n, ends_with('_P')) %>>%
+            gather(key, value, toepad_P, height_pref_P, male_P, female_P, choosiness_P, neutral_P) %>>%
+            group_by(time, key, value) %>>%
+            tally(wt=n)
+        .p = ggplot(.tidy, aes(x=value, y=time))
+        .p = .p + geom_tile(aes(fill=n))
+        .p = .p + scale_fill_gradientn(colours=.heat_colours)
+        .p = .p + coord_cartesian(c(0, 1), range(.tidy$time))
+        .p = .p + facet_grid(. ~ key, labeller=label_tr)
+        .p = .p + labs(title=.label)
+        .p = .p + theme(legend.position='none')
+        .p = .p + theme(plot.title=element_text(size=6, hjust=1, vjust=1))
+        .p = .p + theme(panel.background=element_rect(fill='#000000'))
+        .p = .p + theme(panel.grid=element_blank())
+        .p = .p + theme(axis.text=element_blank())
+        .p = .p + theme(axis.title.x=element_blank())
+        ggsave(.outfile, .p, width=4, height=1, scale=2)
+    }
+}
+
+l_ply(.argv, main, .parallel=TRUE)
+quit()
+
+#########1#########2#########3#########4#########5#########6#########7#########
+# deprecated
+
 .plot = function(x, y, data) {
     .hist_list = data %>>%
         group_by_(x, y) %>>%
@@ -62,41 +103,9 @@ stopifnot(length(.argv) > 0)
 }
 #.plot('toepad_P', 'limb_P', .raw %>>% filter(time==1000))
 
-.plot_time = function(x) {
-    .tidy = .raw %>>%
-        group_by_('time', x) %>>%
-        tally(wt=n)# %>>% (? .)
-    .p = ggplot(.tidy, aes_string(x=x, y='time'))
-    .p = .p + geom_tile(aes(fill=n))
-    .p = .p + scale_fill_gradientn(colours=.heat_colours)
-#    .p = .p + xlim(0, 1)
-    .p = .p + coord_cartesian(c(0, 1), range(.tidy$time))
-    .p = .p + xlab(.tr[[x]])
-    .p = .p + theme(legend.position='none')
-    .p = .p + theme(panel.background=element_rect(fill='#000000'))
-    .p = .p + theme(panel.grid=element_blank())
-    .p = .p + theme(axis.text=element_blank())
-    .p
-}
-#.plot_time('toepad_P')
-
-#.indir = '.'
-#.indir = 's1_p1_c10_20141110_033830_26387@node47'
-.force = FALSE
-for (.indir in .argv) {
+main = function(.indir) {
     if (!file.info(.indir)$isdir) {next}
     .label = basename(.indir)
-    .outfile = paste0(.label, '.png')
-    if (.force || !file.exists(.outfile)) {
-        message(.outfile)
-        .raw = read.csv(file.path(.indir, 'evolution.csv.gz'), stringsAsFactors=FALSE) %>>% tbl_df()
-        .ys = c('toepad_P', 'height_pref_P', 'male_P', 'female_P', 'choosiness_P', 'neutral_P')
-        .pl = llply(.ys, .plot_time)
-        .grob = do.call(arrangeGrob, c(.pl, list(nrow=1, main=.indir)))
-        #print(.grob)
-        ggsave(.outfile, .grob, width=4, height=1, scale=3)
-    }
-    next
     .outfile = file.path(.indir, 'evolution.pdf')
     if (!file.exists(.outfile)) {
         message(.outfile)
