@@ -247,17 +247,48 @@ class Individual {
 
     //! \f$P(I,I') = \psi(I,I') C_y(I,I')\f$
     /*! @ingroup mating
+        \f[
+            \psi(f,c\mid m) = \left\{
+              \begin{array}{ll}
+                \exp \left( -(2c-1)^2 \frac{(f-m)^2}{2\sigma_a^2}\right)
+                  & \mbox{if}\ c > 0.5,\\
+                1 & \mbox{if}\ c=0.5,\\
+                \exp \left( -(2c-1)^2 \frac{(f-(1-m))^2}{2\sigma_a^2}\right)
+                  & \mbox{if}\ c<0.5,
+            \end{array} \right.
+        \f]
     */
-    double mating_probability(const Individual& male) const {
-        return std::exp(mating_preference(male) + preference_overlap(male));
-    };
+    double mating_probability(const Individual& male) const;
 
     //! \f$P(I,I') = \psi(I,I') C_y(I,I')\f$ with Debarre 2012
     /*! @ingroup mating
+        \f[
+            \psi(f,c\mid m) = \left\{
+              \begin{array}{ll}
+                1 - (2c-1)^2\Big[1 - \exp\Big(-\frac {(f-m)^2}{2\sigma_a}\Big)\Big]
+                  & \mbox{if}\ c > 0.5,\\
+                1 & \mbox{if}\ c=0.5,\\
+                1 - (2c-1)^2\Big[    \exp\Big(-\frac {(f-m)^2}{2\sigma_a}\Big)\Big]
+                  & \mbox{if}\ c<0.5,
+            \end{array} \right.
+        \f]
     */
-    double mating_probability_debarre(const Individual& male) const {
-        return mating_preference_debarre(male) * std::exp(preference_overlap(male));
-    };
+    double mating_probability_debarre(const Individual& male) const;
+
+    //! \f$P(I,I') = \psi(I,I') C_y(I,I')\f$ with Thibert-Plante and Gavrilets 2013
+    /*! @ingroup mating
+        \f[
+            \psi(f,c\mid m) = \left\{
+              \begin{array}{ll}
+                \exp \left( -(2c-1)^2 \frac{(f-m)^2}{2\sigma_a^2}\right)
+                  & \mbox{if}\ c > 0.5,\\
+                1 & \mbox{if}\ c=0.5,\\
+                2 - \exp \left( -(2c-1)^2 \frac{(f-m)^2}{2\sigma_a^2}\right)
+                  & \mbox{if}\ c<0.5,
+            \end{array} \right.
+        \f]
+    */
+    double mating_probability_TPG2013(const Individual& male) const;
 
     //! Gametogenesis with free recombination and mutation
     /*! @ingroup mating
@@ -378,36 +409,6 @@ class Individual {
         \f]
     */
     double calc_Dxi_numerical() const;
-
-    //! \f$\psi(f,c \mid m)\f$
-    /*! @ingroup mating
-        \f[
-            \psi(f,c\mid m) = \left\{
-              \begin{array}{ll}
-                \exp \left( -(2c-1)^2 \frac{(f-m)^2}{2\sigma_a^2}\right)
-                  & \mbox{if}\ c > 0.5,\\
-                1 & \mbox{if}\ c=0.5,\\
-                \exp \left( -(2c-1)^2 \frac{(f-(1-m))^2}{2\sigma_a^2}\right)
-                  & \mbox{if}\ c<0.5,
-            \end{array} \right.
-        \f]
-    */
-    double mating_preference(const Individual& male) const;
-
-    //! \f$\psi(f,c \mid m)\f$ by Debarre 2012
-    /*! @ingroup mating
-        \f[
-            \psi(f,c\mid m) = \left\{
-              \begin{array}{ll}
-                1 - (2c-1)^2\Big[1 - \exp\Big(-\frac {(f-m)^2}{2\sigma_a}\Big)\Big]
-                  & \mbox{if}\ c > 0.5,\\
-                1 & \mbox{if}\ c=0.5,\\
-                1 - (2c-1)^2\Big[    \exp\Big(-\frac {(f-m)^2}{2\sigma_a}\Big)\Big]
-                  & \mbox{if}\ c<0.5,
-            \end{array} \right.
-        \f]
-    */
-    double mating_preference_debarre(const Individual& male) const;
 
     //! Exponent of \f$W(x_0, x_1 \mid u, v)\f$: measure adaptation to habitat
     /*! @ingroup natural_selection

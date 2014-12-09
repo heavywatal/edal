@@ -301,11 +301,11 @@ double Individual::survival_probability(const double effective_num_competitors) 
     return 1.0 / denom;
 }
 
-double Individual::mating_preference(const Individual& male) const {
+double Individual::mating_probability(const Individual& male) const {
     double choosiness = phenotype_[trait::choosiness];
     if (choosiness == 0.5) {
-        // random mating
-        return 1.0;
+        // no assortative mating
+        return std::exp(preference_overlap(male));
     }
     double exponent = phenotype_[trait::female_trait];
     if (choosiness > 0.5) {
@@ -316,38 +316,65 @@ double Individual::mating_preference(const Individual& male) const {
         exponent -= 1.0;
         exponent += male.phenotype_[trait::male_trait];
     }
+    exponent /= MATING_SIGMA_;
     choosiness *= 2.0;
     choosiness -= 1.0;
     exponent *= choosiness;
-    exponent /= MATING_SIGMA_;
     exponent *= exponent;
     exponent *= -0.5;
-    return exponent;
+    exponent += preference_overlap(male);
+    return std::exp(exponent);
 }
 
-double Individual::mating_preference_debarre(const Individual& male) const {
-    double choosiness = phenotype_[trait::choosiness];
-    if (choosiness == 0.5) {
-        // random mating
-        return 1.0;
+double Individual::mating_probability_debarre(const Individual& male) const {
+    double result = phenotype_[trait::choosiness];
+    if (result == 0.5) {
+        // no assortative mating
+        return std::exp(preference_overlap(male));
     }
-    choosiness *= 2.0;
-    choosiness -= 1.0;
-    choosiness *= choosiness;
+    result *= 2.0;
+    result -= 1.0;
+    result *= result;
     double exponent = phenotype_[trait::female_trait];
     exponent -= male.phenotype_[trait::male_trait];
     exponent /= MATING_SIGMA_;
     exponent *= exponent;
     exponent *= -0.5;
-    if (choosiness > 0.5) {
+    if (result > 0.5) {
         // assortative mating
-        choosiness *= (1.0 - std::exp(exponent));
+        result *= (1.0 - std::exp(exponent));
     } else {
         // disassortative mating
-        choosiness *= std::exp(exponent);
+        result *= std::exp(exponent);
     }
+    result *= -1.0;
+    result += 1.0;
+    return result *= std::exp(preference_overlap(male));
+}
+
+double Individual::mating_probability_TPG2013(const Individual& male) const {
+    double choosiness = phenotype_[trait::choosiness];
+    if (choosiness == 0.5) {
+        // no assortative mating
+        return std::exp(preference_overlap(male));
+    }
+    choosiness *= 2.0;
     choosiness -= 1.0;
-    return -choosiness;
+    double exponent = phenotype_[trait::female_trait];
+    exponent -= male.phenotype_[trait::male_trait];
+    exponent /= MATING_SIGMA_;
+    exponent *= choosiness;
+    exponent *= exponent;
+    exponent *= -0.5;
+    if (choosiness > 0.5) {
+        // assortative mating
+        return std::exp(exponent += preference_overlap(male));
+    } else {
+        // disassortative mating
+        double preference = 2.0;
+        preference -= std::exp(exponent);
+        return preference *= std::exp(preference_overlap(male));
+    }
 }
 
 std::vector<Individual::Loci> Individual::gametogenesis(wtl::sfmt19937& rng) const {

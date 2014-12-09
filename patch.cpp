@@ -41,7 +41,7 @@ std::vector<Individual> Patch::mate_and_reproduce() const {
         std::vector<double> prefs;
         prefs.reserve(male_indices.size());
         for (const size_t i: male_indices) {
-            prefs.push_back(mother.mating_probability_debarre(members_[i]));
+            prefs.push_back(mother.mating_probability_TPG2013(members_[i]));
         }
         std::vector<double> upper_bounds(male_indices.size());
         std::partial_sum(prefs.begin(), prefs.end(), upper_bounds.begin());
