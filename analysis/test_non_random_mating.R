@@ -30,20 +30,22 @@ nrm_Debarre2012 = function(male, female, choosiness, sigma=0.05) {
 }
 
 tbl = expand.grid(
-    male=seq(0, 1, length=30),
+    male=seq(0, 1, length=17),
     female=seq(0, 1, length=5),
-    choosiness=seq(0.1, 0.9, length=5)) %>>%
+    choosiness=seq(0, 1, length=17),
+    sigma=c(0.15, 0.1, 0.05)) %>>%
     mutate(
-        TPH2011=nrm_TPH2011(male, female, choosiness),
-        TPG2013=nrm_TPG2013(male, female, choosiness),
-        Debarre2012=nrm_Debarre2012(male, female, choosiness)) %>>%
-    gather(method, mating_prob, -male, -female, -choosiness)
+        TPH2011=nrm_TPH2011(male, female, choosiness, sigma),
+        TPG2013=nrm_TPG2013(male, female, choosiness, sigma),
+        Debarre2012=nrm_Debarre2012(male, female, choosiness, sigma)) %>>%
+    gather(method, mating_prob, -male, -female, -choosiness, -sigma)
 
 p = ggplot(tbl, aes(male, mating_prob, group=female, colour=as.factor(female)))+
     geom_line()+
-    facet_grid(method ~ choosiness, labeller=label_both)+
+    facet_grid(sigma + method ~ choosiness)+
     theme_bw()+
     theme(legend.position='top')+
+    theme(axis.text.x=element_blank())+
     labs(y='Mating preference, Psi')
 
-ggsave('test_non_random_mating.png', p)
+ggsave('test_non_random_mating.png', p, width=12, height=8)
