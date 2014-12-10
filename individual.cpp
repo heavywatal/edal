@@ -307,8 +307,10 @@ double Individual::mating_probability(const Individual& male) const {
         // no assortative mating
         return std::exp(preference_overlap(male));
     }
+    choosiness *= 2.0;
+    choosiness -= 1.0;
     double exponent = phenotype_[trait::female_trait];
-    if (choosiness > 0.5) {
+    if (choosiness > 0.0) {
         // assortative mating
         exponent -= male.phenotype_[trait::male_trait];
     } else {
@@ -317,8 +319,6 @@ double Individual::mating_probability(const Individual& male) const {
         exponent += male.phenotype_[trait::male_trait];
     }
     exponent /= MATING_SIGMA_;
-    choosiness *= 2.0;
-    choosiness -= 1.0;
     exponent *= choosiness;
     exponent *= exponent;
     exponent *= -0.5;
@@ -327,29 +327,29 @@ double Individual::mating_probability(const Individual& male) const {
 }
 
 double Individual::mating_probability_debarre(const Individual& male) const {
-    double result = phenotype_[trait::choosiness];
-    if (result == 0.5) {
+    double choosiness = phenotype_[trait::choosiness];
+    if (choosiness == 0.5) {
         // no assortative mating
         return std::exp(preference_overlap(male));
     }
-    result *= 2.0;
-    result -= 1.0;
-    result *= result;
+    choosiness *= 2.0;
+    choosiness -= 1.0;
     double exponent = phenotype_[trait::female_trait];
     exponent -= male.phenotype_[trait::male_trait];
     exponent /= MATING_SIGMA_;
     exponent *= exponent;
     exponent *= -0.5;
-    if (result > 0.5) {
+    double phi = choosiness;
+    phi *= choosiness;
+    if (choosiness > 0.0) {
         // assortative mating
-        result *= (1.0 - std::exp(exponent));
+        phi *= (1.0 - std::exp(exponent));
     } else {
         // disassortative mating
-        result *= std::exp(exponent);
+        phi *= std::exp(exponent);
     }
-    result *= -1.0;
-    result += 1.0;
-    return result *= std::exp(preference_overlap(male));
+    phi -= 1.0;
+    return -phi * std::exp(preference_overlap(male));
 }
 
 double Individual::mating_probability_TPG2013(const Individual& male) const {
@@ -366,14 +366,14 @@ double Individual::mating_probability_TPG2013(const Individual& male) const {
     exponent *= choosiness;
     exponent *= exponent;
     exponent *= -0.5;
-    if (choosiness > 0.5) {
+    if (choosiness > 0.0) {
         // assortative mating
         return std::exp(exponent += preference_overlap(male));
     } else {
         // disassortative mating
-        double preference = 2.0;
-        preference -= std::exp(exponent);
-        return preference *= std::exp(preference_overlap(male));
+        double psi = 2.0;
+        psi -= std::exp(exponent);
+        return psi *= std::exp(preference_overlap(male));
     }
 }
 
