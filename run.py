@@ -48,7 +48,7 @@ def adaptive_dynamics():
     params = dict()
     params.update(s=[1.0, 2.0, 3.0])
     params.update(C=[1.0, 2.0, 3.0])
-    params.update(f=[0.05, 0.10, 0.15])
+    params.update(f=[0.02, 0.03, 0.04])
     return [const + x + [make_label(x)] for x in product(params)]
 
 
