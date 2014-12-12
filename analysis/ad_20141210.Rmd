@@ -1,7 +1,7 @@
 ---
-title: "Evolutionary branching on simple condition (non-random mating by Débarre)"
+title: "Evolutionary branching on simple condition (non-random mating by TPG2013)"
 author: "Watal M. Iwasaki"
-date: "2014-12-06"
+date: "2014-12-10"
 output:
   html_document:
     toc: true
@@ -21,13 +21,13 @@ library(xtable)
 ```
 
 ```{r table}
-.indirs = list.dirs('~/working/anolis20141206', recursive=FALSE)
+.indirs = list.dirs('~/working/anolis20141210', recursive=FALSE)
 .infiles = file.path(.indirs, 'program_options.conf')
 names(.infiles) = basename(.indirs)
 .conf = ldply(.infiles, wtl::read.conf, .id='path')
 .tbl = .conf %>>%
     select(path, toepad_select, morph_compe, mating_sigma) %>>%
-    mutate(path=paste0('<img class="time" src="ad_20141206_files/', path, '.png" alt="', path, '">')) %>>%
+    mutate(path=paste0('<img class="time" src="ad_20141210_files/', path, '.png" alt="', path, '">')) %>>%
     group_by(toepad_select, morph_compe, mating_sigma) %>>%
     summarise(path=paste0(path, collapse='<br>')) %>>%
     ungroup() %>>% # bug will be fixed in dplyr 3.1
@@ -48,8 +48,8 @@ Population data were sampled every 100 generations until $T = 10000$.
 Simulations were performed twice for each altered $s_0$, $c_0$, $\sigma_a$.
 
 As shown in [a github issue comment](https://github.com/heavywatal/edal/issues/8),
-the effect of non-random mating by Débarre (2012) is milder than those by TPH2011 and TPG2013.
-Branching is not observed with the same parameter values as those of [previous results](./ad_20141122.html).
+the effect of non-random mating by TPG2013 is stronger than those by Débarre (2012).
+Branching is observed some parameter combinations.
 
 <div>
 <style type="text/css">
