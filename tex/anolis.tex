@@ -1,5 +1,11 @@
+\RequirePackage[l2tabu, orthodox]{nag}
+
 \documentclass{article}
-\usepackage{graphicx,verbatim,amsmath,epsfig,fancyhdr}
+
+\usepackage{amsmath}
+\usepackage[all, warning]{onlyamsmath}
+
+\usepackage{graphicx}
 \usepackage[comma,sort]{natbib}
 %\usepackage{indxcite}
 %\usepackage[notcite]{showkeys}  % to have keys in margins
@@ -12,8 +18,9 @@
 \setlength{\textwidth}{6.3in}
 
 \setcounter{secnumdepth}{0}
-\pagestyle{fancy}
 
+\usepackage{fancyhdr}
+\pagestyle{fancy}
 \lhead[\today]{\today}
 \rhead[\thepage]{\thepage}
 \cfoot{}
@@ -40,7 +47,7 @@
 
 %LRH: SERGEY GAVRILETS\\
 %RRH: MODELS OF SPECIATION\\
-\title{Speciation in {\em Anolis}: model description}
+\title{Speciation in \textit{Anolis}: model description}
 % \author{Sergey Gavrilets and Aaron Vose\\
 % Department of Ecology and Evolutionary Biology,\\
 % Department of Mathematics, University of Tennessee,\
@@ -106,7 +113,7 @@ the probabilities of forward and backward mutations are equal.
 \newpage
 \section{Habitat preference and carrying capacity}
 
-{\bf Habitat preference}.\quad
+{\textbf Habitat preference}.\quad
 The relative preference of an individual with habitat preference traits $y_0,y_1$ for environmental characteristic $(u,v)$ is
 \begin{equation}
   \Xi(y_0,y_1\mid u,v) = \exp\big(-\frac{(u-y_0)^2}{2h_0^2} -\frac{(v-y_1)^2}{2h_1^2}\big)
@@ -116,14 +123,14 @@ We can also consider a quadratic approximation:
   \Xi(y_0,y_1\mid u,v) = 1-h_0(u-y_0)^2-h_1(v-y_1)^2.
 \end{equation}
 
-{\bf Viability}.\quad Let viability of genotype $(x_0,x_1)$ in niche $(u,v)$ be Gaussian,
+{\textbf Viability}.\quad Let viability of genotype $(x_0,x_1)$ in niche $(u,v)$ be Gaussian,
 \begin{equation}
   W(x_0,x_1 \mid u,v) = \exp\big(-\frac{(u-x_0)^2}{2s_0^2} -\frac{(v-x_1)^2}{2s_1^2}\big),
 \end{equation}
 where the $\sigma_{s_i}>0$ are parameters measuring the strength of selection.
 Note that the optimum values of traits $x_0$ and $x_1$ under environmental conditions $(u,v)$ are $x_0 = u$ and $x_1 = v$.\\
 
-{\bf Carrying capacity}.\quad
+{\textbf Carrying capacity}.\quad
 Consider a specific genotype that has an absolute preference for environment $(u,v)$
 (so that $\Xi$ is a $\delta$-function).
 Then a natural measure of the carrying capacity of a population of such individuals is
@@ -206,7 +213,7 @@ Each mating results in a number of offspring drawn from a Poisson distribution w
 We assume that all adult females mate. This assumption implies that any costs of mate choice,
 which can easily prevent divergence and speciation, are absent.
 This assumption also means that the effective population size is increased relative to the actual
-number of adults. 
+number of adults.
 
 
 \section{Dispersal}
@@ -227,7 +234,7 @@ Jonathan: I think dispersal before selection is more appropriate,
 although we actually know little about dispersal;
 still, the best bet is that it occurs when they are young.]}
 
-{\bf So}, we consider the second option only.
+{\textbf So}, we consider the second option only.
 
 
 \section{Initial conditions}
