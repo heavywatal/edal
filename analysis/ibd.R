@@ -100,29 +100,6 @@ ggsave('isolation_by_distance.png', .gp, width=6, height=4, scale=1.5)
 quit()
 ################################################################################
 
-as.bits = function(num, digit=8) {
-    vapply(num, function(x) {
-        paste(as.integer(intToBits(x)[digit:1]), collapse='')
-    }, '')
-}
-
-as.bits(c(15, 42))
-
-as.bins = function(num, digit=8) {
-    ldply(num, function(x) {
-        t(as.integer(intToBits(x)[digit:1]))
-    })
-}
-
-as.bins(c(15, 42))
-
-.v = sample(255, 1e3, replace=TRUE)
-
-.u = as.bits(.v) %>>% (? head(.))
-.d = as.bins(.v) %>>% (? head(.))
-
-#########1#########2#########3#########4#########5#########6#########7#########
-
 library(adegenet)
 
 .genind = df2genind(.final %>>% select(-patch), pop=.final$patch)
