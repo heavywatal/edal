@@ -61,6 +61,15 @@ def stepping_stone():
     return [const + x + [make_label(x)] for x in product(params)]
 
 
+def mutation_drift():
+    const = ['-D1', '--row=1', '--col=1', '-m0', '-p1e6', '-c1e6', '-C1e6', '-f1e6']
+    params = dict()
+    params.update(s=[0.5, 2.0, 8.0])
+    params.update(u=[1e-3, 1e-4, 1e-5])
+    params.update(K=[2000, 4000, 8000])
+    return [const + x + [make_label(x)] for x in product(params)]
+
+
 def upperlower(params):
     ret = []
     for (key, vals) in params.items():
@@ -122,7 +131,7 @@ if __name__ == '__main__':
     constargs.append('-T10000')
     constargs.append('-I100')
 
-    args_list = adaptive_dynamics()
+    args_list = mutation_drift()
     commands = [constargs + x for x in args_list] * args.repeat
 
     qargs = dict()
