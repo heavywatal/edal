@@ -32,12 +32,67 @@ if (FALSE) {
     .d = as.bins(.v) %>>% (? head(.))
 }
 
+expand_table = function(tbl, by='n_TODO') {
+    tbl[rep(as.integer(row.names(tbl)), tbl$n),]
+}
+#expand_table(data.frame(a=1:3, n=3:1))
+
+is.heterozygote = function(tbl, trait) {
+    as.bins(tbl[[paste0(trait, '_L')]]) != as.bins(tbl[[paste0(trait, '_R')]])
+}
+#.heterozygote = is.heterozygote(.final, 'neutral')
+#.heterozygote %>>% colMeans()
+
+heterozygosity = function(tbl, trait) {
+    .is_h = is.heterozygote(tbl, trait)
+    c(mean=mean(.is_h), sd=sd(.is_h))
+}
+
+if (FALSE) {
+    .theta = 10 ^ seq(-2, 2, length=40)
+    data_frame(theta=.theta, H_exp=.theta / (.theta + 1)) %>>%
+        ggplot(aes(theta, H_exp))+
+        scale_x_log10()+
+        geom_line()
+}
+
 #########1#########2#########3#########4#########5#########6#########7#########
 
 .indir = '.'
-.raw = read.csv(file.path(.indir, 'evolution.csv.gz'), stringsAsFactors=FALSE) %>>% tbl_df()
+.traits = c('toepad', 'limb', 'height_pref', 'diameter_pref', 'male', 'female', 'choosiness', 'neutral')
+names(.traits) = .traits
 
-.final = .raw %>>% filter(time==max(time))
+parse_hetero = function(indir) {
+    .conf = read.conf(file.path(indir, 'program_options.conf'))
+    .conf = .conf %>>% select(label, carrying_capacity, mu_locus,
+                toepad_select, pref_compe, morph_compe, mating_sigma)
+    .raw = read.csv(file.path(indir, 'evolution.csv.gz'), stringsAsFactors=FALSE) %>>% tbl_df()
+    .final = .raw %>>% filter(time==max(time)) %>>% expand_table(n)
+    if (FALSE) {
+        .raw %>>% group_by(time, row, col) %>>%
+            tally(n) %>%
+            each(head, tail)(.)
+    }
+    .conf = mutate(.conf, N=sum(.final$n))
+    .h = ldply(.traits, heterozygosity, tbl=.final, .id='trait')
+    bind_cols(.conf[rep(1,length(.traits)),], .h)
+}
 
-as.bins(.final$toepad_L)
+.dirs = list.dirs('~/working/anolis20141210', full.names=TRUE, recursive=FALSE)
+names(.dirs) = .dirs
+.out = ldply(.dirs, parse_hetero, .parallel=TRUE)
 
+.out %>>%
+    group_by(toepad_select, morph_compe, mating_sigma, trait) %>>%
+    tally()
+
+.out %>>%
+    mutate(theta=4 * N * mu_locus,
+           expected=theta / (theta + 1),
+           diff=mean - expected) %>>%
+    filter(! trait %in% c('limb', 'diameter_pref')) %>>%
+    gather(parameter, x, toepad_select, morph_compe, mating_sigma) %>>%
+    select(-.id) %>>%
+    ggplot(aes(x, diff), colour=N)+
+    geom_point()+
+    facet_grid(trait ~ parameter, scales='free_x')
