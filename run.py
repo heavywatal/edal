@@ -65,7 +65,7 @@ def mutation_drift():
     const = ['-D1', '--row=1', '--col=1', '-m0', '-p1e6', '-c1e6', '-C1e6', '-f1e6']
     params = dict()
     params.update(s=[0.5, 2.0, 8.0])
-    params.update(u=[1e-3, 1e-4, 1e-5])
+    params.update(u=[5e-5, 1e-4, 2e-4])
     params.update(K=[2000, 4000, 8000])
     return [const + x + [make_label(x)] for x in product(params)]
 
