@@ -11,6 +11,8 @@ doMC::registerDoMC(min(parallel::detectCores(), 12))
 .argv = commandArgs(trailingOnly=TRUE)
 stopifnot(length(.argv) > 0)
 #########1#########2#########3#########4#########5#########6#########7#########
+if (FALSE) {
+# for each locus/site => far from infinite-allele
 
 as.bits = function(num, digit=8) {
     vapply(num, function(x) {
@@ -32,16 +34,22 @@ if (FALSE) {
     .d = as.bins(.v) %>>% (? head(.))
 }
 
-expand_table = function(tbl, by='n_TODO') {
-    tbl[rep(as.integer(row.names(tbl)), tbl$n),]
-}
-#expand_table(data.frame(a=1:3, n=3:1))
-
-is.heterozygote = function(tbl, trait) {
+.is.heterozygote = function(tbl, trait) {
     as.bins(tbl[[paste0(trait, '_L')]]) != as.bins(tbl[[paste0(trait, '_R')]])
 }
-#.heterozygote = is.heterozygote(.final, 'neutral')
-#.heterozygote %>>% colMeans()
+
+.heterozygosity = function(tbl, trait) {
+    .is_h = .is.heterozygote(tbl, trait)
+    c(mean=mean(.is_h), sd=sd(.is_h))
+}
+
+}
+#########1#########2#########3#########4#########5#########6#########7#########
+# for each trait (8 loci) => near infinite-allele
+
+is.heterozygote = function(tbl, trait) {
+    tbl[[paste0(trait, '_L')]] != tbl[[paste0(trait, '_R')]]
+}
 
 heterozygosity = function(tbl, trait) {
     .is_h = is.heterozygote(tbl, trait)
@@ -62,6 +70,11 @@ if (FALSE) {
 .traits = c('toepad', 'limb', 'height_pref', 'diameter_pref', 'male', 'female', 'choosiness', 'neutral')
 names(.traits) = .traits
 
+expand_table = function(tbl, by='n_TODO') {
+    tbl[rep(as.integer(row.names(tbl)), tbl$n),]
+}
+#expand_table(data.frame(a=1:3, n=3:1))
+
 parse_hetero = function(indir) {
     .conf = read.conf(file.path(indir, 'program_options.conf'))
     .conf = .conf %>>% select(label, carrying_capacity, mu_locus,
@@ -78,21 +91,30 @@ parse_hetero = function(indir) {
     bind_cols(.conf[rep(1,length(.traits)),], .h)
 }
 
-.dirs = list.dirs('~/working/anolis20141210', full.names=TRUE, recursive=FALSE)
+#.top = '~/working/anolis20141210'
+.top = '~/working/anolis20150130'
+.dirs = list.dirs(.top, full.names=TRUE, recursive=FALSE)
 names(.dirs) = .dirs
 .out = ldply(.dirs, parse_hetero, .parallel=TRUE)
 
-.out %>>%
-    group_by(toepad_select, morph_compe, mating_sigma, trait) %>>%
-    tally()
-
-.out %>>%
-    mutate(theta=4 * N * mu_locus,
-           expected=theta / (theta + 1),
-           diff=mean - expected) %>>%
+.p = .out %>>%
+    mutate(mu_locus = as.numeric(mu_locus),
+        theta=4 * N * mu_locus * 8,
+        var=sd^2,
+        expected=theta / (theta + 1),  # infinite-allele model
+#        expected=1 - (1 / (8 * N * mu_locus + 1) ^ 0.5),  # stepwise-mutation model
+        diff=mean - expected) %>>%
     filter(! trait %in% c('limb', 'diameter_pref')) %>>%
-    gather(parameter, x, toepad_select, morph_compe, mating_sigma) %>>%
-    select(-.id) %>>%
-    ggplot(aes(x, diff), colour=N)+
-    geom_point()+
-    facet_grid(trait ~ parameter, scales='free_x')
+    filter(mu_locus > 5e-5) %>>%
+    select(-.id, -sd) %>>%
+    gather(yparam, yval, mean, var) %>>% (? summary(.)) %>>%
+    mutate(expected=ifelse(yparam=='mean', expected, NA)) %>>%
+    ggplot(aes(theta, yval), alpha=0.6)+
+    geom_point(aes(colour=as.factor(toepad_select)))+
+    geom_line(aes(y=expected))+
+    facet_grid(yparam  ~ trait)+
+    labs(x='theta = 4Nµ', y='Heterozygosity')+
+    scale_colour_discrete(name="selection (s0)")+
+    theme_bw()
+.p
+ggsave('heterozygosity.pdf', .p, width=6, height=3, scale=2)
