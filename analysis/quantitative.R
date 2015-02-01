@@ -92,7 +92,7 @@ parse_hetero = function(indir) {
 }
 
 #.top = '~/working/anolis20141210'
-.top = '~/working/anolis20150130'
+.top = '~/working/anolis20150131'
 .dirs = list.dirs(.top, full.names=TRUE, recursive=FALSE)
 names(.dirs) = .dirs
 .out = ldply(.dirs, parse_hetero, .parallel=TRUE)
@@ -115,6 +115,7 @@ names(.dirs) = .dirs
     facet_grid(yparam  ~ trait)+
     labs(x='theta = 4Nµ', y='Heterozygosity')+
     scale_colour_discrete(name="selection (s0)")+
+    scale_x_log10()+
     theme_bw()
 .p
 ggsave('heterozygosity.pdf', .p, width=6, height=3, scale=2)
