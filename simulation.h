@@ -70,6 +70,9 @@ class Simulation {
     //! Control execution mode
     int MODE = 0;
 
+    //! Set same values of \$h\$ and \$s\$ for two axes
+    bool SYMMETRIC = false;
+
     //! Group name of this run such as altered parameter
     std::string LABEL;
 

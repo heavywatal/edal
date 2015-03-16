@@ -35,6 +35,7 @@ boost::program_options::options_description& Simulation::opt_description() {HERE
             ->default_value(VERBOSE)->implicit_value(true), "verbose output")
         ("test", po::value<int>()->default_value(0)->implicit_value(1))
         ("mode", po::value<int>(&MODE)->default_value(MODE))
+        ("symmetric", po::value<bool>(&SYMMETRIC)->default_value(SYMMETRIC)->implicit_value(true))
         ("label", po::value<std::string>(&LABEL)->default_value("default"))
         ("top_dir", po::value<std::string>()->default_value(OUT_DIR.string()))
         ("patch_size,k", po::value<size_t>(&INITIAL_PATCH_SIZE)->default_value(INITIAL_PATCH_SIZE))
@@ -78,6 +79,14 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
         ost << "diameter_pref = 1e6\n"
             << "limb_select = 1e6\n"
             << "mutation_mask = 10\n";
+        std::istringstream ist(ost.str());
+        po::store(po::parse_config_file(ist, description, false), vm);
+        vm.notify();
+    }
+    if (SYMMETRIC) {
+        std::ostringstream ost;
+        ost << "diameter_pref = " << vm["height_pref"].as<double>() << "\n"
+            << "limb_select = " << vm["toepad_select"].as<double>() << "\n";
         std::istringstream ist(ost.str());
         po::store(po::parse_config_file(ist, description, false), vm);
         vm.notify();

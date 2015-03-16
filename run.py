@@ -70,6 +70,17 @@ def mutation_drift():
     return [const + x + [make_label(x)] for x in product(params)]
 
 
+def full_model():
+    const = ['--row=6', '--col=6', '-K1000', '--symmetric']
+    params = dict()
+    params.update(m=[0.005, 0.01])
+    params.update(s=[1.0, 2.0, 3.0])
+    params.update(p=[1.0, 2.0, 3.0])
+    params.update(c=[1.0, 2.0, 3.0])
+    params.update(f=[0.01, 0.03, 0.05])
+    return [const + x + [make_label(x)] for x in product(params)]
+
+
 def upperlower(params):
     ret = []
     for (key, vals) in params.items():
@@ -131,7 +142,7 @@ if __name__ == '__main__':
     constargs.append('-T10000')
     constargs.append('-I100')
 
-    args_list = mutation_drift()
+    args_list = full_model()
     commands = [constargs + x for x in args_list] * args.repeat
 
     qargs = dict()
