@@ -1,0 +1,73 @@
+---
+title: "Evolutionary branching on simple condition (non-random mating by TPH2011)"
+author: "Watal M. Iwasaki"
+date: "2014-12-13"
+output:
+  html_document:
+    toc: true
+    self_contained: false
+---
+
+Codes
+================================================================================
+
+```{r library, message=FALSE}
+library(plyr)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(pipeR)
+library(xtable)
+```
+
+```{r table}
+.indirs = list.dirs('~/working/anolis20141122-d', recursive=FALSE)
+.infiles = file.path(.indirs, 'program_options.conf')
+names(.infiles) = basename(.indirs)
+.conf = ldply(.infiles, wtl::read.conf, .id='path')
+.tbl = .conf %>>%
+    select(path, toepad_select, morph_compe, mating_sigma) %>>%
+    mutate(path=paste0('<img class="time" src="ad_20141122-d_files/', path, '.png" alt="', path, '">')) %>>%
+    group_by(toepad_select, morph_compe, mating_sigma) %>>%
+    summarise(path=paste0(path, collapse='<br>')) %>>%
+    ungroup() %>>% # bug will be fixed in dplyr 3.1
+    spread(mating_sigma, path) %>>%
+    arrange(toepad_select, morph_compe) %>>%
+    rename(s=toepad_select, c=morph_compe)
+```
+
+Results
+================================================================================
+
+Limb length ($x_1$), diameter preference ($y_1$), and selection for them ($s_1$, $h_1$) were fixed at $0$ so that evolution occurs on the one-dimensional resource space.
+Also habitat preference $h_0 = 0$.
+Maximum carrying capacity $K_0 = 10000$.
+Migration rate $m = 0$ (only one patch exists).
+Population data were sampled every 100 generations until $T = 10000$.
+[See here for other default values](http://heavywatal.github.io/edal/group__biol__param.html).
+Simulations were performed twice for each altered $s_0$, $c_0$, $\sigma_a$.
+
+As shown in [a github issue comment](https://github.com/heavywatal/edal/issues/8),
+the effect of non-random mating by TPG2013 is stronger than those by Débarre (2012).
+Branching is observed some parameter combinations.
+
+<div>
+<style type="text/css">
+<!--
+img.time {
+  max-width: 720px;
+  margin: 8px;
+}
+tr:nth-child(2n) {
+  background: #ddd;
+}
+tr:nth-child(2n-1) {
+  background: #bbb;
+}
+-->
+</style>
+```{r xtable, results='asis', echo=FALSE}
+print(.tbl %>>% as.data.frame() %>>% xtable(),
+    type='html', sanitize.text.function = identity, comment=FALSE)
+```
+</div>

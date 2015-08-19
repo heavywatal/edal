@@ -1,7 +1,7 @@
 ---
-title: "Evolutionary branching on simple condition (non-random mating by TPG2013)"
+title: "Mutation-drift balance"
 author: "Watal M. Iwasaki"
-date: "2014-12-10"
+date: "2015-02-24"
 output:
   html_document:
     toc: true
@@ -99,7 +99,6 @@ parse_hetero = function(indir) {
     bind_cols(.conf[rep(1,length(.traits)),], .h)
 }
 ```
-#########1#########2#########3#########4#########5#########6#########7#########
 
 ```{r data}
 .indir = '.'
