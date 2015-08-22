@@ -129,21 +129,6 @@ class Simulation {
 
     boost::program_options::options_description& opt_description();
 
-    //! apply function for each patch and concatenate output into a string
-    template <class Func> inline
-    std::string str_population(Func func,
-                               const std::string sep_col=" ",
-                               const std::string sep_row="\n") {
-        std::ostringstream ost;
-        for (const auto& row: population) {
-            for (const auto& cell: row) {
-                ost << func(cell) << sep_col;
-            }
-            ost << sep_row;
-        }
-        return ost.str();
-    }
-
     /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
     // data members
     //! Two-dimensional matrix of Patch

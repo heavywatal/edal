@@ -154,7 +154,8 @@ void Simulation::evolve() {HERE;
     for (size_t t=0; t<=ENTIRE_PERIOD; ++t) {
         if (VERBOSE) {
             std::cout << "\nT = " << t << "\n"
-                << str_population([](const Patch& p) {return p.size();})
+                << wtl::str_matrix(population, " ", wtl::make_oss(),
+                        [](const Patch& p) {return p.size();})
                 << std::flush;
         }
         if (t % OBSERVATION_CYCLE == 0) {
