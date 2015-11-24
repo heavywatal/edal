@@ -8,7 +8,7 @@
 
 #include <vector>
 
-#include "cxxwtils/prandom.hpp"
+#include <cxxwtils/prandom.hpp>
 
 #include "individual.h"
 

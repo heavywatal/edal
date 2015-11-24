@@ -10,9 +10,9 @@
 
 #include <boost/program_options.hpp>
 
-#include "cxxwtils/prandom.hpp"
-#include "cxxwtils/iostr.hpp"
-#include "cxxwtils/gz.hpp"
+#include <cxxwtils/prandom.hpp>
+#include <cxxwtils/iostr.hpp>
+#include <cxxwtils/gz.hpp>
 
 double Individual::BETA_PARAM_ = 3.0;
 double Individual::NORMAL_SIGMA_ = 0.3;

@@ -11,8 +11,8 @@
 #include <bitset>
 #include <string>
 
-#include "cxxwtils/algorithm.hpp"
-#include "cxxwtils/prandom.hpp"
+#include <cxxwtils/algorithm.hpp>
+#include <cxxwtils/prandom.hpp>
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
