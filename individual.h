@@ -129,10 +129,10 @@ class Individual {
     static double C1_;
 
     //! Genotype that produce trait value = 1.0, i.e., `11111111`
-    constexpr static unsigned long FULL_BITS = wtl::pow<NUM_LOCI_>(2) - 1;
+    constexpr static unsigned long FULL_BITS = wtl::pow(2, NUM_LOCI_) - 1;
 
     //! Genotype that produce trait value = 0.5, i.e., `00001111`
-    constexpr static unsigned long HALF_BITS = wtl::pow<NUM_LOCI_ / 2>(2) - 1;
+    constexpr static unsigned long HALF_BITS = wtl::pow(2, NUM_LOCI_ / 2) - 1;
 
     //! Compile-time constant value used in init_phenotype()
     constexpr static double INV_NUM_LOCI_ = 0.5 / NUM_LOCI_;

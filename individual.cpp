@@ -85,7 +85,7 @@ inline double pdf_beta(const double height, const double diameter) {
     static_cast<void>(diameter);
     static const double k =
         std::tgamma(2 * Individual::BETA_PARAM_)
-        / wtl::pow<2>(std::tgamma(Individual::BETA_PARAM_));
+        / wtl::pow(std::tgamma(Individual::BETA_PARAM_), 2);
     double result = std::pow(height * (1 - height), Individual::BETA_PARAM_ - 1);
     return result *= k;
 }
@@ -96,7 +96,7 @@ inline double pdf_triangle(const double height, const double diameter) {
     double result = 1.0;
     result -= height;
     result -= diameter;
-    result /= wtl::pow<2>(1.0 - height);
+    result /= wtl::pow(1.0 - height, 2);
     return result *= 2.0;
 }
 
@@ -107,7 +107,7 @@ inline double abundance(const double height, const double diameter) {
 
 //! Distribution of tree height given diameter
 inline double pdf_normal(const double height, const double diameter) {
-    return std::exp(- 0.5 * wtl::pow<2>(height - 0.5) / wtl::pow<2>(Individual::NORMAL_SIGMA_));
+    return std::exp(- 0.5 * wtl::pow(height - 0.5, 2) / wtl::pow(Individual::NORMAL_SIGMA_, 2));
 }
 
 //! Distribution of twig diameter given height
@@ -197,7 +197,7 @@ double Individual::calc_DI_analytical() const {
     double d = 12;
     d -= 6*h0*(1 + 2*(-1 + y0)*y0);
     d += h1*(-1 + 4*(1 - 3*y1)*y1);
-    d -= a*(-24 + h1 + 6*h0*wtl::pow<2>(1 - 2*y0) - 8*h1*y1 + 24*h1*wtl::pow<2>(y1));
+    d -= a*(-24 + h1 + 6*h0*wtl::pow(1 - 2*y0, 2) - 8*h1*y1 + 24*h1*wtl::pow(y1, 2));
     d /= (12 + 24*a);
     return d;
 }
@@ -401,7 +401,7 @@ std::vector<Individual::Loci> Individual::gametogenesis(wtl::sfmt19937& rng) con
 }
 
 std::ostream& operator<< (std::ostream& ost, const Individual& ind) {
-    const std::string sep{","};
+    const char* sep = ",";
     return ost
         << wtl::str_join(ind.genotype_.first, sep) << sep
         << wtl::str_join(ind.genotype_.second, sep) << sep
@@ -415,7 +415,7 @@ std::string Individual::header() {
     "male", "female", "choosiness",
     "neutral"};
     std::ostringstream ost;
-    const std::string sep(",");
+    const char* sep = ",";
     for (const auto& s: names) {
         ost << s << "_L" << sep;
     }
@@ -472,7 +472,7 @@ std::string test_resource_abundance(Func func) {
     constexpr int precision = 25;
     constexpr double delta = 1.0 / precision;
     std::ostringstream ost;
-    std::string sep(",");
+    const char* sep = ",";
     ost << "height" << sep << "diameter" << sep << "abundance\n";
     for (size_t i=0; i<=precision; ++i) {
         for (size_t j=0; j<=precision; ++j) {
@@ -499,7 +499,7 @@ std::string Individual::possible_phenotypes() {
     constexpr size_t max_trait = NUM_LOCI_ * 2;
     constexpr size_t half = max_trait / 2;
     std::ostringstream ost;
-    std::string sep(",");
+    const char* sep = ",";
     ost << "toepad,limb,height_pref,diameter_pref,"
         << wtl::str_join(INTERMEDIATE_KEYS_, sep)
         << "\n";
@@ -523,7 +523,7 @@ std::string Individual::possible_geographic() {
     constexpr size_t half = max_trait / 2;
     constexpr double max_reciprocal = 1.0 / max_trait;
     std::ostringstream ost;
-    std::string sep(",");
+    const char* sep = ",";
     ost << "toepad,limb,height_pref,diameter_pref,"
         << "DI,Dxi,height,diameter,"
         << "resource,Xi_quad,Xi_exp,fitness\n";

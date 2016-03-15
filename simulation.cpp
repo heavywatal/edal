@@ -91,7 +91,7 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
         po::store(po::parse_config_file(ist, description, false), vm);
         vm.notify();
     }
-    const std::string CONFIG_STRING = wtl::flags_into_string(description, vm);
+    const std::string CONFIG_STRING = wtl::flags_into_string(vm);
     if (VERBOSE) {
         std::cout << CONFIG_STRING << std::endl;
     }
@@ -201,7 +201,7 @@ void Simulation::life_cycle() {
 }
 
 void Simulation::write_snapshot(const size_t time, std::ostream& ost) const {
-    const std::string sep{","};
+    const char* sep = ",";
     if (time == 0) {
         ost << "time" << sep << "row" << sep << "col" << sep
             << "n" << sep << Individual::header() << "\n";
