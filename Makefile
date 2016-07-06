@@ -14,23 +14,23 @@ vpath %.cpp ${SRCDIR}
 
 
 ## Options
-GXX := $(notdir $(firstword $(foreach x,g++-5 g++-4.9 g++-4.8 g++,$(shell which $x))))
+GXX := $(notdir $(firstword $(foreach x,g++-6 g++-5 g++,$(shell which $x 2>/dev/null))))
 CXX_ARRAY := clang++ ${GXX}
 CXX := $(firstword $(foreach x,${CXX_ARRAY},$(shell which $x)))
 CC := $(CXX)
 CPPFLAGS := -Wall -Wextra -Wno-unused-parameter -fno-strict-aliasing ${INCLUDEDIR} ${CPPDBG} -ftemplate-depth=512
 CXXFLAGS := -std=c++14 -O3 ${CXXDBG}
-LDFLAGS := -L${HOME}/local/lib -L/usr/local/lib
-LDLIBS := -lsfmt -lboost_program_options -lboost_filesystem -lboost_system -lboost_iostreams -lz
+LDFLAGS = -L${HOME}/local/lib -L${BOOST}/lib -Wl,-rpath,${BOOST}/lib
+LDLIBS := -lsfmt -lboost_program_options -lboost_filesystem -lboost_system -lboost_iostreams -lboost_zlib
 TARGET_ARCH := -march=core2 -m64 -msse -msse2 -msse3
 
 ifneq (,$(filter $(CXX), ${GXX}))
   CXXFLAGS += -mfpmath=sse
+		BOOST := ${HOME}/local/boost-gcc
   CPPFLAGS += -pthread -D_GLIBCXX_USE_NANOSLEEP
-  LDFLAGS += -L${HOME}/local/boost-gcc/lib -static-libstdc++
 else
   CXXFLAGS += -stdlib=libc++
-  LDFLAGS += -L${HOME}/local/boost-clang/lib
+		BOOST := ${HOME}/local/boost-clang
   ifeq ($(shell uname), Linux)
     LDLIBS += -lpthread -lsupc++
   endif
