@@ -57,9 +57,9 @@ std::map<std::vector<double>, double> Individual::KE_CACHE_;
     `-U,--mutation_mask`     | -              | Individual::MUTATION_MASK_
     `-m,--migration_rate`    | \f$m\f$        | Individual::MIGRATION_RATE_
 */
-boost::program_options::options_description& Individual::opt_description() {
+boost::program_options::options_description Individual::opt_description() {
     namespace po = boost::program_options;
-    static po::options_description desc{"Individual"};
+    po::options_description desc{"Individual"};
     desc.add_options()
         ("beta_param,a", po::value<double>(&BETA_PARAM_)->default_value(BETA_PARAM_))
         ("carrying_capacity,K", po::value<size_t>(&CARRYING_CAPACITY_)->default_value(CARRYING_CAPACITY_))

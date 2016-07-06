@@ -334,7 +334,7 @@ class Individual {
     //! test function
     static std::string possible_geographic();
 
-    static boost::program_options::options_description& opt_description();
+    static boost::program_options::options_description opt_description();
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   private:

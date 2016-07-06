@@ -12,18 +12,13 @@
 
 #include "individual.h"
 
-namespace boost {
-    namespace program_options {
-        class options_description;
-    }
-}
 
 class Patch {
   public:
 
     //! Construct an empty patch
     Patch(): rng_{wtl::sfmt()()} {};
-    
+
     //! Construct a patch with the same number of females and males
     /*! @param n The number of inital individuals in this patch
     */
