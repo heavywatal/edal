@@ -2,7 +2,7 @@
 /*! @file individual.cpp
     @brief Implementation of Individual class
 */
-#include "individual.h"
+#include "individual.hpp"
 
 #include <cmath>
 #include <iostream>

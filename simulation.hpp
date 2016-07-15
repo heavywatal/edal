@@ -1,5 +1,5 @@
 // -*- mode: c++; coding: utf-8 -*-
-/*! @file simulation.h
+/*! @file simulation.hpp
     @brief Interface of Simulation class
     @defgroup biol_param Biological parameters
     @defgroup biol_proc Biological processes
@@ -11,8 +11,8 @@
     @}
 */
 #pragma once
-#ifndef SIMULATION_H_
-#define SIMULATION_H_
+#ifndef SIMULATION_HPP_
+#define SIMULATION_HPP_
 
 #include <iostream>
 #include <sstream>
@@ -21,7 +21,7 @@
 
 #include <cxxwtils/iostr.hpp>
 
-#include "patch.h"
+#include "patch.hpp"
 
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
@@ -136,4 +136,4 @@ class Simulation {
 
 };
 
-#endif /* SIMULATION_H_ */
+#endif /* SIMULATION_HPP_ */

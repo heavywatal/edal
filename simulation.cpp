@@ -2,7 +2,7 @@
 /*! @file simulation.cpp
     @brief Inplementation of Simulation class
 */
-#include "simulation.h"
+#include "simulation.hpp"
 
 #include <cxxwtils/iostr.hpp>
 #include <cxxwtils/getopt.hpp>
@@ -10,7 +10,7 @@
 #include <cxxwtils/os.hpp>
 #include <cxxwtils/gz.hpp>
 
-#include "individual.h"
+#include "individual.hpp"
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 // functions

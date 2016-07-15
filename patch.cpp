@@ -2,7 +2,7 @@
 /*! @file patch.cpp
     @brief Implementation of Patch class
 */
-#include "patch.h"
+#include "patch.hpp"
 
 #include <cmath>
 #include <iostream>

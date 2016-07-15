@@ -1,10 +1,10 @@
 // -*- mode: c++; coding: utf-8 -*-
-/*! @file individual.h
+/*! @file individual.hpp
     @brief Interface of Individual class
 */
 #pragma once
-#ifndef INDIVIDUAL_H_
-#define INDIVIDUAL_H_
+#ifndef INDIVIDUAL_HPP_
+#define INDIVIDUAL_HPP_
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -477,4 +477,4 @@ inline bool operator< (const Individual::Loci& lhs, const Individual::Loci& rhs)
 }
 }
 
-#endif /* INDIVIDUAL_H_ */
+#endif /* INDIVIDUAL_HPP_ */

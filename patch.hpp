@@ -1,16 +1,16 @@
 // -*- mode: c++; coding: utf-8 -*-
-/*! @file patch.h
+/*! @file patch.hpp
     @brief Interface of Patch class
 */
 #pragma once
-#ifndef PATCH_H_
-#define PATCH_H_
+#ifndef PATCH_HPP_
+#define PATCH_HPP_
 
 #include <vector>
 
 #include <cxxwtils/prandom.hpp>
 
-#include "individual.h"
+#include "individual.hpp"
 
 
 class Patch {
@@ -112,4 +112,4 @@ class Patch {
 //! Stream operator for Patch
 extern std::ostream& operator<< (std::ostream& ost, const Patch& patch);
 
-#endif /* PATCH_H_ */
+#endif /* PATCH_HPP_ */
