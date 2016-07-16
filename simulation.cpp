@@ -56,6 +56,10 @@ inline void test() {HERE;
 }
 
 Simulation::Simulation(int argc, char* argv[]) {HERE;
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(0);
+    std::cout.precision(15);
+    std::cerr.precision(6);
     std::vector<std::string> arguments(argv, argv + argc);
     std::cout << wtl::str_join(arguments, " ") << std::endl;
     std::cout << wtl::iso8601datetime() << std::endl;
