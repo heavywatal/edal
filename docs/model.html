@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title>Speciation in Anolis: model description</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+</head>
+<body>
+<div id="header">
+<h1 class="title">Speciation in <span><em>Anolis</em></span>: model description</h1>
+</div>
+<h1 id="space">Space</h1>
+<p>Space is subdivided into a rectangular array of “patches”. There are <span class="math">\(2\)</span> environmental characteristics corresponding to the height (<span class="math">\(u\)</span>) at which a lizard occurs and the diameter (<span class="math">\(v\)</span>) of the object upon which they are sitting. Each patch is characterized by a frequency distribution <span class="math">\(F(u,v)\)</span>. We can consider 2 possibilities.</p>
+<p><span><em>Old version</em></span>.The distribution of <span class="math">\(u\)</span> is normal with mean <span class="math">\(\mu\)</span> and variance <span class="math">\(\sigma^2\)</span>, and <span class="math">\(v\)</span> has an exponential distribution with mean <span class="math">\(\theta^{-1} = c_0 - c_1 u\)</span>, where <span class="math">\(c_0\)</span> and <span class="math">\(c_1\)</span> are positive constants. In particular, the natural constraint <span class="math">\(\theta^{-1} &gt; 0\)</span> implies <span class="math">\(1 \le c_0/c_1\)</span>. The joint density <span class="math">\(F\)</span> is</p>
+<p><span class="math">\[\label{gaus}
+  F(u,v) \; = \;
+  k \,\exp \big(-\sigma (u - \mu)^2 \big) \exp\big(\!- \theta  v \big) \theta,\]</span></p>
+<p>where <span class="math">\(k\)</span> is normalizing constant. We can truncate this distribution so it’s defined for <span class="math">\(0\leq u,v \leq 1\)</span>. We can also set the mean of <span class="math">\(u\)</span> at <span class="math">\(\mu=1/2\)</span>.</p>
+<p><span><em>New version</em></span>.Height <span class="math">\(u\)</span> has a symmetric beta distribution mean 1/2 and with parameter <span class="math">\(\alpha&gt;1\)</span> and the diameter has a triangular distribution on the interval <span class="math">\([0,1-u]\)</span> so that the joint density is</p>
+<p><span class="math">\[\label{beta}
+  F(u,v) \; = \;
+  \frac{\Gamma(2\alpha)}{\Gamma(\alpha)^2} \big(u(1-u)\big)^{\alpha-1}\ \frac{2}{1-u}(1-\frac{v}{1-u}),\]</span></p>
+<p>where <span class="math">\(\Gamma\)</span> is gamma function. The mean of <span class="math">\(u\)</span> is 1/2 and the variance is <span class="math">\(1/(4(1+2\alpha))\)</span>. For any given <span class="math">\(u\)</span>, the mean of <span class="math">\(v\)</span> is <span class="math">\((1-u)/3\)</span>. This distribution is defined for <span class="math">\(0 \leq u \leq 1\)</span> and <span class="math">\(0 \leq v \leq 1-u\)</span>. The triangular distribution seems to be a good approximation of the exponential distribution (good for our purposes).</p>
+<h1 id="individuals">Individuals</h1>
+<p>Individuals are sexual and diploid. Each individual has a number of additive quantitative characters:</p>
+<ul>
+<li><p>2 “morphological” characters <span class="math">\(x_0\)</span> (toepad size) and <span class="math">\(x_1\)</span> (limb length) that control viability;</p></li>
+<li><p>2 “habitat preference” characters: the most preferred height <span class="math">\(y_0\)</span> and the most preferred diameter <span class="math">\(y_1\)</span></p></li>
+<li><p>three “mating compatibility” characters <span class="math">\(m, f\)</span>, and <span class="math">\(c\)</span>.</p></li>
+</ul>
+<p>The male display trait <span class="math">\(m\)</span> is expressed in males only, whereas female mating preference <span class="math">\(f\)</span> and tolerance <span class="math">\(c\)</span> are expressed in females only. Other traits are expressed in both sexes. All traits are scaled to be between 0 and 1 and are controlled by different unlinked diallelic loci with equal effects. Mutations occur at equal rates across all loci; the probabilities of forward and backward mutations are equal.</p>
+<h1 id="habitat-preference-and-carrying-capacity">Habitat preference and carrying capacity</h1>
+<p><span><strong>Habitat preference</strong></span>.The relative preference of an individual with habitat preference traits <span class="math">\(y_0,y_1\)</span> for environmental characteristic <span class="math">\((u,v)\)</span> is</p>
+<p><span class="math">\[\Xi(y_0,y_1\mid u,v) = \exp\big(-\frac{(u-y_0)^2}{2h_0^2} -\frac{(v-y_1)^2}{2h_1^2}\big)\]</span></p>
+<p>We can also consider a quadratic approximation:</p>
+<p><span class="math">\[\label{quad}
+  \Xi(y_0,y_1\mid u,v) = 1-h_0(u-y_0)^2-h_1(v-y_1)^2.\]</span></p>
+<p><span><strong>Viability</strong></span>.Let viability of genotype <span class="math">\((x_0,x_1)\)</span> in niche <span class="math">\((u,v)\)</span> be Gaussian,</p>
+<p><span class="math">\[W(x_0,x_1 \mid u,v) = \exp\big(-\frac{(u-x_0)^2}{2s_0^2} -\frac{(v-x_1)^2}{2s_1^2}\big),\]</span></p>
+<p>where the <span class="math">\(\sigma_{s_i}&gt;0\)</span> are parameters measuring the strength of selection. Note that the optimum values of traits <span class="math">\(x_0\)</span> and <span class="math">\(x_1\)</span> under environmental conditions <span class="math">\((u,v)\)</span> are <span class="math">\(x_0 = u\)</span> and <span class="math">\(x_1 = v\)</span>.<br /></p>
+<p><span><strong>Carrying capacity</strong></span>.Consider a specific genotype that has an absolute preference for environment <span class="math">\((u,v)\)</span> (so that <span class="math">\(\Xi\)</span> is a <span class="math">\(\delta\)</span>-function). Then a natural measure of the carrying capacity of a population of such individuals is <span class="math">\[K_{\max} F(u,v) W(x_0,x_1 \mid u,v),\]</span> where <span class="math">\(K_{\max}\)</span> is a scaling parameter, and <span class="math">\(K_{\max} F(u,v)\)</span> can be thought of as the maximum number of individuals with an absolute preference for environment <span class="math">\((u,v)\)</span> is they also have perfect adaptation for this niche (i.e. if <span class="math">\(W(x_0,x_1 \mid u,v)=1\)</span>). Naturally, the more common environments can maintain higher densities of individuals that prefer them. Now,</p>
+<p><span class="math">\[K_e(I)= K_{\max} \iint F(u,v) W(x_0,x_1 \mid u,v) \Xi(y_0,y_1\mid u,v) du dv\]</span></p>
+<p>is the average carrying capacity of genotype <span class="math">\((x_0,x_1, y_0, y_1)\)</span>.</p>
+<h3 id="effective-number-of-competitors">Effective number of competitors</h3>
+<p>Following Roughgarden and others, we define the competition coefficient for individual <span class="math">\(I\)</span> and <span class="math">\(J\)</span> as</p>
+<p><span class="math">\[\begin{aligned}
+    C(I,J)   &amp;= C_x(I,J) C_y(I,J)\\
+    C_x(I,J) &amp;= exp\big( -\frac{(x_{0,I}-x_{0,J})^2}{2c_x^2} -\frac{(x_{1,I}-x_{1,J})^2}{2c_x^2}\big)\\
+    C_y(I,J) &amp;= exp\big( -\frac{(y_{0,I}-y_{0,J})^2}{2c_y^2} -\frac{(y_{1,I}-y_{1,J})^2}{2c_y^2}\big).
+  \end{aligned}\]</span></p>
+<p>That is, competition strength is evaluated on the basis of their morphology and habitat preferences. For individuals with identical preferences, <span class="math">\(C(I,J)=1\)</span>, that is competition is the strongest.</p>
+<p>For individual <span class="math">\(I\)</span>, the effective number of competitors is</p>
+<p><span class="math">\[N_e(I)=\sum_J C(I,J).\]</span></p>
+<h3 id="survival">Survival</h3>
+<p>The probability that an individual survives to the age of reproduction is</p>
+<p><span class="math">\[\label{BH}
+  w(I)=\frac{1}{1+(b-1)\frac{N_e(I)^\theta}{K_e(I)}},\]</span></p>
+<p>where the parameter <span class="math">\(\theta\)</span> controls the strength of crowding, and <span class="math">\(b&gt;0\)</span> is a parameter (average number of offspring per female; see below). Equation ([BH]) with <span class="math">\(\theta = 1\)</span> is the Beverton-Holt model which represents a discrete-time analog of the logistic model. If <span class="math">\(N_e(I) \ll K_e(I)\)</span>, then <span class="math">\(w(I)=1\)</span> (survival probability is one), and if <span class="math">\(N_e(I)=K_e(I)\)</span>, then <span class="math">\(w(I)=1/b\)</span>.</p>
+<h1 id="mating">Mating</h1>
+<h3 id="mating-preferences">Mating preferences</h3>
+<p>The relative probability of mating between a female with traits <span class="math">\(f\)</span> and <span class="math">\(c\)</span> and a male with trait <span class="math">\(m\)</span> is</p>
+<p><span class="math">\[\label{pref}
+  \psi(f,c\mid m) = \left\{
+    \begin{array}{ll}
+      \exp \left( -(2c-1)^2 \frac{(f-m)^2}{2\sigma_a^2}\right)
+        &amp; \mbox{if}\ c &gt; 0.5,\\
+      1 &amp; \mbox{if}\ c=0.5,\\
+      \exp \left( -(2c-1)^2 \frac{(f-(1-m))^2}{2\sigma_a^2}\right)
+        &amp; \mbox{if}\ c&lt;0.5,
+    \end{array} \right.\]</span></p>
+<p>where parameter <span class="math">\(\sigma_a\)</span> scales the strength of female mating preferences. Under this parameterization, females with <span class="math">\(c=0.5\)</span> mate randomly, females with <span class="math">\(c&gt;0.5\)</span> prefer males whose trait <span class="math">\(m\)</span> is close to the female’s trait <span class="math">\(f\)</span> (positive assortative mating), and females with <span class="math">\(c&lt;0.5\)</span> prefer males whose trait <span class="math">\(m\)</span> is close to <span class="math">\(1-f\)</span> (negative assortative mating).</p>
+<h3 id="mating-frequencies">Mating frequencies</h3>
+<p>The pseudo probability that female <span class="math">\(I = \langle f,c,\ldots \rangle\)</span> mates with male <span class="math">\(I^{\prime}= \langle m,\ldots \rangle\)</span> is</p>
+<p><span class="math">\[P(I,I^{\prime}) = \psi(I,I^{\prime})\ C_y(I,J) \\\]</span></p>
+<p>This is the preference of <span class="math">\(I\)</span> for <span class="math">\(I^{\prime}\)</span>, multiplied by their correlation (with respect to habitat preferences <span class="math">\(C_y(I,J)\)</span>). These “pseudo probabilities” are scaled to sum to one (by summing over the available males <span class="math">\(I^\prime\)</span>).</p>
+<h3 id="offspring-production">Offspring production</h3>
+<p>Each mating results in a number of offspring drawn from a Poisson distribution with parameter <span class="math">\(b\)</span>. We assume that all adult females mate. This assumption implies that any costs of mate choice, which can easily prevent divergence and speciation, are absent. This assumption also means that the effective population size is increased relative to the actual number of adults.</p>
+<h1 id="dispersal">Dispersal</h1>
+<p>With probability <span class="math">\(m&gt;0\)</span>, each offspring becomes a “migrant.” Each migrant goes to one of the 8 neighboring patches. For patches at the boundary, the probability <span class="math">\(m\)</span> is reduced according to the number of neighbors they have.</p>
+<h1 id="life-cycle">Life cycle</h1>
+<p>There are two options. (1) viability selection <span class="math">\(\rightarrow\)</span> dispersal <span class="math">\(\rightarrow\)</span> mating and offspring production, and (2) dispersal <span class="math">\(\rightarrow\)</span> viability selection <span class="math">\(\rightarrow\)</span> mating and offspring production.</p>
+<p><span><strong>So</strong></span>, we consider the second option only.</p>
+<h1 id="initial-conditions">Initial conditions</h1>
+<p><span class="math">\(K_0\)</span> offsprings populate a patch in the upper left corner. All individuals are identical homozygotes such that all traits are exactly in the middle of their range (i.e., <span class="math">\(x_i=y_i=0.5\)</span> for all <span class="math">\(i\)</span>). These initial conditions correspond to the colonization of a system by a small number of genetically similar, poorly adapted generalists.</p>
+</body>
+</html>

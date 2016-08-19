@@ -1,4 +1,0 @@
-[submodule "html"]
-	path = html
-	url = git@github.com:heavywatal/edal.git
-	branch = gh-pages
