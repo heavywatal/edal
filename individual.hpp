@@ -7,11 +7,12 @@
 #define INDIVIDUAL_HPP_
 #include <cmath>
 #include <iostream>
-#include <vector>
-#include <bitset>
 #include <string>
+#include <vector>
+#include <map>
+#include <bitset>
 
-#include <cxxwtils/algorithm.hpp>
+#include <cxxwtils/math.hpp>
 #include <cxxwtils/prandom.hpp>
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
