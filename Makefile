@@ -2,7 +2,7 @@
 PACKAGE := $(notdir ${CURDIR})
 SRCDIR := .
 OBJDIR := build
-INCLUDEDIR := -isystem /usr/local/include -isystem ${HOME}/local/include
+INCLUDEDIR := -I/usr/local/include -I${HOME}/local/include
 PROGRAM := a.out
 
 
