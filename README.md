@@ -3,7 +3,7 @@ Evolutionary Diversification in Anolis Lizards
 
 Simulation program is written in C++.
 The results are analyzed in R.
-Documentation by Doxygen and some results are available at http://heavywatal.github.io/edal/
+Documentation by Doxygen and some results are available at https://heavywatal.github.io/edal/
 
 Requirements
 --------------------------------------------------------------------------------
