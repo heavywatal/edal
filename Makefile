@@ -73,17 +73,19 @@ instruments: release
 	instruments -t "/Applications/Xcode.app/Contents/Applications/Instruments.app/Contents/Resources/templates/Time Profiler.tracetemplate" -D ~/tmp/profile$(shell gdate +%F_%T) ${PROGRAM} -T200
 
 
-.PHONY: doxygen pdf pandoc
-doxygen:
+.PHONY: html pdf pandoc
+html:
 	$(RM) -r html/*.html
 	doxygen
-	$(MAKE) pandoc
 
 pdf:
 	pdflatex --output-directory=tex tex/anolis.tex && open tex/anolis.pdf
 
 pandoc:
 	pandoc tex/anolis.tex -s --mathjax -o html/model.html
+
+docs: html pandoc
+	rsync -auv --delete --exclude='.git' $</ $@/
 
 ${OBJDIR}/%.o: | ${OBJDIR}
 	$(COMPILE.cpp) ${OUTPUT_OPTION} $<
@@ -97,19 +99,3 @@ ${OBJDIR}:
 .PHONY: Depend
 Depend:
 	${CXX} -MM ${CPPFLAGS} ${CXXFLAGS} ${TARGET_ARCH} ${SRCS} | sed 's|\(\w*\.o:\)|${OBJDIR}/\1|' > Dependfile
-
-## misc.
-.PHONY: open
-
-mainsrcs := $(addprefix ${SRCDIR}/,\
-individual.h \
-individual.cpp \
-patch.h \
-patch.cpp \
-simulation.h \
-simulation.cpp \
-main.cpp \
-)
-
-open:
-	open -a mi ${mainsrcs}

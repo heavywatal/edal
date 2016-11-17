@@ -1,5 +1,6 @@
 *.out
 build/
+html/
 Dependfile
 tex/*.aux
 tex/*.dvi
