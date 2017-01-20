@@ -118,7 +118,7 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
     std::ostringstream pid_at_host;
     pid_at_host << ::getpid() << "@" << wtl::gethostname();
     WORK_DIR = TMP_DIR / (now + "_" + LABEL + "_" + pid_at_host.str());
-    derr("mkdir && cd to " << WORK_DIR << std::endl);
+    DCERR("mkdir && cd to " << WORK_DIR << std::endl);
     fs::create_directory(WORK_DIR);
     wtl::cd(WORK_DIR.string());
     fs::create_directory(OUT_DIR);
@@ -141,7 +141,7 @@ void Simulation::run() {HERE;
       default:
         exit(1);
     }
-    derr("mv results to " << OUT_DIR << std::endl);
+    DCERR("mv results to " << OUT_DIR << std::endl);
     fs::rename(WORK_DIR, OUT_DIR);
     std::cout << wtl::iso8601datetime() << std::endl;
 }
@@ -220,6 +220,6 @@ void Simulation::write_snapshot(const size_t time, std::ostream& ost) const {
             }
         }
     }
-    derr("N = " << popsize << std::endl);
+    DCERR("N = " << popsize << std::endl);
 }
 
