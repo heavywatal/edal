@@ -75,17 +75,17 @@ instruments: release
 
 .PHONY: html pdf pandoc
 html:
-	$(RM) -r html/*.html
+	$(RM) -r docs/*
 	doxygen
 
 pdf:
 	pdflatex --output-directory=tex tex/anolis.tex && open tex/anolis.pdf
 
 pandoc:
-	pandoc tex/anolis.tex -s --mathjax -o html/model.html
+	pandoc tex/anolis.tex -s --mathjax -o docs/model.html
 
 docs: html pandoc
-	rsync -auv --delete --exclude='.git' $</ $@/
+	@:
 
 ${OBJDIR}/%.o: | ${OBJDIR}
 	$(COMPILE.cpp) ${OUTPUT_OPTION} $<
