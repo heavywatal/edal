@@ -13,7 +13,6 @@
 #include <cxxwtils/numeric.hpp>
 #include <cxxwtils/prandom.hpp>
 #include <cxxwtils/iostr.hpp>
-#include <cxxwtils/gz.hpp>
 
 double Individual::BETA_PARAM_ = 3.0;
 double Individual::NORMAL_SIGMA_ = 0.3;
@@ -108,6 +107,7 @@ inline double abundance(const double height, const double diameter) {
 
 //! Distribution of tree height given diameter
 inline double pdf_normal(const double height, const double diameter) {
+    static_cast<void>(diameter);
     return std::exp(- 0.5 * wtl::pow(height - 0.5, 2) / wtl::pow(Individual::NORMAL_SIGMA_, 2));
 }
 

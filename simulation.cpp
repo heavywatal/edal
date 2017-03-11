@@ -135,8 +135,8 @@ void Simulation::run() {HERE;
         Individual::write_resource_abundance();
         break;
       case 2:
-        wtl::gzip{wtl::Fout{"possible_geographic.csv.gz"}} << Individual::possible_geographic();
-        wtl::gzip{wtl::Fout{"possible_phenotypes.csv.gz"}} << Individual::possible_phenotypes();
+        wtl::ogzstream{"possible_geographic.csv.gz"} << Individual::possible_geographic();
+        wtl::ogzstream{"possible_phenotypes.csv.gz"} << Individual::possible_phenotypes();
         break;
       default:
         exit(1);
@@ -169,7 +169,7 @@ void Simulation::evolve() {HERE;
             life_cycle();
         }
     }
-    wtl::gzip{wtl::Fout{"evolution.csv.gz"}} << ost.str();
+    wtl::ogzstream{"evolution.csv.gz"} << ost.str();
 }
 
 void Simulation::life_cycle() {
