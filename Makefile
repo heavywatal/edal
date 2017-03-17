@@ -20,7 +20,7 @@ CXX := $(firstword $(foreach x,${CXX_ARRAY},$(shell which $x)))
 CC := $(CXX)
 CPPFLAGS := -Wall -Wextra -Wno-unused-parameter -fno-strict-aliasing ${INCLUDEDIR} ${CPPDBG} -ftemplate-depth=512
 CXXFLAGS := -std=c++14 -O3 ${CXXDBG}
-LDFLAGS = -L${HOME}/local/lib -L${BOOST}/lib -Wl,-rpath,${BOOST}/lib
+LDFLAGS = -L${HOME}/local/lib -L/usr/local/lib -L${BOOST}/lib -Wl,-rpath,${BOOST}/lib
 LDLIBS := -lsfmt -lboost_program_options-mt -lboost_filesystem-mt -lboost_system-mt -lboost_iostreams-mt
 TARGET_ARCH := -march=core2 -m64 -msse -msse2 -msse3
 
