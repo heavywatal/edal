@@ -8,7 +8,7 @@
 #include <cxxwtils/getopt.hpp>
 #include <cxxwtils/prandom.hpp>
 #include <cxxwtils/os.hpp>
-#include <cxxwtils/gz.hpp>
+#include <cxxwtils/zfstream.hpp>
 
 #include "individual.hpp"
 
@@ -135,8 +135,8 @@ void Simulation::run() {HERE;
         Individual::write_resource_abundance();
         break;
       case 2:
-        wtl::ogzstream{"possible_geographic.csv.gz"} << Individual::possible_geographic();
-        wtl::ogzstream{"possible_phenotypes.csv.gz"} << Individual::possible_phenotypes();
+        wtl::ozfstream{"possible_geographic.csv.gz"} << Individual::possible_geographic();
+        wtl::ozfstream{"possible_phenotypes.csv.gz"} << Individual::possible_phenotypes();
         break;
       default:
         exit(1);
@@ -169,7 +169,7 @@ void Simulation::evolve() {HERE;
             life_cycle();
         }
     }
-    wtl::ogzstream{"evolution.csv.gz"} << ost.str();
+    wtl::ozfstream{"evolution.csv.gz"} << ost.str();
 }
 
 void Simulation::life_cycle() {
