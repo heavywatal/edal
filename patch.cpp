@@ -10,9 +10,9 @@
 
 #include <boost/program_options.hpp>
 
-#include <cxxwtils/debug.hpp>
-#include <cxxwtils/iostr.hpp>
-#include <cxxwtils/prandom.hpp>
+#include <wtl/debug.hpp>
+#include <wtl/iostr.hpp>
+#include <wtl/prandom.hpp>
 
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////

@@ -12,8 +12,8 @@
 #include <map>
 #include <bitset>
 
-#include <cxxwtils/math.hpp>
-#include <cxxwtils/prandom.hpp>
+#include <wtl/math.hpp>
+#include <wtl/prandom.hpp>
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
