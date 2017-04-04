@@ -18,11 +18,11 @@ GXX := $(notdir $(firstword $(foreach x,g++-6 g++-5 g++,$(shell which $x 2>/dev/
 CXX_ARRAY := clang++ ${GXX}
 CXX := $(firstword $(foreach x,${CXX_ARRAY},$(shell which $x)))
 CC := $(CXX)
-CPPFLAGS := -Wall -Wextra -Wno-unused-parameter -fno-strict-aliasing ${INCLUDEDIR} ${CPPDBG} -ftemplate-depth=512
+CPPFLAGS := -Wall -Wextra -Wno-unused-parameter ${INCLUDEDIR} ${CPPDBG}
 CXXFLAGS := -std=c++14 -O3 ${CXXDBG}
 LDFLAGS = -L${HOME}/local/lib -L/usr/local/lib -L${BOOST}/lib -Wl,-rpath,${BOOST}/lib
 LDLIBS := -lsfmt -lboost_program_options-mt -lboost_filesystem-mt -lboost_system-mt -lboost_iostreams-mt
-TARGET_ARCH := -march=core2 -m64 -msse -msse2 -msse3
+TARGET_ARCH := -m64 -msse -msse2 -msse3
 
 ifneq (,$(filter $(CXX), ${GXX}))
   CXXFLAGS += -mfpmath=sse
