@@ -61,19 +61,19 @@ boost::program_options::options_description Individual::opt_description() {
     namespace po = boost::program_options;
     po::options_description desc{"Individual"};
     desc.add_options()
-        ("beta_param,a", po::value<double>(&BETA_PARAM_)->default_value(BETA_PARAM_))
-        ("carrying_capacity,K", po::value<size_t>(&CARRYING_CAPACITY_)->default_value(CARRYING_CAPACITY_))
-        ("birth_rate,b", po::value<double>(&AVG_NUM_OFFSPINRGS_)->default_value(AVG_NUM_OFFSPINRGS_))
-        ("height_pref,p", po::value<double>(&HEIGHT_PREFERENCE_)->default_value(HEIGHT_PREFERENCE_))
-        ("diameter_pref,P", po::value<double>(&DIAMETER_PREFERENCE_)->default_value(DIAMETER_PREFERENCE_))
-        ("toepad_select,s", po::value<double>(&TOEPAD_SELECTION_)->default_value(TOEPAD_SELECTION_))
-        ("limb_select,S", po::value<double>(&LIMB_SELECTION_)->default_value(LIMB_SELECTION_))
-        ("pref_compe,c", po::value<double>(&PREF_COMPETITION_)->default_value(PREF_COMPETITION_))
-        ("morph_compe,C", po::value<double>(&MORPH_COMPETITION_)->default_value(MORPH_COMPETITION_))
-        ("mating_sigma,f", po::value<double>(&MATING_SIGMA_)->default_value(MATING_SIGMA_))
-        ("mu_locus,u", po::value<double>(&MU_LOCUS_)->default_value(MU_LOCUS_))
-        ("mutation_mask,U", po::value<unsigned long>(&MUTATION_MASK_)->default_value(MUTATION_MASK_))
-        ("migration_rate,m", po::value<double>(&MIGRATION_RATE_)->default_value(MIGRATION_RATE_))
+        ("beta_param,a", po::value(&BETA_PARAM_)->default_value(BETA_PARAM_))
+        ("carrying_capacity,K", po::value(&CARRYING_CAPACITY_)->default_value(CARRYING_CAPACITY_))
+        ("birth_rate,b", po::value(&AVG_NUM_OFFSPINRGS_)->default_value(AVG_NUM_OFFSPINRGS_))
+        ("height_pref,p", po::value(&HEIGHT_PREFERENCE_)->default_value(HEIGHT_PREFERENCE_))
+        ("diameter_pref,P", po::value(&DIAMETER_PREFERENCE_)->default_value(DIAMETER_PREFERENCE_))
+        ("toepad_select,s", po::value(&TOEPAD_SELECTION_)->default_value(TOEPAD_SELECTION_))
+        ("limb_select,S", po::value(&LIMB_SELECTION_)->default_value(LIMB_SELECTION_))
+        ("pref_compe,c", po::value(&PREF_COMPETITION_)->default_value(PREF_COMPETITION_))
+        ("morph_compe,C", po::value(&MORPH_COMPETITION_)->default_value(MORPH_COMPETITION_))
+        ("mating_sigma,f", po::value(&MATING_SIGMA_)->default_value(MATING_SIGMA_))
+        ("mu_locus,u", po::value(&MU_LOCUS_)->default_value(MU_LOCUS_))
+        ("mutation_mask,U", po::value(&MUTATION_MASK_)->default_value(MUTATION_MASK_))
+        ("migration_rate,m", po::value(&MIGRATION_RATE_)->default_value(MIGRATION_RATE_))
     ;
     return desc;
 }

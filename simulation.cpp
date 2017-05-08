@@ -1,6 +1,6 @@
 // -*- mode: c++; coding: utf-8 -*-
 /*! @file simulation.cpp
-    @brief Inplementation of Simulation class
+    @brief Implementation of Simulation class
 */
 #include "simulation.hpp"
 
@@ -31,20 +31,20 @@ boost::program_options::options_description Simulation::opt_description() {HERE;
     po::options_description description("Simulation");
     description.add_options()
         ("help,h", po::value<bool>()->default_value(false)->implicit_value(true), "produce help")
-        ("verbose,v", po::value<bool>(&VERBOSE)
+        ("verbose,v", po::value(&VERBOSE)
             ->default_value(VERBOSE)->implicit_value(true), "verbose output")
         ("test", po::value<int>()->default_value(0)->implicit_value(1))
-        ("mode", po::value<int>(&MODE)->default_value(MODE))
-        ("symmetric", po::value<bool>(&SYMMETRIC)->default_value(SYMMETRIC)->implicit_value(true))
-        ("label", po::value<std::string>(&LABEL)->default_value("default"))
+        ("mode", po::value(&MODE)->default_value(MODE))
+        ("symmetric", po::value(&SYMMETRIC)->default_value(SYMMETRIC)->implicit_value(true))
+        ("label", po::value(&LABEL)->default_value("default"))
         ("top_dir", po::value<std::string>()->default_value(OUT_DIR.string()))
-        ("patch_size,k", po::value<size_t>(&INITIAL_PATCH_SIZE)->default_value(INITIAL_PATCH_SIZE))
-        ("row", po::value<size_t>(&NUM_ROWS)->default_value(NUM_ROWS))
-        ("col", po::value<size_t>(&NUM_COLS)->default_value(NUM_COLS))
-        ("dimensions,D", po::value<size_t>(&DIMENSIONS)->default_value(DIMENSIONS))
-        ("time,T", po::value<size_t>(&ENTIRE_PERIOD)->default_value(ENTIRE_PERIOD))
-        ("interval,I", po::value<size_t>(&OBSERVATION_CYCLE)->default_value(OBSERVATION_CYCLE))
-        ("seed", po::value<unsigned int>(&SEED)->default_value(SEED))
+        ("patch_size,k", po::value(&INITIAL_PATCH_SIZE)->default_value(INITIAL_PATCH_SIZE))
+        ("row", po::value(&NUM_ROWS)->default_value(NUM_ROWS))
+        ("col", po::value(&NUM_COLS)->default_value(NUM_COLS))
+        ("dimensions,D", po::value(&DIMENSIONS)->default_value(DIMENSIONS))
+        ("time,T", po::value(&ENTIRE_PERIOD)->default_value(ENTIRE_PERIOD))
+        ("interval,I", po::value(&OBSERVATION_CYCLE)->default_value(OBSERVATION_CYCLE))
+        ("seed", po::value(&SEED)->default_value(SEED))
     ;
     return description;
 }
