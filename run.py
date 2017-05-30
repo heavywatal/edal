@@ -19,7 +19,8 @@ def param20140124():
     params['s'] = [0.2, 0.4, 0.6, 0.8]
     params['S'] = [0.2, 0.4, 0.6, 0.8]
     params['f'] = [0.1, 0.2, 0.3, 0.4]
-    for x in wopt.sequential(params):
+    for v in wopt.sequential(params):
+        x = wopt.make_args(v)
         yield x + [make_label(x)]
 
 
@@ -39,7 +40,8 @@ def simple_trait1d_patch0d():
     params['p'] = [0.1, 1, 10]
     params['s'] = [0.1, 1, 10]
     params['c'] = [0.1, 1, 10]
-    for x in wopt.product(params):
+    for v in wopt.product(params):
+        x = wopt.make_args(v)
         yield const + x + [make_label(x)]
 
 
@@ -49,7 +51,8 @@ def adaptive_dynamics():
     params['s'] = [1.0, 2.0, 3.0]
     params['C'] = [1.0, 2.0, 3.0]
     params['f'] = [0.02, 0.03, 0.04]
-    for x in wopt.product(params):
+    for v in wopt.product(params):
+        x = wopt.make_args(v)
         yield const + x + [make_label(x)]
 
 
@@ -59,7 +62,8 @@ def stepping_stone():
     params['s'] = [2.0, 3.0]
     params['C'] = [1.0, 2.0]
     params['m'] = [0.001, 0.002, 0.003, 0.004]
-    for x in wopt.product(params):
+    for v in wopt.product(params):
+        x = wopt.make_args(v)
         yield const + x + [make_label(x)]
 
 
@@ -70,7 +74,8 @@ def mutation_drift():
     params['s'] = [0.5, 2.0, 8.0]
     params['u'] = [5e-5, 1e-4, 2e-4]
     params['K'] = [2000, 4000, 8000]
-    for x in wopt.product(params):
+    for v in wopt.product(params):
+        x = wopt.make_args(v)
         yield const + x + [make_label(x)]
 
 
@@ -82,7 +87,8 @@ def full_model():
     params['p'] = [1.0, 2.0, 3.0]
     params['c'] = [1.0, 2.0, 3.0]
     params['f'] = [0.01, 0.03, 0.05]
-    for x in wopt.product(params):
+    for v in wopt.product(params):
+        x = wopt.make_args(v)
         yield const + x + [make_label(x)]
 
 
@@ -132,7 +138,7 @@ if __name__ == '__main__':
             qargs['-N'] = re.search('--label=(\S+)', strcmd).group(1)
             torque.qsub(cmd, args.dry_run, ppn=1, **qargs)
     elif args.batch == 'batch':
-        wopt.shell.map(commands, args.jobs, args.dry_run)
+        wopt.map_async(commands, args.jobs, args.dry_run)
     else:
         for cmd in commands:
             print(' '.join(cmd))
