@@ -64,6 +64,9 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
 Public Types</h2></td></tr>
+<tr class="memitem:ad5e9dccaf0a68c9eeeb0e438481acbbc"><td class="memItemLeft" align="right" valign="top"><a id="ad5e9dccaf0a68c9eeeb0e438481acbbc"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>URNG</b> = wtl::sfmt19937</td></tr>
+<tr class="separator:ad5e9dccaf0a68c9eeeb0e438481acbbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff1f663813da7b118f258cfcada48c8e"><td class="memItemLeft" align="right" valign="top"><a id="aff1f663813da7b118f258cfcada48c8e"></a>
 typedef std::bitset&lt; <a class="el" href="group__biol__param.html#gadb7bec91dab561caac374471928640cb">NUM_LOCI_</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_individual.html#aff1f663813da7b118f258cfcada48c8e">Loci</a></td></tr>
 <tr class="memdesc:aff1f663813da7b118f258cfcada48c8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">typedef for diallelic loci of a trait <br /></td></tr>
@@ -120,9 +123,9 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 <tr class="memitem:ga59835e0972a7ddf4015a31a495260795"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga59835e0972a7ddf4015a31a495260795">mating_probability_TPG2013</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;male) const</td></tr>
 <tr class="memdesc:ga59835e0972a7ddf4015a31a495260795"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(P(I,I&#39;) = \psi(I,I&#39;) C_y(I,I&#39;)\) with Thibert-Plante and Gavrilets 2013  <a href="group__mating.html#ga59835e0972a7ddf4015a31a495260795">More...</a><br /></td></tr>
 <tr class="separator:ga59835e0972a7ddf4015a31a495260795"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6b622169d6f27f3cb7c734818a96bbdd"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="class_individual.html#aff1f663813da7b118f258cfcada48c8e">Loci</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga6b622169d6f27f3cb7c734818a96bbdd">gametogenesis</a> (wtl::sfmt19937 &amp;) const</td></tr>
-<tr class="memdesc:ga6b622169d6f27f3cb7c734818a96bbdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gametogenesis with free recombination and mutation.  <a href="group__mating.html#ga6b622169d6f27f3cb7c734818a96bbdd">More...</a><br /></td></tr>
-<tr class="separator:ga6b622169d6f27f3cb7c734818a96bbdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4fc6e3af66041a5df1f4a10d14cec8c9"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="class_individual.html#aff1f663813da7b118f258cfcada48c8e">Loci</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga4fc6e3af66041a5df1f4a10d14cec8c9">gametogenesis</a> (URNG &amp;) const</td></tr>
+<tr class="memdesc:ga4fc6e3af66041a5df1f4a10d14cec8c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gametogenesis with free recombination and mutation.  <a href="group__mating.html#ga4fc6e3af66041a5df1f4a10d14cec8c9">More...</a><br /></td></tr>
+<tr class="separator:ga4fc6e3af66041a5df1f4a10d14cec8c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a918140395c9927cb03409ac2633d5491"><td class="memItemLeft" align="right" valign="top"><a id="a918140395c9927cb03409ac2633d5491"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_individual.html#a918140395c9927cb03409ac2633d5491">is_male</a> () const</td></tr>
 <tr class="memdesc:a918140395c9927cb03409ac2633d5491"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get sex_. <br /></td></tr>
@@ -354,7 +357,7 @@ template&lt;class Func &gt; </td></tr>
 </ul>
 <p>The male display trait \( m \) is expressed in males only, whereas female mating preference \( f \) and tolerance \( c \) are expressed in females only. Other traits are expressed in both sexes. All traits are scaled to be between 0 and 1, and are controlled by different unlinked diallelic loci with equal effects. Mutations occur at equal rates across all loci; the probabilities of forward and backward mutations are equal. </p>
 
-<p class="definition">Definition at line <a class="el" href="individual_8hpp_source.html#l00067">67</a> of file <a class="el" href="individual_8hpp_source.html">individual.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="individual_8hpp_source.html#l00070">70</a> of file <a class="el" href="individual_8hpp_source.html">individual.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="abbbfe35f3aa0939a31c8698a6f01b480"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abbbfe35f3aa0939a31c8698a6f01b480">&#9670;&nbsp;</a></span>calc_phenotype()</h2>
@@ -382,7 +385,7 @@ template&lt;class Func &gt; </td></tr>
 <p>calculates phenotypic values from genotype </p>
 <dl class="section return"><dt>Returns</dt><dd>phenotypic values </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="individual_8hpp_source.html#l00432">432</a> of file <a class="el" href="individual_8hpp_source.html">individual.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="individual_8hpp_source.html#l00437">437</a> of file <a class="el" href="individual_8hpp_source.html">individual.hpp</a>.</p>
 
 </div>
 </div>
@@ -409,7 +412,7 @@ template&lt;class Func &gt; </td></tr>
 <b>Initial value:</b><div class="fragment"><div class="line">= {</div><div class="line">    <span class="stringliteral">&quot;Ke_v3u&quot;</span>, <span class="stringliteral">&quot;Ke_v3eu&quot;</span>, <span class="stringliteral">&quot;Ke_oeu&quot;</span>, <span class="stringliteral">&quot;DI_a&quot;</span>, <span class="stringliteral">&quot;DI&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;Dxi_a&quot;</span>, <span class="stringliteral">&quot;Dxi&quot;</span>, <span class="stringliteral">&quot;Dxi_e&quot;</span>, <span class="stringliteral">&quot;Dxi_oe&quot;</span></div><div class="line">}</div></div><!-- fragment -->
 <p>labels for intermediate phenotypes </p>
 
-<p class="definition">Definition at line <a class="el" href="individual_8hpp_source.html#l00445">445</a> of file <a class="el" href="individual_8hpp_source.html">individual.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="individual_8hpp_source.html#l00450">450</a> of file <a class="el" href="individual_8hpp_source.html">individual.hpp</a>.</p>
 
 </div>
 </div>

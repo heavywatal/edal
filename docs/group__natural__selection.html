@@ -69,10 +69,10 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="gr
 <tr class="memitem:gac39062e78efc1cdd64451a04255a0ae2"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__natural__selection.html#gac39062e78efc1cdd64451a04255a0ae2">Individual::fitness</a> (const double height, const double diameter) const</td></tr>
 <tr class="memdesc:gac39062e78efc1cdd64451a04255a0ae2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exponent of \(W(x_0, x_1 \mid u, v)\): measure adaptation to habitat.  <a href="#gac39062e78efc1cdd64451a04255a0ae2">More...</a><br /></td></tr>
 <tr class="separator:gac39062e78efc1cdd64451a04255a0ae2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaba3c1ab2eff35d22af2576b0a8a1acf5"><td class="memItemLeft" align="right" valign="top"><a id="gaba3c1ab2eff35d22af2576b0a8a1acf5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__natural__selection.html#gaba3c1ab2eff35d22af2576b0a8a1acf5">Patch::viability_selection</a> ()</td></tr>
-<tr class="memdesc:gaba3c1ab2eff35d22af2576b0a8a1acf5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Some individuals die depending on <a class="el" href="group__natural__selection.html#ga924c94b084797b2d646a1040fb6ea495" title="Probability of survival . ">Individual::survival_probability()</a> <br /></td></tr>
-<tr class="separator:gaba3c1ab2eff35d22af2576b0a8a1acf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaabb5ad9f352eb8ab46bd350d75b4ed10"><td class="memItemLeft" align="right" valign="top"><a id="gaabb5ad9f352eb8ab46bd350d75b4ed10"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__natural__selection.html#gaabb5ad9f352eb8ab46bd350d75b4ed10">Patch::viability_selection</a> (URNG &amp;)</td></tr>
+<tr class="memdesc:gaabb5ad9f352eb8ab46bd350d75b4ed10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Some individuals die depending on <a class="el" href="group__natural__selection.html#ga924c94b084797b2d646a1040fb6ea495" title="Probability of survival . ">Individual::survival_probability()</a> <br /></td></tr>
+<tr class="separator:gaabb5ad9f352eb8ab46bd350d75b4ed10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac6181236e9183c281758b24815873e01"><td class="memItemLeft" align="right" valign="top">std::vector&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__natural__selection.html#gac6181236e9183c281758b24815873e01">Patch::effective_num_competitors</a> () const</td></tr>
 <tr class="memdesc:gac6181236e9183c281758b24815873e01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate \(N_e(I)\) from \(C(I,J)\).  <a href="#gac6181236e9183c281758b24815873e01">More...</a><br /></td></tr>
 <tr class="separator:gac6181236e9183c281758b24815873e01"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -99,7 +99,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 \[ K_e(I) = K_0 \int_0^1 \int_0^{1-u} F(u,v) W(x_0,x_1 \mid u,v) \Xi(y_0,y_1 \mid u,v) dv du \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="individual_8cpp_source.html#l00241">241</a> of file <a class="el" href="individual_8cpp_source.html">individual.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="individual_8cpp_source.html#l00242">242</a> of file <a class="el" href="individual_8cpp_source.html">individual.cpp</a>.</p>
 
 </div>
 </div>
@@ -132,7 +132,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 </p>
  </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="patch_8cpp_source.html#l00063">63</a> of file <a class="el" href="patch_8cpp_source.html">patch.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="patch_8cpp_source.html#l00064">64</a> of file <a class="el" href="patch_8cpp_source.html">patch.cpp</a>.</p>
 
 </div>
 </div>
@@ -182,7 +182,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 \[ W(x_0,x_1 \mid u,v) = \exp(-\frac{(x_0 - u)^2}{2s_0^2} -\frac{(x_1 - v)^2}{2s_1^2}) \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="individual_8cpp_source.html#l00234">234</a> of file <a class="el" href="individual_8cpp_source.html">individual.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="individual_8cpp_source.html#l00235">235</a> of file <a class="el" href="individual_8cpp_source.html">individual.cpp</a>.</p>
 
 </div>
 </div>
@@ -222,7 +222,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="grou
 </p>
 <p> where the parameter \( \alpha \) (= 1 for now) controls the strength of crowding, and \( b &gt; 0 \) (<a class="el" href="group__biol__param.html#ga02b305c8c4dfb02750b65c157fb7b508" title=" in  ">Individual::AVG_NUM_OFFSPINRGS_</a>) is a parameter (average number of offspring per female; see below). This is the Beverton-Holt model which represents a discrete-time analog of the logistic model </p>
 
-<p class="definition">Definition at line <a class="el" href="individual_8cpp_source.html#l00296">296</a> of file <a class="el" href="individual_8cpp_source.html">individual.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="individual_8cpp_source.html#l00297">297</a> of file <a class="el" href="individual_8cpp_source.html">individual.cpp</a>.</p>
 
 </div>
 </div>

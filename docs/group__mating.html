@@ -61,17 +61,17 @@ Functions</h2></td></tr>
 <tr class="memitem:ga59835e0972a7ddf4015a31a495260795"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga59835e0972a7ddf4015a31a495260795">Individual::mating_probability_TPG2013</a> (const <a class="el" href="class_individual.html">Individual</a> &amp;male) const</td></tr>
 <tr class="memdesc:ga59835e0972a7ddf4015a31a495260795"><td class="mdescLeft">&#160;</td><td class="mdescRight">\(P(I,I&#39;) = \psi(I,I&#39;) C_y(I,I&#39;)\) with Thibert-Plante and Gavrilets 2013  <a href="#ga59835e0972a7ddf4015a31a495260795">More...</a><br /></td></tr>
 <tr class="separator:ga59835e0972a7ddf4015a31a495260795"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga6b622169d6f27f3cb7c734818a96bbdd"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="class_individual.html#aff1f663813da7b118f258cfcada48c8e">Loci</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga6b622169d6f27f3cb7c734818a96bbdd">Individual::gametogenesis</a> (wtl::sfmt19937 &amp;) const</td></tr>
-<tr class="memdesc:ga6b622169d6f27f3cb7c734818a96bbdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gametogenesis with free recombination and mutation.  <a href="#ga6b622169d6f27f3cb7c734818a96bbdd">More...</a><br /></td></tr>
-<tr class="separator:ga6b622169d6f27f3cb7c734818a96bbdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7c1f4ea83aa16c62e700d1e749e9be28"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="class_individual.html">Individual</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga7c1f4ea83aa16c62e700d1e749e9be28">Patch::mate_and_reproduce</a> () const</td></tr>
-<tr class="memdesc:ga7c1f4ea83aa16c62e700d1e749e9be28"><td class="mdescLeft">&#160;</td><td class="mdescRight">All females mate with someone according to mating probability.  <a href="#ga7c1f4ea83aa16c62e700d1e749e9be28">More...</a><br /></td></tr>
-<tr class="separator:ga7c1f4ea83aa16c62e700d1e749e9be28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4fc6e3af66041a5df1f4a10d14cec8c9"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="class_individual.html#aff1f663813da7b118f258cfcada48c8e">Loci</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga4fc6e3af66041a5df1f4a10d14cec8c9">Individual::gametogenesis</a> (URNG &amp;) const</td></tr>
+<tr class="memdesc:ga4fc6e3af66041a5df1f4a10d14cec8c9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gametogenesis with free recombination and mutation.  <a href="#ga4fc6e3af66041a5df1f4a10d14cec8c9">More...</a><br /></td></tr>
+<tr class="separator:ga4fc6e3af66041a5df1f4a10d14cec8c9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga3b6bd320927bcdfb35115464dcb145bb"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="class_individual.html">Individual</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__mating.html#ga3b6bd320927bcdfb35115464dcb145bb">Patch::mate_and_reproduce</a> (URNG &amp;) const</td></tr>
+<tr class="memdesc:ga3b6bd320927bcdfb35115464dcb145bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">All females mate with someone according to mating probability.  <a href="#ga3b6bd320927bcdfb35115464dcb145bb">More...</a><br /></td></tr>
+<tr class="separator:ga3b6bd320927bcdfb35115464dcb145bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="ga6b622169d6f27f3cb7c734818a96bbdd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga6b622169d6f27f3cb7c734818a96bbdd">&#9670;&nbsp;</a></span>gametogenesis()</h2>
+<a id="ga4fc6e3af66041a5df1f4a10d14cec8c9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4fc6e3af66041a5df1f4a10d14cec8c9">&#9670;&nbsp;</a></span>gametogenesis()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -79,7 +79,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">std::vector&lt; <a class="el" href="class_individual.html#aff1f663813da7b118f258cfcada48c8e">Individual::Loci</a> &gt; Individual::gametogenesis </td>
           <td>(</td>
-          <td class="paramtype">wtl::sfmt19937 &amp;&#160;</td>
+          <td class="paramtype">URNG &amp;&#160;</td>
           <td class="paramname"><em>rng</em></td><td>)</td>
           <td> const</td>
         </tr>
@@ -89,12 +89,12 @@ Functions</h2></td></tr>
 <p>Gametogenesis with free recombination and mutation. </p>
 <dl class="section return"><dt>Returns</dt><dd>a gamete </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="individual_8cpp_source.html#l00381">381</a> of file <a class="el" href="individual_8cpp_source.html">individual.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="individual_8cpp_source.html#l00382">382</a> of file <a class="el" href="individual_8cpp_source.html">individual.cpp</a>.</p>
 
 </div>
 </div>
-<a id="ga7c1f4ea83aa16c62e700d1e749e9be28"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga7c1f4ea83aa16c62e700d1e749e9be28">&#9670;&nbsp;</a></span>mate_and_reproduce()</h2>
+<a id="ga3b6bd320927bcdfb35115464dcb145bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga3b6bd320927bcdfb35115464dcb145bb">&#9670;&nbsp;</a></span>mate_and_reproduce()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -102,7 +102,8 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname">std::vector&lt; <a class="el" href="class_individual.html">Individual</a> &gt; Patch::mate_and_reproduce </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">URNG &amp;&#160;</td>
+          <td class="paramname"><em>rng</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -112,7 +113,7 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>offsprings of all the females in the patch</dd></dl>
 <p>Each mating results in a number of offspring drawn from a Poisson distribution with parameter b. We assume that all adult females mate. This assumption implies that any costs of mate choice, which can easily prevent divergence and speciation, are absent. This assumption also means that the effective population size is increased relative to the actual number of adults. </p>
 
-<p class="definition">Definition at line <a class="el" href="patch_8cpp_source.html#l00027">27</a> of file <a class="el" href="patch_8cpp_source.html">patch.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="patch_8cpp_source.html#l00028">28</a> of file <a class="el" href="patch_8cpp_source.html">patch.cpp</a>.</p>
 
 </div>
 </div>
@@ -137,7 +138,7 @@ Functions</h2></td></tr>
 \[ \psi(f,c\mid m) = \left\{ \begin{array}{ll} \exp \left( -(2c-1)^2 \frac{(f-m)^2}{2\sigma_a^2}\right) &amp; \mbox{if}\ c &gt; 0.5,\\ 1 &amp; \mbox{if}\ c=0.5,\\ \exp \left( -(2c-1)^2 \frac{(f-(1-m))^2}{2\sigma_a^2}\right) &amp; \mbox{if}\ c&lt;0.5, \end{array} \right. \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="individual_8cpp_source.html#l00305">305</a> of file <a class="el" href="individual_8cpp_source.html">individual.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="individual_8cpp_source.html#l00306">306</a> of file <a class="el" href="individual_8cpp_source.html">individual.cpp</a>.</p>
 
 </div>
 </div>
@@ -162,7 +163,7 @@ Functions</h2></td></tr>
 \[ \psi(f,c\mid m) = \left\{ \begin{array}{ll} 1 - (2c-1)^2\Big[1 - \exp\Big(-\frac {(f-m)^2}{2\sigma_a}\Big)\Big] &amp; \mbox{if}\ c &gt; 0.5,\\ 1 &amp; \mbox{if}\ c=0.5,\\ 1 - (2c-1)^2\Big[ \exp\Big(-\frac {(f-m)^2}{2\sigma_a}\Big)\Big] &amp; \mbox{if}\ c&lt;0.5, \end{array} \right. \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="individual_8cpp_source.html#l00330">330</a> of file <a class="el" href="individual_8cpp_source.html">individual.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="individual_8cpp_source.html#l00331">331</a> of file <a class="el" href="individual_8cpp_source.html">individual.cpp</a>.</p>
 
 </div>
 </div>
@@ -187,7 +188,7 @@ Functions</h2></td></tr>
 \[ \psi(f,c\mid m) = \left\{ \begin{array}{ll} \exp \left( -(2c-1)^2 \frac{(f-m)^2}{2\sigma_a^2}\right) &amp; \mbox{if}\ c &gt; 0.5,\\ 1 &amp; \mbox{if}\ c=0.5,\\ 2 - \exp \left( -(2c-1)^2 \frac{(f-m)^2}{2\sigma_a^2}\right) &amp; \mbox{if}\ c&lt;0.5, \end{array} \right. \]
 </p>
  
-<p class="definition">Definition at line <a class="el" href="individual_8cpp_source.html#l00356">356</a> of file <a class="el" href="individual_8cpp_source.html">individual.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="individual_8cpp_source.html#l00357">357</a> of file <a class="el" href="individual_8cpp_source.html">individual.cpp</a>.</p>
 
 </div>
 </div>
