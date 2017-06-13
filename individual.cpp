@@ -13,6 +13,7 @@
 #include <wtl/numeric.hpp>
 #include <wtl/prandom.hpp>
 #include <wtl/iostr.hpp>
+#include <sfmt.hpp>
 
 double Individual::BETA_PARAM_ = 3.0;
 double Individual::NORMAL_SIGMA_ = 0.3;
@@ -378,7 +379,7 @@ double Individual::mating_probability_TPG2013(const Individual& male) const {
     }
 }
 
-std::vector<Individual::Loci> Individual::gametogenesis(wtl::sfmt19937& rng) const {
+std::vector<Individual::Loci> Individual::gametogenesis(URNG& rng) const {
     std::uniform_int_distribution<unsigned long> uniform_filter(0, FULL_BITS);
     std::bernoulli_distribution bernoulli(MU_LOCUS_ * NUM_LOCI_);
     std::uniform_int_distribution<size_t> uniform_pos(0, NUM_LOCI_ - 1);

@@ -8,21 +8,23 @@
 
 #include <vector>
 
-#include <wtl/prandom.hpp>
-
 #include "individual.hpp"
 
+namespace wtl {
+    class sfmt19937;
+}
 
 class Patch {
   public:
+    using URNG = wtl::sfmt19937;
 
     //! Construct an empty patch
-    Patch(): rng_{wtl::sfmt()()} {};
+    Patch() = default;
 
     //! Construct a patch with the same number of females and males
     /*! @param n The number of inital individuals in this patch
     */
-    Patch(const size_t n): members_(n), rng_{wtl::sfmt()()} {
+    Patch(const size_t n): members_(n) {
         change_sex_half(n);
     }
 
@@ -31,13 +33,13 @@ class Patch {
         @param founder The individual to be copied
     */
     Patch(const size_t n, const Individual& founder):
-        members_(n, founder), rng_{wtl::sfmt()()} {
+        members_(n, founder) {
         change_sex_half(n);
     }
 
     //! Copy constructor
     Patch(const Patch& obj):
-        members_{obj.members_}, rng_{wtl::sfmt()()} {}
+        members_{obj.members_} {}
 
     //! Add an individual to this patch
     /*! @param ind New individual to add
@@ -65,22 +67,12 @@ class Patch {
         This assumption also means that the effective population size is
         increased relative to the actual number of adults.
     */
-    std::vector<Individual> mate_and_reproduce() const;
+    std::vector<Individual> mate_and_reproduce(URNG&) const;
 
     //! Some individuals die depending on Individual::survival_probability()
     /*! @ingroup natural_selection
     */
-    void viability_selection();
-
-
-    /*! @brief Change row/col with probability \f$m\f$ = Individual::MIGRATION_RATE_
-
-        > With probability \f$ m > 0 \f$, each offspring becomes a "migrant."
-        > Each migrant goes to one of the 8 neighboring patches.
-        > For patches at the boundary,
-        > the probability \f$ m \f$ is reduced according to the number of neighbors they have.
-    */
-    std::pair<size_t, size_t> choose_patch(size_t row, size_t col) const;
+    void viability_selection(URNG&);
 
     //! Unit test for Patch
     static void unit_test();
@@ -104,9 +96,6 @@ class Patch {
     // data member
     //! Individuals
     std::vector<Individual> members_;
-
-    //! Random number generator
-    mutable wtl::sfmt19937 rng_;
 };
 
 //! Stream operator for Patch

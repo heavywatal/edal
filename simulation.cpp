@@ -6,9 +6,9 @@
 
 #include <wtl/iostr.hpp>
 #include <wtl/getopt.hpp>
-#include <wtl/prandom.hpp>
 #include <wtl/os.hpp>
 #include <wtl/zfstream.hpp>
+#include <sfmt.hpp>
 
 #include "individual.hpp"
 
@@ -172,15 +172,37 @@ void Simulation::evolve() {HERE;
     wtl::ozfstream{"evolution.csv.gz"} << ost.str();
 }
 
+/*! @brief Change row/col with probability \f$m\f$ = Individual::MIGRATION_RATE_
+
+    > With probability \f$ m > 0 \f$, each offspring becomes a "migrant."
+    > Each migrant goes to one of the 8 neighboring patches.
+    > For patches at the boundary,
+    > the probability \f$ m \f$ is reduced according to the number of neighbors they have.
+*/
+inline std::pair<size_t, size_t> choose_patch(size_t row, size_t col) {
+    if (!std::bernoulli_distribution(Individual::MIGRATION_RATE())(wtl::sfmt()))
+        {return {row, col};}
+    switch (std::uniform_int_distribution<size_t>(0, 7)(wtl::sfmt())) {
+      case 0:        ++col; break;
+      case 1: ++row; ++col; break;
+      case 2: ++row;        break;
+      case 3: ++row; --col; break;
+      case 4:        --col; break;
+      case 5: --row; --col; break;
+      case 6: --row;        break;
+      case 7: --row; ++col; break;
+    }
+    return {row, col};
+}
+
 void Simulation::life_cycle() {
     std::vector<std::vector<Patch> > parents(population);
     auto reproduction = [&](const size_t row, const size_t col) {
-        auto offsprings = parents[row][col].mate_and_reproduce();
-        auto& patch = population[row][col];
+        auto offsprings = parents[row][col].mate_and_reproduce(wtl::sfmt());
         std::vector<std::pair<size_t, size_t> > destinations;
         destinations.reserve(offsprings.size());
         for (size_t i=0; i<offsprings.size(); ++i) {
-            const auto dst = patch.choose_patch(row, col);
+            const auto dst = choose_patch(row, col);
             if ((dst.first >= NUM_ROWS) | (dst.second >= NUM_COLS)) {
                 destinations.emplace_back(row, col);
             } else {
@@ -199,7 +221,7 @@ void Simulation::life_cycle() {
     }
     for (size_t row=0; row<NUM_ROWS; ++row) {
         for (size_t col=0; col<NUM_COLS; ++col) {
-            population[row][col].viability_selection();
+            population[row][col].viability_selection(wtl::sfmt());
         }
     }
 }

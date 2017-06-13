@@ -13,6 +13,7 @@
 #include <wtl/debug.hpp>
 #include <wtl/iostr.hpp>
 #include <wtl/prandom.hpp>
+#include <sfmt.hpp>
 
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
@@ -24,7 +25,7 @@ void Patch::change_sex_half(size_t n) {
     }
 }
 
-std::vector<Individual> Patch::mate_and_reproduce() const {
+std::vector<Individual> Patch::mate_and_reproduce(URNG& rng) const {
     std::poisson_distribution<size_t> poisson(Individual::AVG_NUM_OFFSPINRGS());
     std::vector<Individual> offsprings;
     std::vector<size_t> male_indices;
@@ -46,15 +47,15 @@ std::vector<Individual> Patch::mate_and_reproduce() const {
         std::vector<double> upper_bounds(male_indices.size());
         std::partial_sum(prefs.begin(), prefs.end(), upper_bounds.begin());
         std::uniform_real_distribution<> uniform(0.0, upper_bounds.back());
-        const double dart = uniform(rng_);
+        const double dart = uniform(rng);
         size_t father_i = 0;
         while (upper_bounds[father_i] < dart) {++father_i;}
         const Individual& father = members_[male_indices[father_i]];
-        const size_t num_children = poisson(rng_);
+        const size_t num_children = poisson(rng);
         for (size_t i=0; i<num_children; ++i) {
             offsprings.emplace_back(
-                mother.gametogenesis(rng_), father.gametogenesis(rng_),
-                std::bernoulli_distribution(0.5)(rng_));
+                mother.gametogenesis(rng), father.gametogenesis(rng),
+                std::bernoulli_distribution(0.5)(rng));
         }
     }
     return offsprings;
@@ -73,14 +74,14 @@ std::vector<double> Patch::effective_num_competitors() const {
     return results;
 }
 
-void Patch::viability_selection() {
+void Patch::viability_selection(URNG& rng) {
     std::vector<size_t> indices;
     indices.reserve(members_.size());
     size_t i = 0;
     const auto ne = effective_num_competitors();
     for (auto& ind: members_) {
         const double p = ind.survival_probability(ne[i]);
-        if (std::bernoulli_distribution(p)(rng_)) {
+        if (std::bernoulli_distribution(p)(rng)) {
             indices.push_back(i);
         }
         ++i;
@@ -91,22 +92,6 @@ void Patch::viability_selection() {
         tmp.push_back(std::move(members_[i]));
     }
     members_.swap(tmp);
-}
-
-std::pair<size_t, size_t> Patch::choose_patch(size_t row, size_t col) const {
-    if (!std::bernoulli_distribution(Individual::MIGRATION_RATE())(rng_))
-        {return {row, col};}
-    switch (std::uniform_int_distribution<size_t>(0, 7)(rng_)) {
-      case 0:        ++col; break;
-      case 1: ++row; ++col; break;
-      case 2: ++row;        break;
-      case 3: ++row; --col; break;
-      case 4:        --col; break;
-      case 5: --row; --col; break;
-      case 6: --row;        break;
-      case 7: --row; ++col; break;
-    }
-    return {row, col};
 }
 
 std::map<Individual, size_t> Patch::summarize() const {
@@ -129,11 +114,11 @@ void Patch::unit_test() {
     Patch patch(20, Individual({15,0,15,0}));
     std::cerr << patch.size();
     for (size_t i=0; i<10; ++i) {
-        for (auto& child: patch.mate_and_reproduce()) {
+        for (auto& child: patch.mate_and_reproduce(wtl::sfmt())) {
             patch.append(std::move(child));
         }
         std::cerr << " b " << patch.size();
-        patch.viability_selection();
+        patch.viability_selection(wtl::sfmt());
         std::cerr << " d " << patch.size();
     }
     std::cerr << std::endl;

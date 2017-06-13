@@ -13,9 +13,12 @@
 #include <bitset>
 
 #include <wtl/math.hpp>
-#include <wtl/prandom.hpp>
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
+
+namespace wtl {
+    class sfmt19937;
+}
 
 namespace boost {
     namespace program_options {
@@ -146,6 +149,8 @@ class Individual {
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   public:
+
+    using URNG = wtl::sfmt19937;
 
     //! typedef for diallelic loci of a trait
     typedef std::bitset<NUM_LOCI_> Loci;
@@ -295,7 +300,7 @@ class Individual {
     /*! @ingroup mating
         @return a gamete
     */
-    std::vector<Loci> gametogenesis(wtl::sfmt19937&) const;
+    std::vector<Loci> gametogenesis(URNG&) const;
 
     //! Getter
     static double MIGRATION_RATE() {return MIGRATION_RATE_;}
