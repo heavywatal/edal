@@ -123,7 +123,7 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
     wtl::cd(WORK_DIR.string());
     fs::create_directory(OUT_DIR);
     OUT_DIR /= (LABEL + "_" + now + "_" + pid_at_host.str());
-    wtl::Fout{"program_options.conf"} << CONFIG_STRING;
+    wtl::opfstream{"program_options.conf"} << CONFIG_STRING;
 }
 
 void Simulation::run() {HERE;

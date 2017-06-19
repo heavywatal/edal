@@ -488,12 +488,12 @@ std::string test_resource_abundance(Func func) {
 
 void Individual::write_resource_abundance() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
-    wtl::Fout{"abundance_beta.csv"} << ::test_resource_abundance(pdf_beta);
-    wtl::Fout{"abundance_triangle.csv"} << ::test_resource_abundance(pdf_triangle);
-    wtl::Fout{"abundance_v3.csv"} << ::test_resource_abundance(abundance);
-    wtl::Fout{"abundance_normal.csv"} << ::test_resource_abundance(pdf_normal);
-    wtl::Fout{"abundance_exp.csv"} << ::test_resource_abundance(pdf_exp);
-    wtl::Fout{"abundance_old.csv"} << ::test_resource_abundance(abundance_old);
+    wtl::opfstream{"abundance_beta.csv"} << ::test_resource_abundance(pdf_beta);
+    wtl::opfstream{"abundance_triangle.csv"} << ::test_resource_abundance(pdf_triangle);
+    wtl::opfstream{"abundance_v3.csv"} << ::test_resource_abundance(abundance);
+    wtl::opfstream{"abundance_normal.csv"} << ::test_resource_abundance(pdf_normal);
+    wtl::opfstream{"abundance_exp.csv"} << ::test_resource_abundance(pdf_exp);
+    wtl::opfstream{"abundance_old.csv"} << ::test_resource_abundance(abundance_old);
 }
 
 std::string Individual::possible_phenotypes() {
