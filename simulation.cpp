@@ -4,11 +4,13 @@
 */
 #include "simulation.hpp"
 
+#include <wtl/debug.hpp>
 #include <wtl/iostr.hpp>
 #include <wtl/getopt.hpp>
-#include <wtl/os.hpp>
 #include <wtl/zfstream.hpp>
 #include <sfmt.hpp>
+
+#include <boost/asio.hpp>
 
 #include "individual.hpp"
 
@@ -116,11 +118,11 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
     }
     const std::string now(wtl::strftime("%Y%m%d_%H%M%S"));
     std::ostringstream pid_at_host;
-    pid_at_host << ::getpid() << "@" << wtl::gethostname();
+    pid_at_host << ::getpid() << "@" << boost::asio::ip::host_name();
     WORK_DIR = TMP_DIR / (now + "_" + LABEL + "_" + pid_at_host.str());
     DCERR("mkdir && cd to " << WORK_DIR << std::endl);
     fs::create_directory(WORK_DIR);
-    wtl::cd(WORK_DIR.string());
+    fs::current_path(WORK_DIR.string());
     fs::create_directory(OUT_DIR);
     OUT_DIR /= (LABEL + "_" + now + "_" + pid_at_host.str());
     wtl::opfstream{"program_options.conf"} << CONFIG_STRING;

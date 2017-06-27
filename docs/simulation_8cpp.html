@@ -53,11 +53,12 @@ $(function() {
 <p>Implementation of <a class="el" href="class_simulation.html" title="Represents single run. ">Simulation</a> class.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="simulation_8hpp_source.html">simulation.hpp</a>&quot;</code><br />
+<code>#include &lt;wtl/debug.hpp&gt;</code><br />
 <code>#include &lt;wtl/iostr.hpp&gt;</code><br />
 <code>#include &lt;wtl/getopt.hpp&gt;</code><br />
-<code>#include &lt;wtl/os.hpp&gt;</code><br />
 <code>#include &lt;wtl/zfstream.hpp&gt;</code><br />
 <code>#include &lt;sfmt.hpp&gt;</code><br />
+<code>#include &lt;boost/asio.hpp&gt;</code><br />
 <code>#include &quot;<a class="el" href="individual_8hpp_source.html">individual.hpp</a>&quot;</code><br />
 </div>
 <p><a href="simulation_8cpp_source.html">Go to the source code of this file.</a></p>
@@ -116,7 +117,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simu
 <p>With probability \( m &gt; 0 \), each offspring becomes a "migrant." Each migrant goes to one of the 8 neighboring patches. For patches at the boundary, the probability \( m \) is reduced according to the number of neighbors they have.</p>
 </blockquote>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8cpp_source.html#l00182">182</a> of file <a class="el" href="simulation_8cpp_source.html">simulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8cpp_source.html#l00184">184</a> of file <a class="el" href="simulation_8cpp_source.html">simulation.cpp</a>.</p>
 
 </div>
 </div>
