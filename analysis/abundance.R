@@ -1,20 +1,15 @@
-library(plyr)
-library(dplyr)
 library(stringr)
-library(tidyr)
-library(pipeR)
-library(ggplot2)
-#########1#########2#########3#########4#########5#########6#########7#########
+library(tidyverse)
 
 system('make && ./a.out --test=2')
 .draw = function(label) {
-    tbl = read.csv(sprintf('ignore/abundance_%s.csv', label))
-    .p = ggplot(tbl, aes(x=height, y=diameter))
+    .tbl = read_csv(sprintf('ignore/abundance_%s.csv', label))
+    .p = ggplot(.tbl, aes(x=height, y=diameter))
     .p = .p + geom_tile(aes(fill=abundance))
     .p = .p + labs(title=label)
     .p
 }
-.gpl = plyr::llply(c('beta', 'triangle', 'v3'), .draw)
+.gpl = purrr::map(c('beta', 'triangle', 'v3'), .draw)
 .grobs = wtl::grid_grob(.gpl)
 wtl::ggsave2('abundance_v3.png', .grobs, width=7, height=2, scale=2)
 

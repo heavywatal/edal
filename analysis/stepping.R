@@ -1,14 +1,9 @@
 #!/usr/bin/Rscript
-library(plyr)
-library(dplyr)
 library(stringr)
-library(tidyr)
-library(pipeR)
-library(ggplot2)
+library(tidyverse)
 library(gridExtra)
 library(doMC)
 doMC::registerDoMC(min(parallel::detectCores(), 12))
-#########1#########2#########3#########4#########5#########6#########7#########
 .argv = commandArgs(trailingOnly=TRUE)
 stopifnot(length(.argv) > 0)
 #########1#########2#########3#########4#########5#########6#########7#########
@@ -48,9 +43,9 @@ stopifnot(length(.argv) > 0)
 .heat_colours = c('#333333', '#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000')
 
 .plot = function(x, data_) {
-    .tidy = data_ %>>%
-        group_by_('row', 'col', 'time', x) %>>%
-        tally(wt=n)# %>>% (? .)
+    .tidy = data_ %>%
+        group_by_('row', 'col', 'time', x) %>%
+        tally(wt=n)# %>% print()
     .p = ggplot(.tidy, aes_string(x=x, y='time'))
     .p = .p + geom_tile(aes(fill=n))
     .p = .p + scale_fill_gradientn(colours=.heat_colours)
@@ -71,13 +66,13 @@ main = function(.indir, .force=FALSE) {
     .outfile = paste0(.label, '.png')
     if (.force || !file.exists(.outfile)) {
         message(.outfile)
-        .raw = read.csv(file.path(.indir, 'evolution.csv.gz'), stringsAsFactors=FALSE) %>>% tbl_df()
+        .raw = read_csv(file.path(.indir, 'evolution.csv.gz'))
         .ys = c('toepad_P', 'height_pref_P', 'male_P', 'female_P', 'choosiness_P', 'neutral_P')
-        .pl = llply(.ys, .plot, data_=.raw)
+        .pl = purrr::map(.ys, .plot, data_=.raw)
         .grob = do.call(arrangeGrob, c(.pl, list(ncol=1, main=.indir)))
         #print(.grob)
         ggsave(.outfile, .grob, width=3, height=4, scale=3)
     }
 }
 
-l_ply(.argv, main, .parallel=TRUE)
+purrr::walk(.argv, main)

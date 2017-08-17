@@ -1,16 +1,12 @@
 #!/usr/bin/Rscript
-library(plyr)
-library(dplyr)
 library(stringr)
-library(tidyr)
-library(pipeR)
-library(ggplot2)
+library(tidyverse)
 library(gridExtra)
 library(doMC)
-doMC::registerDoMC(min(parallel::detectCores(), 12))
+doMC::registerDoMC(min(parallel::detectCores(), 12L))
 #########1#########2#########3#########4#########5#########6#########7#########
 .argv = commandArgs(trailingOnly=TRUE)
-stopifnot(length(.argv) > 0)
+stopifnot(length(.argv) > 0L)
 #########1#########2#########3#########4#########5#########6#########7#########
 
 .flags = list(
@@ -33,10 +29,10 @@ stopifnot(length(.argv) > 0)
 )
 
 .traits = list(
-    toepad_P=expression(paste('Toepad size ', italic(x[0]))),
-    limb_P=expression(paste('Limb length ', italic(x[1]))),
-    height_pref_P=expression(paste('Height pref. ', italic(y[0]))),
-    diameter_pref_P=expression(paste('Diameter pref. ', italic(y[1]))),
+    toepad_P=expression(paste('Toepad size ', italic(x[0L]))),
+    limb_P=expression(paste('Limb length ', italic(x[1L]))),
+    height_pref_P=expression(paste('Height pref. ', italic(y[0L]))),
+    diameter_pref_P=expression(paste('Diameter pref. ', italic(y[1L]))),
     male_P=expression(paste('Male trait ', italic(m))),
     female_P=expression(paste('Female trait ', italic(f))),
     choosiness_P=expression(paste('Choosiness ', italic(c))),
@@ -58,11 +54,11 @@ main = function(.indir) {
     .outfile = paste0(.label, '.png')
     if (.force || !file.exists(.outfile)) {
         message(.outfile)
-        .raw = read.csv(file.path(.indir, 'evolution.csv.gz'), stringsAsFactors=FALSE) %>>% tbl_df()
-        .tidy = .raw %>>%
-            select(time, n, ends_with('_P')) %>>%
-            gather(key, value, toepad_P, height_pref_P, male_P, female_P, choosiness_P, neutral_P) %>>%
-            group_by(time, key, value) %>>%
+        .raw = read_csv(file.path(.indir, 'evolution.csv.gz'))
+        .tidy = .raw %>%
+            select(time, n, ends_with('_P')) %>%
+            gather(key, value, toepad_P, height_pref_P, male_P, female_P, choosiness_P, neutral_P) %>%
+            group_by(time, key, value) %>%
             tally(wt=n)
         .p = ggplot(.tidy, aes(x=value, y=time))
         .p = .p + geom_tile(aes(fill=n))
@@ -87,8 +83,8 @@ quit()
 # deprecated
 
 .plot = function(x, y, data) {
-    .hist_list = data %>>%
-        group_by_(x, y) %>>%
+    .hist_list = data %>%
+        group_by_(x, y) %>%
         tally(wt=n)
     .p = ggplot(.hist_list, aes_string(x=x, y=y))
     .p = .p + geom_point(aes(colour=n), shape=15, size=8)
@@ -101,7 +97,7 @@ quit()
     .p = .p + theme(axis.text=element_blank())
     .p
 }
-#.plot('toepad_P', 'limb_P', .raw %>>% filter(time==1000))
+#.plot('toepad_P', 'limb_P', .raw %>% filter(time==1000))
 
 main = function(.indir) {
     if (!file.info(.indir)$isdir) {next}
@@ -109,10 +105,10 @@ main = function(.indir) {
     .outfile = file.path(.indir, 'evolution.pdf')
     if (!file.exists(.outfile)) {
         message(.outfile)
-        .raw = read.csv(file.path(.indir, 'evolution.csv.gz'), stringsAsFactors=FALSE) %>>% tbl_df()
-        .done = .raw %>>%
-        #    filter(time < 500) %>>%
-            group_by(time) %>>%
+        .raw = read_csv(file.path(.indir, 'evolution.csv.gz'))
+        .done = .raw %>%
+        #    filter(time < 500) %>%
+            group_by(time) %>%
             do(gpl={
                 .pl = plyr::mlply(.axes, .plot, data=.)
                 do.call(gridExtra::arrangeGrob, c(.pl,

@@ -1,12 +1,7 @@
 #!/usr/bin/Rscript
-library(plyr)
-library(dplyr)
 library(stringr)
-library(tidyr)
-library(pipeR)
-library(ggplot2)
+library(tidyverse)
 library(gridExtra)
-#########1#########2#########3#########4#########5#########6#########7#########
 .argv = commandArgs(trailingOnly=TRUE)
 stopifnot(length(.argv) > 0)
 print(.argv)
@@ -38,23 +33,23 @@ label_tr = function(variable, value) {
 #########1#########2#########3#########4#########5#########6#########7#########
 ## Ke: effective carrying capacity
 
-.conf = wtl::read.conf(file.path(.indir, 'program_options.conf'))
-.conf = .conf %>>% select(ends_with('pref'), ends_with('compe'), ends_with('select'), mating_sigma)
+.conf = wtl::read_boost_ini(file.path(.indir, 'program_options.conf'))
+.conf = .conf %>% select(ends_with('pref'), ends_with('compe'), ends_with('select'), mating_sigma)
 
 .plot_ke_morph_vs_pref = function(.indir, .z='Ke_v3u') {
-    .raw = read.csv(file.path(.indir, 'possible_phenotypes.csv.gz'))
-    .tidy = .raw %>>%
-        select(toepad, limb, ends_with('pref'), matches(.z)) %>>%
+    .raw = read_csv(file.path(.indir, 'possible_phenotypes.csv.gz'))
+    .tidy = .raw %>%
+        select(toepad, limb, ends_with('pref'), matches(.z)) %>%
         mutate_each(funs(f = . / 16), toepad, limb, height_pref, diameter_pref)
 
-    .p = .tidy %>>% ggplot(aes(x=toepad, y=limb))
+    .p = .tidy %>% ggplot(aes(x=toepad, y=limb))
     .p = .p + geom_tile(aes_string(fill=.z))
     .p = .p + facet_grid(diameter_pref ~ height_pref, as.table=FALSE, labeller=label_tr)
     .p = .p + labs(title='facet by preference')
     .p = .p + theme_tile + scale_fill_heat + theme(strip.text=element_text(size=rel(0.6)))
     .pl = list(.p)
 
-    .p = .tidy %>>% ggplot(aes(x=height_pref, y=diameter_pref))
+    .p = .tidy %>% ggplot(aes(x=height_pref, y=diameter_pref))
     .p = .p + geom_tile(aes_string(fill=.z))
     .p = .p + facet_grid(limb ~ toepad, as.table=FALSE, labeller=label_tr)
     .p = .p + labs(title='facet by morphology')
@@ -74,18 +69,19 @@ ggsave(file.path(.indir, 'possible_phenotypes.pdf'), .grob, width=2, height=1, s
 ## facet geographic
 
 .plot_geographic = function(.indir) {
-    .raw = read.csv(file.path(.indir, 'possible_geographic.csv.gz'))
-    .tidy = .raw %>>% tbl_df() %>>%
-        filter(toepad==8, limb==8) %>>%
-        select(-toepad, -limb) %>>%
-        mutate(sojourn=resource * Xi_quad) %>>%
-        mutate(sojourn_N=resource * Xi_quad / DI) %>>%
-        mutate(Kuv = fitness * sojourn) %>>%
+    .raw = read_csv(file.path(.indir, 'possible_geographic.csv.gz'))
+    .tidy = .raw %>%
+        filter(toepad==8, limb==8) %>%
+        select(-toepad, -limb) %>%
+        mutate(sojourn=resource * Xi_quad) %>%
+        mutate(sojourn_N=resource * Xi_quad / DI) %>%
+        mutate(Kuv = fitness * sojourn) %>%
         mutate_each(funs(f = . / 16), height_pref, diameter_pref, height, diameter)
 
     # see 'sojourn_N' is strange
-    .pl = llply(c('resource', 'Xi_quad', 'fitness', 'DI', 'Dxi', 'Kuv'), function(.z) {
-        .p = .tidy %>>% ggplot(aes(x=height, y=diameter))
+    .pl = c('resource', 'Xi_quad', 'fitness', 'DI', 'Dxi', 'Kuv') %>%
+        purrr::map(function(.z) {
+        .p = .tidy %>% ggplot(aes(x=height, y=diameter))
         .p = .p + geom_tile(aes_string(fill=.z))
         .p = .p + facet_grid(diameter_pref ~ height_pref, as.table=FALSE, labeller=label_tr)
         .p = .p + theme_tile + scale_fill_heat + theme(strip.text=element_text(size=rel(0.6)))
