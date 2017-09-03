@@ -32,12 +32,11 @@ boost::program_options::options_description Simulation::opt_description() {HERE;
     namespace po = boost::program_options;
     po::options_description description("Simulation");
     description.add_options()
-        ("help,h", po::value<bool>()->default_value(false)->implicit_value(true), "produce help")
-        ("verbose,v", po::value(&VERBOSE)
-            ->default_value(VERBOSE)->implicit_value(true), "verbose output")
+        ("help,h", po::bool_switch(), "produce help")
+        ("verbose,v", po::bool_switch(&VERBOSE), "verbose output")
         ("test", po::value<int>()->default_value(0)->implicit_value(1))
         ("mode", po::value(&MODE)->default_value(MODE))
-        ("symmetric", po::value(&SYMMETRIC)->default_value(SYMMETRIC)->implicit_value(true))
+        ("symmetric", po::bool_switch(&SYMMETRIC))
         ("label", po::value(&LABEL)->default_value("default"))
         ("top_dir", po::value<std::string>()->default_value(OUT_DIR.string()))
         ("patch_size,k", po::value(&INITIAL_PATCH_SIZE)->default_value(INITIAL_PATCH_SIZE))
