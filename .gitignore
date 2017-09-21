@@ -1,6 +1,6 @@
 *.out
-build/
-html/
+/build/
+/docs/*.png
 Dependfile
 tex/*.aux
 tex/*.dvi
