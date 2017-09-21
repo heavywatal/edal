@@ -1,8 +1,8 @@
 *.out
 /build/
 /docs/*.png
-Dependfile
-tex/*.aux
-tex/*.dvi
-tex/*.log
-tex/*.pdf
+/Dependfile
+/tex/*.aux
+/tex/*.dvi
+/tex/*.log
+/tex/*.pdf
