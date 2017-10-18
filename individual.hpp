@@ -1,4 +1,3 @@
-// -*- mode: c++; coding: utf-8 -*-
 /*! @file individual.hpp
     @brief Interface of Individual class
 */

@@ -1,4 +1,3 @@
-// -*- mode: c++; coding: utf-8 -*-
 /*! @file patch.hpp
     @brief Interface of Patch class
 */

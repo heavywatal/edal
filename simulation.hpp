@@ -1,4 +1,3 @@
-// -*- mode: c++; coding: utf-8 -*-
 /*! @file simulation.hpp
     @brief Interface of Simulation class
     @defgroup biol_param Biological parameters
