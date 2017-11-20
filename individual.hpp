@@ -148,7 +148,7 @@ class Individual {
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   public:
-
+    //! Uniform Random Number Generator
     using URNG = wtl::sfmt19937;
 
     //! typedef for diallelic loci of a trait
@@ -327,7 +327,6 @@ class Individual {
     //! detailed str() for testing/debugging
     std::string str_detail() const;
 
-    //! put CSV on ostream
     friend std::ostream& operator<< (std::ostream& ost, const Individual& ind);
 
     //! test function

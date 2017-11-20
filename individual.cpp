@@ -401,12 +401,13 @@ std::vector<Individual::Loci> Individual::gametogenesis(URNG& rng) const {
     return gamete;
 }
 
+//! put CSV on ostream
 std::ostream& operator<< (std::ostream& ost, const Individual& ind) {
     const char* sep = ",";
-    return ost
-        << wtl::str_join(ind.genotype_.first, sep) << sep
-        << wtl::str_join(ind.genotype_.second, sep) << sep
-        << wtl::str_join(ind.phenotype_, sep);
+    wtl::join(ind.genotype_.first, ost, sep) << sep;
+    wtl::join(ind.genotype_.second, ost, sep) << sep;
+    wtl::join(ind.phenotype_, ost, sep);
+    return ost;
 }
 
 std::string Individual::header() {
@@ -487,12 +488,12 @@ std::string test_resource_abundance(Func func) {
 
 void Individual::write_resource_abundance() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
-    wtl::opfstream{"abundance_beta.csv"} << ::test_resource_abundance(pdf_beta);
-    wtl::opfstream{"abundance_triangle.csv"} << ::test_resource_abundance(pdf_triangle);
-    wtl::opfstream{"abundance_v3.csv"} << ::test_resource_abundance(abundance);
-    wtl::opfstream{"abundance_normal.csv"} << ::test_resource_abundance(pdf_normal);
-    wtl::opfstream{"abundance_exp.csv"} << ::test_resource_abundance(pdf_exp);
-    wtl::opfstream{"abundance_old.csv"} << ::test_resource_abundance(abundance_old);
+    wtl::make_ofs("abundance_beta.csv") << ::test_resource_abundance(pdf_beta);
+    wtl::make_ofs("abundance_triangle.csv") << ::test_resource_abundance(pdf_triangle);
+    wtl::make_ofs("abundance_v3.csv") << ::test_resource_abundance(abundance);
+    wtl::make_ofs("abundance_normal.csv") << ::test_resource_abundance(pdf_normal);
+    wtl::make_ofs("abundance_exp.csv") << ::test_resource_abundance(pdf_exp);
+    wtl::make_ofs("abundance_old.csv") << ::test_resource_abundance(abundance_old);
 }
 
 std::string Individual::possible_phenotypes() {
@@ -501,16 +502,15 @@ std::string Individual::possible_phenotypes() {
     constexpr size_t half = max_trait / 2;
     std::ostringstream ost;
     const char* sep = ",";
-    ost << "toepad,limb,height_pref,diameter_pref,"
-        << wtl::str_join(INTERMEDIATE_KEYS_, sep)
-        << "\n";
+    ost << "toepad,limb,height_pref,diameter_pref,";
+    wtl::join(INTERMEDIATE_KEYS_, ost, sep) << "\n";
     for (size_t toe=0; toe<=max_trait; ++toe, ++toe) {
         for (size_t limb=0; limb<=max_trait; ++limb, ++limb) {
             for (size_t hpref=0; hpref<=max_trait; ++hpref, ++hpref) {
                 for (size_t dpref=0; dpref<=max_trait; ++dpref, ++dpref) {
                     Individual ind(std::vector<size_t>{toe, limb, hpref, dpref, half, half, half, half});
-                    ost << toe << sep << limb << sep << hpref << sep << dpref << sep
-                        << wtl::str_join(ind.intermediate_phenotypes(), sep) << "\n";
+                    ost << toe << sep << limb << sep << hpref << sep << dpref << sep;
+                    wtl::join(ind.intermediate_phenotypes(), ost, sep) << "\n";
                 }
             }
         }

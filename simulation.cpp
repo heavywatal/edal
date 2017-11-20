@@ -6,6 +6,7 @@
 #include <wtl/debug.hpp>
 #include <wtl/iostr.hpp>
 #include <wtl/getopt.hpp>
+#include <wtl/chrono.hpp>
 #include <wtl/zfstream.hpp>
 #include <sfmt.hpp>
 
@@ -61,7 +62,7 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
     std::cout.precision(15);
     std::cerr.precision(6);
     std::vector<std::string> arguments(argv, argv + argc);
-    std::cout << wtl::str_join(arguments, " ") << std::endl;
+    wtl::join(arguments, std::cout, " ") << std::endl;
     std::cout << wtl::iso8601datetime() << std::endl;
 
     namespace po = boost::program_options;
@@ -100,9 +101,9 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
         std::cout << CONFIG_STRING << std::endl;
     }
     if (ENTIRE_PERIOD % OBSERVATION_CYCLE > 0) {
-        std::cerr << wtl::strprintf(
-            "T=%d is not a multiple of I=%d",
-            ENTIRE_PERIOD, OBSERVATION_CYCLE) << std::endl;
+        std::cerr << "T=" << ENTIRE_PERIOD
+                  << " is not a multiple of I="
+                  << OBSERVATION_CYCLE << std::endl;
         exit(1);
     }
     switch (vm["test"].as<int>()) {
@@ -123,7 +124,7 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
     fs::current_path(WORK_DIR.string());
     fs::create_directory(OUT_DIR);
     OUT_DIR /= (LABEL + "_" + now + "_" + pid_at_host.str());
-    wtl::opfstream{"program_options.conf"} << CONFIG_STRING;
+    wtl::make_ofs("program_options.conf") << CONFIG_STRING;
 }
 
 void Simulation::run() {HERE;
