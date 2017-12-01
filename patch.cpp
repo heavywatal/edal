@@ -76,14 +76,12 @@ std::vector<double> Patch::effective_num_competitors() const {
 void Patch::viability_selection(URNG& rng) {
     std::vector<size_t> indices;
     indices.reserve(members_.size());
-    size_t i = 0;
     const auto ne = effective_num_competitors();
-    for (auto& ind: members_) {
-        const double p = ind.survival_probability(ne[i]);
+    for (size_t i=0; i<members_.size(); ++i) {
+        const double p = members_[i].survival_probability(ne[i]);
         if (std::bernoulli_distribution(p)(rng)) {
             indices.push_back(i);
         }
-        ++i;
     }
     std::vector<Individual> tmp;
     tmp.reserve(members_.size());

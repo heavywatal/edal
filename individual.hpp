@@ -305,7 +305,7 @@ class Individual {
     static double MIGRATION_RATE() {return MIGRATION_RATE_;}
 
     //! Getter
-    static size_t AVG_NUM_OFFSPINRGS() {return AVG_NUM_OFFSPINRGS_;}
+    static double AVG_NUM_OFFSPINRGS() {return AVG_NUM_OFFSPINRGS_;}
 
     /** @} biol_proc */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
@@ -439,7 +439,7 @@ class Individual {
             output[i] = (genotype_.first[i].count() + genotype_.second[i].count()) * INV_NUM_LOCI_;
         }
         return output;
-    };
+    }
 
     //! aggregation of intermediate phenotype values
     std::vector<double> intermediate_phenotypes() const;

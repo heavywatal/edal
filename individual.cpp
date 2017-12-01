@@ -241,27 +241,27 @@ double Individual::fitness(const double height, const double diameter) const {
 double Individual::effective_carrying_capacity_quad_unnormalized() const {
     double result = CARRYING_CAPACITY_;
     return result *= integrate_triangle([this](const double u, const double v) {
-        double result = std::exp(fitness(u, v));
-        result *= habitat_preference_quadratic(u, v);
-        return result *= abundance(u, v);
+        double x = std::exp(fitness(u, v));
+        x *= habitat_preference_quadratic(u, v);
+        return x *= abundance(u, v);
     });
 }
 
 double Individual::effective_carrying_capacity_exp_unnormalized() const {
     double result = CARRYING_CAPACITY_;
     return result *= integrate_triangle([this](const double u, const double v) {
-        double result = fitness(u, v);
-        result += habitat_preference_exp(u, v);
-        return std::exp(result) * abundance(u, v);
+        double x = fitness(u, v);
+        x += habitat_preference_exp(u, v);
+        return std::exp(x) * abundance(u, v);
     });
 }
 
 double Individual::effective_carrying_capacity_old_exp_unnormalized() const {
     double result = CARRYING_CAPACITY_;
     return result *= integrate_square([this](const double u, const double v) {
-        double result = fitness(u, v);
-        result += habitat_preference_exp(u, v);
-        return std::exp(result) * abundance_old(u, v);
+        double x = fitness(u, v);
+        x += habitat_preference_exp(u, v);
+        return std::exp(x) * abundance_old(u, v);
     });
 }
 
