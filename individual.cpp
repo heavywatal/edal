@@ -10,7 +10,7 @@
 #include <boost/program_options.hpp>
 
 #include <wtl/numeric.hpp>
-#include <wtl/prandom.hpp>
+#include <wtl/random.hpp>
 #include <wtl/iostr.hpp>
 #include <sfmt.hpp>
 
