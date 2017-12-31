@@ -5,7 +5,6 @@
 import os
 import re
 import itertools
-import torque
 import wtl.options as wopt
 now = wopt.now()
 
@@ -105,11 +104,8 @@ def make_label(args):
 
 
 if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser()
+    parser = wopt.ArgumentParser()
     parser.add_argument('-v', '--verbose', action='store_true')
-    parser.add_argument('-n', '--dry-run', action='store_true')
-    parser.add_argument('-j', '--jobs', type=int, default=wopt.cpu_count())
     parser.add_argument('-B', '--batch', action='store_const', const='batch')
     parser.add_argument('-Q', '--torque', action='store_const', const='torque',
                         dest='batch')
@@ -131,6 +127,7 @@ if __name__ == '__main__':
     commands = [constargs + x for x in args_list] * args.repeat
 
     if args.batch == 'torque':
+        import torque
         qargs = dict()
         qargs['-q'] = args.queue
         for cmd in commands:
