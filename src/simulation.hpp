@@ -17,19 +17,14 @@
 #include <sstream>
 #include <vector>
 #include <random>
+#include <memory>
 
-#include <wtl/chrono.hpp>
+namespace boost {namespace program_options {
+  class options_description;
+  class variables_map;
+}}
 
 #include "patch.hpp"
-
-#include <boost/filesystem.hpp>
-namespace fs = boost::filesystem;
-
-namespace boost {
-    namespace program_options {
-        class options_description;
-    }
-}
 
 /*! @brief Represents single run
 */
@@ -75,26 +70,13 @@ class Simulation {
     //! Group name of this run such as altered parameter
     std::string LABEL;
 
-    //! Home directory (c_str)
-    const char* HOME_CHAR = std::getenv("HOME");
-
-    //! Home directory
-    const fs::path HOME_DIR = HOME_CHAR;
-
-    //! Temporary directory
-    const fs::path TMP_DIR = HOME_DIR / "tmp";
-
-    //! Working directory to write out temporal results
-    fs::path WORK_DIR;
-
-    //! Target directory to which the contents in WORK_DIR are moved
-    fs::path OUT_DIR = TMP_DIR / wtl::strftime("out%Y%m%d");
-
   public:
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
     //! Parse command arguments
     Simulation(int argc, char* argv[]);
+    //! non-default destructor for forward declaration
+    ~Simulation();
 
     //! Top level function that should be called from main()
     void run();
@@ -130,6 +112,9 @@ class Simulation {
 
     /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
     // data members
+    //! optional variables
+    std::unique_ptr<boost::program_options::variables_map> vars_;
+
     //! Two-dimensional matrix of Patch
     std::vector<std::vector<Patch> > population;
 

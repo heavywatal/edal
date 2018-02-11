@@ -31,7 +31,6 @@ endif()
 add_subdirectory(src)
 
 add_executable(${PROJECT_NAME}-exe main.cpp $<TARGET_OBJECTS:obj>)
-target_include_directories(${PROJECT_NAME}-exe PRIVATE ${Boost_INCLUDE_DIRS}) #tmp
 target_link_libraries(${PROJECT_NAME}-exe PRIVATE wtl sfmt ${Boost_LIBRARIES})
 if(PROFILE)
   target_link_libraries(${PROJECT_NAME}-exe PRIVATE profiler)

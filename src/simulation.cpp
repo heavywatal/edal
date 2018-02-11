@@ -11,8 +11,12 @@
 #include <sfmt.hpp>
 
 #include <boost/asio.hpp>
+#include <boost/filesystem.hpp>
 
 #include "individual.hpp"
+
+namespace fs = boost::filesystem;
+namespace po = boost::program_options;
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 // functions
@@ -38,7 +42,7 @@ boost::program_options::options_description Simulation::opt_description() {HERE;
         ("mode", po::value(&MODE)->default_value(MODE))
         ("symmetric", po::bool_switch(&SYMMETRIC))
         ("label", po::value(&LABEL)->default_value("default"))
-        ("top_dir", po::value<std::string>()->default_value(OUT_DIR.string()))
+        ("top_dir", po::value<std::string>()->default_value(wtl::strftime("edal%Y%m%d")))
         ("patch_size,k", po::value(&INITIAL_PATCH_SIZE)->default_value(INITIAL_PATCH_SIZE))
         ("row", po::value(&NUM_ROWS)->default_value(NUM_ROWS))
         ("col", po::value(&NUM_COLS)->default_value(NUM_COLS))
@@ -56,7 +60,10 @@ inline void test() {HERE;
     Patch::unit_test();
 }
 
-Simulation::Simulation(int argc, char* argv[]) {HERE;
+Simulation::~Simulation() {HERE;}
+
+Simulation::Simulation(int argc, char* argv[])
+: vars_(std::make_unique<po::variables_map>()) {HERE;
     std::ios::sync_with_stdio(false);
     std::cin.tie(0);
     std::cout.precision(15);
@@ -69,7 +76,7 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
     po::options_description description;
     description.add(opt_description());
     description.add(Individual::opt_description());
-    po::variables_map vm;
+    auto& vm = *vars_;
     po::store(po::parse_command_line(argc, argv, description), vm);
     po::notify(vm);
 
@@ -77,7 +84,6 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
         description.print(std::cout);
         exit(0);
     }
-    OUT_DIR = fs::path(vm["top_dir"].as<std::string>());
     wtl::sfmt().seed(SEED);
     if (DIMENSIONS == 1) {
         std::ostringstream ost;
@@ -115,15 +121,14 @@ Simulation::Simulation(int argc, char* argv[]) {HERE;
       default:
         exit(1);
     }
+    fs::path OUT_DIR(vm["top_dir"].as<std::string>());
+    fs::create_directory(OUT_DIR);
     const std::string now(wtl::strftime("%Y%m%d_%H%M%S"));
     std::ostringstream pid_at_host;
     pid_at_host << ::getpid() << "@" << boost::asio::ip::host_name();
-    WORK_DIR = TMP_DIR / (now + "_" + LABEL + "_" + pid_at_host.str());
-    DCERR("mkdir && cd to " << WORK_DIR << std::endl);
-    fs::create_directory(WORK_DIR);
-    fs::current_path(WORK_DIR.string());
-    fs::create_directory(OUT_DIR);
     OUT_DIR /= (LABEL + "_" + now + "_" + pid_at_host.str());
+    fs::create_directory(OUT_DIR);
+    fs::current_path(OUT_DIR.string());
     wtl::make_ofs("program_options.conf") << CONFIG_STRING;
 }
 
@@ -142,8 +147,6 @@ void Simulation::run() {HERE;
       default:
         exit(1);
     }
-    DCERR("mv results to " << OUT_DIR << std::endl);
-    fs::rename(WORK_DIR, OUT_DIR);
     std::cout << wtl::iso8601datetime() << std::endl;
 }
 
