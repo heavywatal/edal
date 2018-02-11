@@ -3,16 +3,13 @@
 */
 #include "patch.hpp"
 
-#include <cmath>
-#include <iostream>
-#include <string>
-
-#include <boost/program_options.hpp>
-
 #include <wtl/debug.hpp>
 #include <wtl/iostr.hpp>
 #include <wtl/random.hpp>
 #include <sfmt.hpp>
+#include <boost/program_options.hpp>
+
+#include <cmath>
 
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////

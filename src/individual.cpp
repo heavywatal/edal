@@ -3,16 +3,14 @@
 */
 #include "individual.hpp"
 
-#include <cmath>
-#include <iostream>
-#include <sstream>
-
-#include <boost/program_options.hpp>
-
 #include <wtl/numeric.hpp>
 #include <wtl/random.hpp>
 #include <wtl/iostr.hpp>
+#include <wtl/math.hpp>
 #include <sfmt.hpp>
+#include <boost/program_options.hpp>
+
+#include <cmath>
 
 double Individual::BETA_PARAM_ = 3.0;
 double Individual::NORMAL_SIGMA_ = 0.3;

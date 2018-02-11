@@ -2,6 +2,7 @@
     @brief Implementation of Simulation class
 */
 #include "simulation.hpp"
+#include "individual.hpp"
 
 #include <wtl/debug.hpp>
 #include <wtl/iostr.hpp>
@@ -9,11 +10,8 @@
 #include <wtl/chrono.hpp>
 #include <wtl/zfstream.hpp>
 #include <sfmt.hpp>
-
 #include <boost/asio.hpp>
 #include <boost/filesystem.hpp>
-
-#include "individual.hpp"
 
 namespace fs = boost::filesystem;
 namespace po = boost::program_options;

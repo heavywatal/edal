@@ -5,13 +5,13 @@
 #ifndef PATCH_HPP_
 #define PATCH_HPP_
 
-#include <vector>
-
 #include "individual.hpp"
 
-namespace wtl {
-    class sfmt19937;
-}
+#include <iosfwd>
+#include <vector>
+#include <map>
+
+namespace wtl {class sfmt19937;}
 
 class Patch {
   public:

@@ -13,11 +13,11 @@
 #ifndef SIMULATION_HPP_
 #define SIMULATION_HPP_
 
-#include <iostream>
-#include <sstream>
+#include <iosfwd>
+#include <string>
 #include <vector>
-#include <random>
 #include <memory>
+#include <random>
 
 namespace boost {namespace program_options {
   class options_description;
