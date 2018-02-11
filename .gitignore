@@ -1,7 +1,5 @@
-*.out
 /build/
 /docs/*.png
-/Dependfile
 /tex/*.aux
 /tex/*.dvi
 /tex/*.log
