@@ -1,6 +1,2 @@
 /build/
 /docs/*.png
-/tex/*.aux
-/tex/*.dvi
-/tex/*.log
-/tex/*.pdf
