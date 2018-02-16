@@ -2,6 +2,7 @@
     @brief Implementation of Simulation class
 */
 #include "simulation.hpp"
+#include "patch.hpp"
 #include "individual.hpp"
 
 #include <wtl/debug.hpp>

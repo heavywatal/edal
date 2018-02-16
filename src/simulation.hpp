@@ -24,7 +24,7 @@ namespace boost {namespace program_options {
   class variables_map;
 }}
 
-#include "patch.hpp"
+class Patch;
 
 /*! @brief Represents single run
 */

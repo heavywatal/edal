@@ -2,6 +2,7 @@
     @brief Implementation of Patch class
 */
 #include "patch.hpp"
+#include "individual.hpp"
 
 #include <wtl/debug.hpp>
 #include <wtl/iostr.hpp>
@@ -10,7 +11,6 @@
 #include <boost/program_options.hpp>
 
 #include <cmath>
-
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
