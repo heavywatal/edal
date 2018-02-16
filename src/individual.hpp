@@ -12,7 +12,7 @@
 #include <map>
 #include <bitset>
 
-namespace wtl {class sfmt19937;}
+namespace wtl {class sfmt19937_64;}
 namespace boost {namespace program_options {class options_description;}}
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
@@ -60,6 +60,10 @@ enum {
     the probabilities of forward and backward mutations are equal.
 */
 class Individual {
+  public:
+    //! Uniform Random Number Generator
+    using URBG = wtl::sfmt19937_64;
+
   private:
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
     /*! @addtogroup biol_param
@@ -141,9 +145,6 @@ class Individual {
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   public:
-    //! Uniform Random Number Generator
-    using URNG = wtl::sfmt19937;
-
     //! Alias for diallelic loci of a trait
     using Loci = std::bitset<NUM_LOCI_>;
 
@@ -292,7 +293,7 @@ class Individual {
     /*! @ingroup mating
         @return a gamete
     */
-    std::vector<Loci> gametogenesis(URNG&) const;
+    std::vector<Loci> gametogenesis(URBG&) const;
 
     //! Getter
     static double MIGRATION_RATE() {return MIGRATION_RATE_;}

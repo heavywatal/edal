@@ -9,7 +9,7 @@
 #include <vector>
 #include <map>
 
-namespace wtl {class sfmt19937;}
+namespace wtl {class sfmt19937_64;}
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 namespace edal {
@@ -18,7 +18,7 @@ class Individual;
 
 class Patch {
   public:
-    using URNG = wtl::sfmt19937;
+    using URBG = wtl::sfmt19937_64;
 
     //! Construct an empty patch
     Patch() = default;
@@ -69,12 +69,12 @@ class Patch {
         This assumption also means that the effective population size is
         increased relative to the actual number of adults.
     */
-    std::vector<Individual> mate_and_reproduce(URNG&) const;
+    std::vector<Individual> mate_and_reproduce(URBG&) const;
 
     //! Some individuals die depending on Individual::survival_probability()
     /*! @ingroup natural_selection
     */
-    void viability_selection(URNG&);
+    void viability_selection(URBG&);
 
     //! Unit test for Patch
     static void unit_test();
