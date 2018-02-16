@@ -554,6 +554,10 @@ std::string Individual::possible_geographic() {
     return ost.str();
 }
 
+std::ostream& operator<<(std::ostream& ost, const Individual::Loci& bs) {
+    return ost << bs.to_ulong();
+}
+
 void Individual::unit_test() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
     std::cerr.precision(15);

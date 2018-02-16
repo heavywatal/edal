@@ -6,7 +6,7 @@
 #define INDIVIDUAL_HPP_
 
 #include <cmath>
-#include <iostream> //TODO iosfwd
+#include <iosfwd>
 #include <string>
 #include <vector>
 #include <map>
@@ -143,8 +143,8 @@ class Individual {
     //! Uniform Random Number Generator
     using URNG = wtl::sfmt19937;
 
-    //! typedef for diallelic loci of a trait
-    typedef std::bitset<NUM_LOCI_> Loci;
+    //! Alias for diallelic loci of a trait
+    using Loci = std::bitset<NUM_LOCI_>;
 
     //! Default constructor for original individuals
     Individual(): Individual{
@@ -462,9 +462,7 @@ class Individual {
 };
 
 //! Overload: output 15 instead of 00001111
-inline std::ostream& operator<< (std::ostream& ost, const Individual::Loci& bs) {
-    return ost << bs.to_ulong();
-}
+extern std::ostream& operator<<(std::ostream& ost, const Individual::Loci& bs);
 
 namespace std {
 //! Less operator for genotype comparison
