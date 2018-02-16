@@ -13,6 +13,7 @@
 #include <cmath>
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
+namespace edal {
 
 void Patch::change_sex_half(size_t n) {
     n /= 2;
@@ -118,3 +119,5 @@ void Patch::unit_test() {
     std::cerr << std::endl;
     std::cerr << patch << std::endl;
 }
+
+} // namespace edal

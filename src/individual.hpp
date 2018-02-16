@@ -12,10 +12,11 @@
 #include <map>
 #include <bitset>
 
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
-
 namespace wtl {class sfmt19937;}
 namespace boost {namespace program_options {class options_description;}}
+
+/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
+namespace edal {
 
 namespace trait {
 enum {
@@ -464,9 +465,11 @@ class Individual {
 //! Overload: output 15 instead of 00001111
 extern std::ostream& operator<<(std::ostream& ost, const Individual::Loci& bs);
 
+} // namespace edal
+
 namespace std {
 //! Less operator for genotype comparison
-inline bool operator< (const Individual::Loci& lhs, const Individual::Loci& rhs) {
+inline bool operator< (const edal::Individual::Loci& lhs, const edal::Individual::Loci& rhs) {
     return lhs.to_ulong() < rhs.to_ulong();
 }
 }

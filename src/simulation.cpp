@@ -14,6 +14,9 @@
 #include <boost/asio.hpp>
 #include <boost/filesystem.hpp>
 
+/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
+namespace edal {
+
 namespace fs = boost::filesystem;
 namespace po = boost::program_options;
 
@@ -248,3 +251,4 @@ void Simulation::write_snapshot(const size_t time, std::ostream& ost) const {
     DCERR("N = " << popsize << std::endl);
 }
 
+} // namespace edal

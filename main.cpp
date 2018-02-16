@@ -5,7 +5,7 @@
 
 //! Just instantiate and run Simulation
 int main(int argc, char* argv[]) {
-    Simulation simulation(argc, argv);
+    edal::Simulation simulation(argc, argv);
     simulation.run();
     return 0;
 }

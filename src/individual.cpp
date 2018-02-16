@@ -12,6 +12,9 @@
 
 #include <cmath>
 
+/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
+namespace edal {
+
 double Individual::BETA_PARAM_ = 3.0;
 double Individual::NORMAL_SIGMA_ = 0.3;
 double Individual::C0_ = 1.0;
@@ -486,12 +489,12 @@ std::string test_resource_abundance(Func func) {
 
 void Individual::write_resource_abundance() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
-    wtl::make_ofs("abundance_beta.csv") << ::test_resource_abundance(pdf_beta);
-    wtl::make_ofs("abundance_triangle.csv") << ::test_resource_abundance(pdf_triangle);
-    wtl::make_ofs("abundance_v3.csv") << ::test_resource_abundance(abundance);
-    wtl::make_ofs("abundance_normal.csv") << ::test_resource_abundance(pdf_normal);
-    wtl::make_ofs("abundance_exp.csv") << ::test_resource_abundance(pdf_exp);
-    wtl::make_ofs("abundance_old.csv") << ::test_resource_abundance(abundance_old);
+    wtl::make_ofs("abundance_beta.csv") << test_resource_abundance(pdf_beta);
+    wtl::make_ofs("abundance_triangle.csv") << test_resource_abundance(pdf_triangle);
+    wtl::make_ofs("abundance_v3.csv") << test_resource_abundance(abundance);
+    wtl::make_ofs("abundance_normal.csv") << test_resource_abundance(pdf_normal);
+    wtl::make_ofs("abundance_exp.csv") << test_resource_abundance(pdf_exp);
+    wtl::make_ofs("abundance_old.csv") << test_resource_abundance(abundance_old);
 }
 
 std::string Individual::possible_phenotypes() {
@@ -564,3 +567,5 @@ void Individual::unit_test() {
     Individual ind;
     std::cerr << ind.str_detail();
 }
+
+} // namespace edal

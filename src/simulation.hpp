@@ -24,6 +24,9 @@ namespace boost {namespace program_options {
   class variables_map;
 }}
 
+/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
+namespace edal {
+
 class Patch;
 
 /*! @brief Represents single run
@@ -119,5 +122,7 @@ class Simulation {
     std::vector<std::vector<Patch> > population;
 
 };
+
+} // namespace edal
 
 #endif /* SIMULATION_HPP_ */

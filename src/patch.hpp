@@ -11,6 +11,9 @@
 
 namespace wtl {class sfmt19937;}
 
+/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
+namespace edal {
+
 class Individual;
 
 class Patch {
@@ -99,5 +102,7 @@ class Patch {
 
 //! Stream operator for Patch
 extern std::ostream& operator<< (std::ostream& ost, const Patch& patch);
+
+} // namespace edal
 
 #endif /* PATCH_HPP_ */
