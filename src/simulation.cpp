@@ -190,42 +190,57 @@ void Simulation::evolve() {HERE;
 inline std::pair<size_t, size_t> choose_patch(size_t row, size_t col, URBG& engine) {
     thread_local std::bernoulli_distribution bern_mig(Individual::MIGRATION_RATE());
     thread_local std::uniform_int_distribution<unsigned int> unif_int(0, 7);
-    if (!bern_mig(engine)) {return {row, col};}
-    switch (unif_int(engine)) {
-      case 0:        ++col; break;
-      case 1: ++row; ++col; break;
-      case 2: ++row;        break;
-      case 3: ++row; --col; break;
-      case 4:        --col; break;
-      case 5: --row; --col; break;
-      case 6: --row;        break;
-      case 7: --row; ++col; break;
+    if (bern_mig(engine)) {
+        switch (unif_int(engine)) {
+          case 0:        ++col; break;
+          case 1: ++row; ++col; break;
+          case 2: ++row;        break;
+          case 3: ++row; --col; break;
+          case 4:        --col; break;
+          case 5: --row; --col; break;
+          case 6: --row;        break;
+          case 7: --row; ++col; break;
+        }
     }
     return {row, col};
 }
 
+inline std::vector<std::pair<size_t, size_t>>
+make_destinations(size_t n, size_t row, size_t col, size_t num_rows, size_t num_cols, URBG& engine) {
+    std::vector<std::pair<size_t, size_t> > destinations;
+    destinations.reserve(n);
+    for (size_t i=0; i<n; ++i) {
+        const auto dst = choose_patch(row, col, engine);
+        if ((dst.first >= num_rows) | (dst.second >= num_cols)) {
+            destinations.emplace_back(row, col);
+        } else {
+            destinations.push_back(std::move(dst));
+        }
+    }
+    return destinations;
+}
+
 void Simulation::life_cycle() {
-    std::vector<std::vector<Patch> > parents(population);
-    auto reproduction = [&](const size_t row, const size_t col) {
-        auto offsprings = parents[row][col].mate_and_reproduce(wtl::sfmt64());
-        std::vector<std::pair<size_t, size_t> > destinations;
-        destinations.reserve(offsprings.size());
-        for (size_t i=0; i<offsprings.size(); ++i) {
-            const auto dst = choose_patch(row, col, wtl::sfmt64());
-            if ((dst.first >= NUM_ROWS) | (dst.second >= NUM_COLS)) {
-                destinations.emplace_back(row, col);
-            } else {
-                destinations.push_back(std::move(dst));
-            }
-        }
-        for (size_t i=0; i<offsprings.size(); ++i) {
-            const auto& dst = destinations[i];
-            population[dst.first][dst.second].append(std::move(offsprings[i]));
-        }
-    };
+    const size_t num_patches = NUM_ROWS * NUM_COLS;
+    std::vector<std::vector<Individual>> children;
+    std::vector<std::vector<std::pair<size_t, size_t>>> destinations;
+    children.reserve(num_patches);
+    destinations.reserve(num_patches);
     for (size_t row=0; row<NUM_ROWS; ++row) {
         for (size_t col=0; col<NUM_COLS; ++col) {
-            reproduction(row, col);
+            children.emplace_back(population[row][col].mate_and_reproduce(wtl::sfmt64()));
+            destinations.emplace_back(
+              make_destinations(children.back().size(), row, col, NUM_ROWS, NUM_COLS, wtl::sfmt64())
+            );
+        }
+    }
+    for (size_t i=0; i<num_patches; ++i) {
+        auto& children_i = children[i];
+        const auto& destinations_i = destinations[i];
+        const size_t num_children = children_i.size();
+        for (size_t j=0; j<num_children; ++j) {
+            const auto& dst = destinations_i[j];
+            population[dst.first][dst.second].emplace_back(std::move(children_i[j]));
         }
     }
     for (size_t row=0; row<NUM_ROWS; ++row) {

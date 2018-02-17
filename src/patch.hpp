@@ -46,7 +46,7 @@ class Patch {
     //! Add an individual to this patch
     /*! @param ind New individual to add
     */
-    void append(Individual&& ind) {members_.push_back(std::move(ind));}
+    void emplace_back(Individual&& ind) {members_.emplace_back(std::forward<Individual>(ind));}
 
     //! @return The number of individuals in this patch
     size_t size() const {return members_.size();}

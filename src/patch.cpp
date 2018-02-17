@@ -111,7 +111,7 @@ void Patch::unit_test() {
     std::cerr << patch.size();
     for (size_t i=0; i<10; ++i) {
         for (auto& child: patch.mate_and_reproduce(wtl::sfmt64())) {
-            patch.append(std::move(child));
+            patch.emplace_back(std::move(child));
         }
         std::cerr << " b " << patch.size();
         patch.viability_selection(wtl::sfmt64());
