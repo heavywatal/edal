@@ -63,6 +63,16 @@ class Patch {
     */
     std::vector<Individual> mate_and_reproduce() const;
 
+    /*! @brief Change row/col with probability \f$m\f$ = Individual::MIGRATION_RATE_
+
+        > With probability \f$ m > 0 \f$, each offspring becomes a "migrant."
+        > Each migrant goes to one of the 8 neighboring patches.
+        > For patches at the boundary,
+        > the probability \f$ m \f$ is reduced according to the number of neighbors they have.
+    */
+    std::vector<std::pair<unsigned, unsigned int>>
+    make_destinations(size_t n, size_t row, size_t col, size_t num_rows, size_t num_cols) const;
+
     //! Some individuals die depending on Individual::survival_probability()
     /*! @ingroup natural_selection
     */

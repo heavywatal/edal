@@ -74,6 +74,39 @@ std::vector<Individual> Patch::mate_and_reproduce() const {
     return offsprings;
 }
 
+inline std::pair<unsigned int, unsigned int> choose_patch(size_t row, size_t col, Patch::URBG& engine) {
+    thread_local std::bernoulli_distribution bern_mig(Individual::MIGRATION_RATE());
+    thread_local std::uniform_int_distribution<unsigned int> unif_int(0, 7);
+    if (bern_mig(engine)) {
+        switch (unif_int(engine)) {
+          case 0:        ++col; break;
+          case 1: ++row; ++col; break;
+          case 2: ++row;        break;
+          case 3: ++row; --col; break;
+          case 4:        --col; break;
+          case 5: --row; --col; break;
+          case 6: --row;        break;
+          case 7: --row; ++col; break;
+        }
+    }
+    return {row, col};
+}
+
+std::vector<std::pair<unsigned int, unsigned int>>
+Patch::make_destinations(size_t n, size_t row, size_t col, size_t num_rows, size_t num_cols) const {
+    std::vector<std::pair<unsigned int, unsigned int> > destinations;
+    destinations.reserve(n);
+    for (size_t i=0; i<n; ++i) {
+        const auto dst = choose_patch(row, col, *engine_);
+        if ((dst.first >= num_rows) | (dst.second >= num_cols)) {
+            destinations.emplace_back(row, col);
+        } else {
+            destinations.push_back(std::move(dst));
+        }
+    }
+    return destinations;
+}
+
 std::vector<double> Patch::effective_num_competitors() const {
     std::vector<double> results(members_.size());
     for (size_t i=0; i<members_.size(); ++i) {

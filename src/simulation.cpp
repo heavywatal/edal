@@ -188,57 +188,18 @@ void Simulation::evolve() {HERE;
     wtl::ozfstream{"evolution.csv.gz"} << ost.str();
 }
 
-/*! @brief Change row/col with probability \f$m\f$ = Individual::MIGRATION_RATE_
-
-    > With probability \f$ m > 0 \f$, each offspring becomes a "migrant."
-    > Each migrant goes to one of the 8 neighboring patches.
-    > For patches at the boundary,
-    > the probability \f$ m \f$ is reduced according to the number of neighbors they have.
-*/
-inline std::pair<size_t, size_t> choose_patch(size_t row, size_t col, URBG& engine) {
-    thread_local std::bernoulli_distribution bern_mig(Individual::MIGRATION_RATE());
-    thread_local std::uniform_int_distribution<unsigned int> unif_int(0, 7);
-    if (bern_mig(engine)) {
-        switch (unif_int(engine)) {
-          case 0:        ++col; break;
-          case 1: ++row; ++col; break;
-          case 2: ++row;        break;
-          case 3: ++row; --col; break;
-          case 4:        --col; break;
-          case 5: --row; --col; break;
-          case 6: --row;        break;
-          case 7: --row; ++col; break;
-        }
-    }
-    return {row, col};
-}
-
-inline std::vector<std::pair<size_t, size_t>>
-make_destinations(size_t n, size_t row, size_t col, size_t num_rows, size_t num_cols, URBG& engine) {
-    std::vector<std::pair<size_t, size_t> > destinations;
-    destinations.reserve(n);
-    for (size_t i=0; i<n; ++i) {
-        const auto dst = choose_patch(row, col, engine);
-        if ((dst.first >= num_rows) | (dst.second >= num_cols)) {
-            destinations.emplace_back(row, col);
-        } else {
-            destinations.push_back(std::move(dst));
-        }
-    }
-    return destinations;
-}
-
 void Simulation::life_cycle() {
     const size_t num_patches = NUM_ROWS * NUM_COLS;
     std::vector<std::vector<Individual>> children;
-    std::vector<std::vector<std::pair<size_t, size_t>>> destinations;
+    std::vector<std::vector<std::pair<unsigned int, unsigned int>>> destinations;
     children.reserve(num_patches);
     destinations.reserve(num_patches);
     for (size_t row=0; row<NUM_ROWS; ++row) {
         for (size_t col=0; col<NUM_COLS; ++col) {
-            children.emplace_back(population[row][col].mate_and_reproduce());
+            auto& patch = population[row][col];
+            children.emplace_back(patch.mate_and_reproduce());
             destinations.emplace_back(
-              make_destinations(children.back().size(), row, col, NUM_ROWS, NUM_COLS, wtl::sfmt64())
+              patch.make_destinations(children.back().size(), row, col, NUM_ROWS, NUM_COLS)
             );
         }
     }
