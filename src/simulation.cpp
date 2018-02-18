@@ -10,6 +10,7 @@
 #include <wtl/getopt.hpp>
 #include <wtl/chrono.hpp>
 #include <wtl/zfstream.hpp>
+#include <wtl/concurrent.hpp>
 #include <sfmt.hpp>
 #include <boost/asio.hpp>
 #include <boost/filesystem.hpp>
@@ -189,23 +190,28 @@ void Simulation::evolve() {HERE;
 }
 
 void Simulation::life_cycle() {
+    static wtl::ThreadPool pool(2u);
     const size_t num_patches = NUM_ROWS * NUM_COLS;
-    std::vector<std::vector<Individual>> children;
-    std::vector<std::vector<std::pair<unsigned int, unsigned int>>> destinations;
-    children.reserve(num_patches);
-    destinations.reserve(num_patches);
+    std::vector<std::future<
+      std::pair<std::vector<Individual>, std::vector<std::pair<unsigned int, unsigned int>>>
+    >> futures;
+    futures.reserve(num_patches);
     for (size_t row=0; row<NUM_ROWS; ++row) {
         for (size_t col=0; col<NUM_COLS; ++col) {
-            auto& patch = population[row][col];
-            children.emplace_back(patch.mate_and_reproduce());
-            destinations.emplace_back(
-              patch.make_destinations(children.back().size(), row, col, NUM_ROWS, NUM_COLS)
-            );
+            futures.emplace_back(pool.submit([this](size_t r, size_t c){
+                auto& patch = population[r][c];
+                auto children = patch.mate_and_reproduce();
+                return std::pair<std::vector<Individual>, std::vector<std::pair<unsigned int, unsigned int>>>{
+                  children, patch.make_destinations(children.size(), r, c, NUM_ROWS, NUM_COLS)
+                };
+            }, row, col));
         }
     }
-    for (size_t i=0; i<num_patches; ++i) {
-        auto& children_i = children[i];
-        const auto& destinations_i = destinations[i];
+    pool.wait();
+    for (auto& ftr: futures) {
+        auto children_destination = ftr.get();
+        auto& children_i = children_destination.first;
+        const auto& destinations_i = children_destination.second;
         const size_t num_children = children_i.size();
         for (size_t j=0; j<num_children; ++j) {
             const auto& dst = destinations_i[j];
@@ -214,9 +220,11 @@ void Simulation::life_cycle() {
     }
     for (size_t row=0; row<NUM_ROWS; ++row) {
         for (size_t col=0; col<NUM_COLS; ++col) {
-            population[row][col].viability_selection();
+            auto& patch = population[row][col];
+            pool.submit([&patch](){patch.viability_selection();});
         }
     }
+    pool.wait();
 }
 
 void Simulation::write_snapshot(const size_t time, std::ostream& ost) const {
