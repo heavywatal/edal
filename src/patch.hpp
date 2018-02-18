@@ -8,6 +8,7 @@
 #include <iosfwd>
 #include <vector>
 #include <map>
+#include <memory>
 
 namespace wtl {class sfmt19937_64;}
 
@@ -21,27 +22,18 @@ class Patch {
     using URBG = wtl::sfmt19937_64;
 
     //! Construct an empty patch
-    Patch() = default;
+    Patch(unsigned int seed);
 
     //! Construct a patch with the same number of females and males
     /*! @param n The number of inital individuals in this patch
     */
-    Patch(const size_t n): members_(n) {
-        change_sex_half(n);
-    }
+    Patch(size_t n, unsigned int seed);
 
     //! Construct a patch with a non-default Individual
     /*! @param n The number of inital individuals in this patch
         @param founder The individual to be copied
     */
-    Patch(const size_t n, const Individual& founder):
-        members_(n, founder) {
-        change_sex_half(n);
-    }
-
-    //! Copy constructor
-    Patch(const Patch& obj):
-        members_{obj.members_} {}
+    Patch(size_t n, const Individual& founder, unsigned int seed);
 
     //! Add an individual to this patch
     /*! @param ind New individual to add
@@ -69,12 +61,12 @@ class Patch {
         This assumption also means that the effective population size is
         increased relative to the actual number of adults.
     */
-    std::vector<Individual> mate_and_reproduce(URBG&) const;
+    std::vector<Individual> mate_and_reproduce() const;
 
     //! Some individuals die depending on Individual::survival_probability()
     /*! @ingroup natural_selection
     */
-    void viability_selection(URBG&);
+    void viability_selection();
 
     //! Unit test for Patch
     static void unit_test();
@@ -98,6 +90,8 @@ class Patch {
     // data member
     //! Individuals
     std::vector<Individual> members_;
+
+    std::unique_ptr<URBG> engine_;
 };
 
 //! Stream operator for Patch

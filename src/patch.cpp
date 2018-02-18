@@ -15,6 +15,21 @@
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 namespace edal {
 
+Patch::Patch(unsigned int seed)
+: engine_(std::make_unique<wtl::sfmt19937_64>(seed)) {}
+
+Patch::Patch(size_t n, unsigned int seed)
+: members_(n),
+  engine_(std::make_unique<wtl::sfmt19937_64>(seed)) {
+    change_sex_half(n);
+}
+
+Patch::Patch(size_t n, const Individual& founder, unsigned int seed)
+: members_(n, founder),
+  engine_(std::make_unique<wtl::sfmt19937_64>(seed)) {
+    change_sex_half(n);
+}
+
 void Patch::change_sex_half(size_t n) {
     n /= 2;
     for (auto it=members_.begin()+n; it!=members_.end(); ++it) {
@@ -22,7 +37,7 @@ void Patch::change_sex_half(size_t n) {
     }
 }
 
-std::vector<Individual> Patch::mate_and_reproduce(URBG& engine) const {
+std::vector<Individual> Patch::mate_and_reproduce() const {
     std::poisson_distribution<size_t> poisson(Individual::AVG_NUM_OFFSPINRGS());
     std::vector<Individual> offsprings;
     std::vector<size_t> male_indices;
@@ -44,16 +59,16 @@ std::vector<Individual> Patch::mate_and_reproduce(URBG& engine) const {
         std::vector<double> upper_bounds(male_indices.size());
         std::partial_sum(prefs.begin(), prefs.end(), upper_bounds.begin());
         std::uniform_real_distribution<double> uniform(0.0, upper_bounds.back());
-        const double dart = uniform(engine);
+        const double dart = uniform(*engine_);
         size_t father_i = 0;
         while (upper_bounds[father_i] < dart) {++father_i;}
         const Individual& father = members_[male_indices[father_i]];
-        const size_t num_children = poisson(engine);
+        const size_t num_children = poisson(*engine_);
         for (size_t i=0; i<num_children; ++i) {
             offsprings.emplace_back(
-                mother.gametogenesis(engine),
-                father.gametogenesis(engine),
-                std::bernoulli_distribution(0.5)(engine));
+                mother.gametogenesis(*engine_),
+                father.gametogenesis(*engine_),
+                std::bernoulli_distribution(0.5)(*engine_));
         }
     }
     return offsprings;
@@ -72,13 +87,13 @@ std::vector<double> Patch::effective_num_competitors() const {
     return results;
 }
 
-void Patch::viability_selection(URBG& engine) {
+void Patch::viability_selection() {
     std::vector<size_t> indices;
     indices.reserve(members_.size());
     const auto ne = effective_num_competitors();
     for (size_t i=0; i<members_.size(); ++i) {
         const double p = members_[i].survival_probability(ne[i]);
-        if (std::bernoulli_distribution(p)(engine)) {
+        if (std::bernoulli_distribution(p)(*engine_)) {
             indices.push_back(i);
         }
     }
@@ -107,14 +122,14 @@ std::ostream& operator<< (std::ostream& ost, const Patch& patch) {
 
 void Patch::unit_test() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
-    Patch patch(20, Individual({15,0,15,0}));
+    Patch patch(20, Individual({15,0,15,0}), std::random_device{}());
     std::cerr << patch.size();
     for (size_t i=0; i<10; ++i) {
-        for (auto& child: patch.mate_and_reproduce(wtl::sfmt64())) {
+        for (auto& child: patch.mate_and_reproduce()) {
             patch.emplace_back(std::move(child));
         }
         std::cerr << " b " << patch.size();
-        patch.viability_selection(wtl::sfmt64());
+        patch.viability_selection();
         std::cerr << " d " << patch.size();
     }
     std::cerr << std::endl;

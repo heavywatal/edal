@@ -156,11 +156,19 @@ void Simulation::run() {HERE;
 
 void Simulation::evolve() {HERE;
     assert(ENTIRE_PERIOD % OBSERVATION_CYCLE == 0);
-    population.assign(NUM_ROWS, std::vector<Patch>(NUM_COLS));
+    population.reserve(NUM_ROWS);
+    for (size_t row=0; row<NUM_ROWS; ++row) {
+        std::vector<Patch> pop_row;
+        pop_row.reserve(NUM_COLS);
+        for (size_t col=0; col<NUM_COLS; ++col) {
+            pop_row.emplace_back(wtl::sfmt64()());
+        }
+        population.emplace_back(std::move(pop_row));
+    }
     if (DIMENSIONS == 1) {
-        population[0][0] = Patch(INITIAL_PATCH_SIZE, Individual{{15, 0, 15, 0}});
+        population[0][0] = Patch(INITIAL_PATCH_SIZE, Individual{{15, 0, 15, 0}}, wtl::sfmt64()());
     } else {
-        population[0][0] = Patch(INITIAL_PATCH_SIZE);
+        population[0][0] = Patch(INITIAL_PATCH_SIZE, wtl::sfmt64()());
     }
     std::ostringstream ost;
     for (size_t t=0; t<=ENTIRE_PERIOD; ++t) {
@@ -228,7 +236,7 @@ void Simulation::life_cycle() {
     destinations.reserve(num_patches);
     for (size_t row=0; row<NUM_ROWS; ++row) {
         for (size_t col=0; col<NUM_COLS; ++col) {
-            children.emplace_back(population[row][col].mate_and_reproduce(wtl::sfmt64()));
+            children.emplace_back(population[row][col].mate_and_reproduce());
             destinations.emplace_back(
               make_destinations(children.back().size(), row, col, NUM_ROWS, NUM_COLS, wtl::sfmt64())
             );
@@ -245,7 +253,7 @@ void Simulation::life_cycle() {
     }
     for (size_t row=0; row<NUM_ROWS; ++row) {
         for (size_t col=0; col<NUM_COLS; ++col) {
-            population[row][col].viability_selection(wtl::sfmt64());
+            population[row][col].viability_selection();
         }
     }
 }
