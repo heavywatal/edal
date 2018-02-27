@@ -41,3 +41,14 @@ set_target_properties(${PROJECT_NAME}-exe PROPERTIES
 install(TARGETS ${PROJECT_NAME}-exe
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+add_library(${PROJECT_NAME} SHARED $<TARGET_OBJECTS:obj>)
+target_include_directories(${PROJECT_NAME} BEFORE
+  INTERFACE $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src>
+)
+target_link_libraries(${PROJECT_NAME} PRIVATE wtl sfmt ${Boost_LIBRARIES})
+
+include(CTest)
+if(BUILD_TESTING)
+  add_subdirectory(test)
+endif()

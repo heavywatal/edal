@@ -324,8 +324,6 @@ class Individual {
     friend std::ostream& operator<< (std::ostream& ost, const Individual& ind);
 
     //! test function
-    static void unit_test();
-    //! test function
     static void write_resource_abundance();
     //! test function
     static std::string possible_phenotypes();

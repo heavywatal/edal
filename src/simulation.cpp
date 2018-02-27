@@ -43,7 +43,6 @@ boost::program_options::options_description Simulation::opt_description() {HERE;
     description.add_options()
         ("help,h", po::bool_switch(), "produce help")
         ("verbose,v", po::bool_switch(&VERBOSE), "verbose output")
-        ("test", po::value<int>()->default_value(0)->implicit_value(1))
         ("mode", po::value(&MODE)->default_value(MODE))
         ("symmetric", po::bool_switch(&SYMMETRIC))
         ("label", po::value(&LABEL)->default_value("default"))
@@ -57,12 +56,6 @@ boost::program_options::options_description Simulation::opt_description() {HERE;
         ("seed", po::value(&SEED)->default_value(SEED))
     ;
     return description;
-}
-
-//! Unit test for each class
-inline void test() {HERE;
-    Individual::unit_test();
-    Patch::unit_test();
 }
 
 Simulation::~Simulation() {HERE;}
@@ -115,15 +108,6 @@ Simulation::Simulation(int argc, char* argv[])
         std::cerr << "T=" << ENTIRE_PERIOD
                   << " is not a multiple of I="
                   << OBSERVATION_CYCLE << std::endl;
-        exit(1);
-    }
-    switch (vm["test"].as<int>()) {
-      case 0:
-        break;
-      case 1:
-        test();
-        exit(0);
-      default:
         exit(1);
     }
     fs::path OUT_DIR(vm["top_dir"].as<std::string>());

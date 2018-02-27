@@ -79,9 +79,6 @@ class Patch {
     */
     void viability_selection();
 
-    //! Unit test for Patch
-    static void unit_test();
-
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   private:
 

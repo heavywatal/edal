@@ -150,23 +150,4 @@ std::ostream& operator<< (std::ostream& ost, const Patch& patch) {
     // operator<< for std::map is defined in "iostr.hpp"
 }
 
-/////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
-
-void Patch::unit_test() {
-    std::cerr << __PRETTY_FUNCTION__ << std::endl;
-    Patch patch(std::random_device{}());
-    patch.assign(20, Individual({15,0,15,0}));
-    std::cerr << patch.size();
-    for (size_t i=0; i<10; ++i) {
-        for (auto& child: patch.mate_and_reproduce()) {
-            patch.emplace_back(std::move(child));
-        }
-        std::cerr << " b " << patch.size();
-        patch.viability_selection();
-        std::cerr << " d " << patch.size();
-    }
-    std::cerr << std::endl;
-    std::cerr << patch << std::endl;
-}
-
 } // namespace edal
