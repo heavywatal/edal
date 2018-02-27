@@ -167,9 +167,9 @@ void Simulation::evolve() {HERE;
         population.emplace_back(std::move(pop_row));
     }
     if (DIMENSIONS == 1) {
-        population[0][0] = Patch(INITIAL_PATCH_SIZE, Individual{{15, 0, 15, 0}}, wtl::sfmt64()());
+        population[0][0].assign(INITIAL_PATCH_SIZE, Individual{{15, 0, 15, 0}});
     } else {
-        population[0][0] = Patch(INITIAL_PATCH_SIZE, wtl::sfmt64()());
+        population[0][0].assign(INITIAL_PATCH_SIZE, Individual{});
     }
     std::ostringstream ost;
     for (size_t t=0; t<=ENTIRE_PERIOD; ++t) {

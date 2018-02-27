@@ -24,16 +24,17 @@ class Patch {
     //! Construct an empty patch
     Patch(unsigned int seed);
 
-    //! Construct a patch with the same number of females and males
-    /*! @param n The number of inital individuals in this patch
-    */
-    Patch(size_t n, unsigned int seed);
+    //! move constructor;
+    Patch(Patch&&) noexcept;
 
-    //! Construct a patch with a non-default Individual
+    //! non-default destructor for forward declaration
+    ~Patch();
+
+    //! Fill this patch with the same number of females and males
     /*! @param n The number of inital individuals in this patch
         @param founder The individual to be copied
     */
-    Patch(size_t n, const Individual& founder, unsigned int seed);
+    void assign(size_t n, const Individual& founder);
 
     //! Add an individual to this patch
     /*! @param ind New individual to add

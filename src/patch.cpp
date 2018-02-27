@@ -18,15 +18,14 @@ namespace edal {
 Patch::Patch(unsigned int seed)
 : engine_(std::make_unique<wtl::sfmt19937_64>(seed)) {}
 
-Patch::Patch(size_t n, unsigned int seed)
-: members_(n),
-  engine_(std::make_unique<wtl::sfmt19937_64>(seed)) {
-    change_sex_half(n);
-}
+Patch::Patch(Patch&& other) noexcept
+: members_(std::move(other.members_)),
+  engine_(std::move(other.engine_)) {}
 
-Patch::Patch(size_t n, const Individual& founder, unsigned int seed)
-: members_(n, founder),
-  engine_(std::make_unique<wtl::sfmt19937_64>(seed)) {
+Patch::~Patch() {}
+
+void Patch::assign(size_t n, const Individual& founder) {
+    members_.assign(n, founder);
     change_sex_half(n);
 }
 
@@ -155,7 +154,8 @@ std::ostream& operator<< (std::ostream& ost, const Patch& patch) {
 
 void Patch::unit_test() {
     std::cerr << __PRETTY_FUNCTION__ << std::endl;
-    Patch patch(20, Individual({15,0,15,0}), std::random_device{}());
+    Patch patch(std::random_device{}());
+    patch.assign(20, Individual({15,0,15,0}));
     std::cerr << patch.size();
     for (size_t i=0; i<10; ++i) {
         for (auto& child: patch.mate_and_reproduce()) {
