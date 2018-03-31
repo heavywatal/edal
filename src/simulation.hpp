@@ -78,7 +78,7 @@ class Simulation {
 
     //! Parse command arguments
     Simulation(int argc, char* argv[]);
-    //! non-default destructor for forward declaration
+    //! destructor in cpp for incomplete type
     ~Simulation();
 
     //! Top level function that should be called from main()

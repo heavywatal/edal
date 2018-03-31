@@ -27,7 +27,7 @@ class Patch {
     //! move constructor;
     Patch(Patch&&) noexcept;
 
-    //! non-default destructor for forward declaration
+    //! destructor in cpp for incomplete type
     ~Patch();
 
     //! Fill this patch with the same number of females and males
@@ -39,7 +39,7 @@ class Patch {
     //! Add an individual to this patch
     /*! @param ind New individual to add
     */
-    void emplace_back(Individual&& ind) {members_.emplace_back(std::forward<Individual>(ind));}
+    void emplace_back(Individual&& ind) {members_.emplace_back(std::move(ind));}
 
     //! @return The number of individuals in this patch
     size_t size() const {return members_.size();}
