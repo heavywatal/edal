@@ -58,7 +58,7 @@ boost::program_options::options_description Simulation::opt_description() {HERE;
     return description;
 }
 
-Simulation::~Simulation() {HERE;}
+Simulation::~Simulation() = default;
 
 Simulation::Simulation(int argc, char* argv[])
 : vars_(std::make_unique<po::variables_map>()) {HERE;

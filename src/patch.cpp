@@ -18,11 +18,8 @@ namespace edal {
 Patch::Patch(unsigned int seed)
 : engine_(std::make_unique<wtl::sfmt19937_64>(seed)) {}
 
-Patch::Patch(Patch&& other) noexcept
-: members_(std::move(other.members_)),
-  engine_(std::move(other.engine_)) {}
-
-Patch::~Patch() {}
+Patch::Patch(Patch&& other) noexcept = default;
+Patch::~Patch() = default;
 
 void Patch::assign(size_t n, const Individual& founder) {
     members_.assign(n, founder);
