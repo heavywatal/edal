@@ -7,7 +7,6 @@ target_link_libraries(objlib PUBLIC
   wtl::wtl
   wtl::sfmt
   Boost::program_options
-  Boost::filesystem
   Boost::iostreams
   Boost::system
 )

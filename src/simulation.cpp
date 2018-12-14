@@ -11,14 +11,14 @@
 #include <wtl/chrono.hpp>
 #include <wtl/zfstream.hpp>
 #include <wtl/concurrent.hpp>
+#include <wtl/filesystem.hpp>
 #include <sfmt.hpp>
 #include <boost/asio.hpp>
-#include <boost/filesystem.hpp>
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 namespace edal {
 
-namespace fs = boost::filesystem;
+namespace fs = wtl::filesystem;
 namespace po = boost::program_options;
 
 using URBG = wtl::sfmt19937_64;
