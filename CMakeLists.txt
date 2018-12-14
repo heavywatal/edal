@@ -20,6 +20,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 add_compile_options(-march=native -Wall -Wextra -pedantic)
 
+set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH ON)
+
 set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost REQUIRED COMPONENTS program_options filesystem iostreams system)
 message(STATUS "Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
