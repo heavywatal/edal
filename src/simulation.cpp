@@ -9,9 +9,9 @@
 #include <wtl/iostr.hpp>
 #include <wtl/getopt.hpp>
 #include <wtl/chrono.hpp>
-#include <wtl/zfstream.hpp>
 #include <wtl/concurrent.hpp>
 #include <wtl/filesystem.hpp>
+#include <wtl/zlib.hpp>
 #include <sfmt.hpp>
 #include <boost/asio.hpp>
 
@@ -130,8 +130,8 @@ void Simulation::run() {HERE;
         Individual::write_resource_abundance();
         break;
       case 2:
-        wtl::ozfstream{"possible_geographic.csv.gz"} << Individual::possible_geographic();
-        wtl::ozfstream{"possible_phenotypes.csv.gz"} << Individual::possible_phenotypes();
+        wtl::zlib::ofstream{"possible_geographic.csv.gz"} << Individual::possible_geographic();
+        wtl::zlib::ofstream{"possible_phenotypes.csv.gz"} << Individual::possible_phenotypes();
         break;
       default:
         exit(1);
@@ -170,7 +170,7 @@ void Simulation::evolve() {HERE;
             life_cycle();
         }
     }
-    wtl::ozfstream{"evolution.csv.gz"} << ost.str();
+    wtl::zlib::ofstream{"evolution.csv.gz"} << ost.str();
 }
 
 void Simulation::life_cycle() {

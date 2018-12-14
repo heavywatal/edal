@@ -6,7 +6,7 @@ target_include_directories(objlib INTERFACE
 target_link_libraries(objlib PUBLIC
   wtl::wtl
   wtl::sfmt
+  ZLIB::ZLIB
   Boost::program_options
-  Boost::iostreams
   Boost::system
 )

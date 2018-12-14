@@ -28,6 +28,7 @@ set(Boost_NO_BOOST_CMAKE ON)
 find_package(Boost REQUIRED COMPONENTS program_options filesystem iostreams system)
 message(STATUS "Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
 
+find_package(ZLIB REQUIRED)
 find_package(wtl)
 find_package(sfmt)
 
