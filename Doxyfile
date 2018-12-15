@@ -102,7 +102,7 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # Configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = .
+INPUT                  = . src
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.cpp \
                          *.hpp \
@@ -187,7 +187,7 @@ FORMULA_FONTSIZE       = 10
 FORMULA_TRANSPARENT    = YES
 USE_MATHJAX            = YES
 MATHJAX_FORMAT         = HTML-CSS
-MATHJAX_RELPATH        = https://cdn.mathjax.org/mathjax/latest
+MATHJAX_RELPATH        = https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5
 MATHJAX_EXTENSIONS     =
 MATHJAX_CODEFILE       =
 SEARCHENGINE           = NO
