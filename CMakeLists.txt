@@ -24,13 +24,10 @@ set(CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
 set(CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH ON)
 
-set(Boost_NO_BOOST_CMAKE ON)
-find_package(Boost REQUIRED COMPONENTS program_options filesystem iostreams system)
-message(STATUS "Boost_INCLUDE_DIRS: ${Boost_INCLUDE_DIRS}")
-
 find_package(ZLIB REQUIRED)
 find_package(wtl)
 find_package(sfmt)
+find_package(clippson)
 
 add_subdirectory(src)
 

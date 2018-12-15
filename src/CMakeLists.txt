@@ -6,6 +6,6 @@ target_include_directories(objlib INTERFACE
 target_link_libraries(objlib PUBLIC
   wtl::wtl
   wtl::sfmt
+  clippson::clippson
   ZLIB::ZLIB
-  Boost::program_options
 )

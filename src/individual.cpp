@@ -8,76 +8,18 @@
 #include <wtl/iostr.hpp>
 #include <wtl/math.hpp>
 #include <sfmt.hpp>
-#include <boost/program_options.hpp>
 
 #include <cmath>
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 namespace edal {
 
-double Individual::BETA_PARAM_ = 3.0;
-double Individual::NORMAL_SIGMA_ = 0.3;
-double Individual::C0_ = 1.0;
-double Individual::C1_ = 0.5;
-size_t Individual::CARRYING_CAPACITY_ = 1000;
-double Individual::AVG_NUM_OFFSPINRGS_ = 4;
-double Individual::HEIGHT_PREFERENCE_ = 2.0;
-double Individual::DIAMETER_PREFERENCE_ = 2.0;
-double Individual::TOEPAD_SELECTION_ = 2.0;
-double Individual::LIMB_SELECTION_ = 2.0;
-double Individual::PREF_COMPETITION_ = 2.0;
-double Individual::MORPH_COMPETITION_ = 2.0;
-double Individual::MATING_SIGMA_ = 0.05;
-double Individual::MU_LOCUS_ = 1e-4;
-unsigned long Individual::MUTATION_MASK_ = 0;
-double Individual::MIGRATION_RATE_ = 0.005;
-
+Individual::param_type Individual::PARAM_;
 constexpr size_t Individual::NUM_LOCI_;
 constexpr unsigned long Individual::FULL_BITS;
 constexpr unsigned long Individual::HALF_BITS;
 constexpr double Individual::INV_NUM_LOCI_;
 std::map<std::vector<double>, double> Individual::KE_CACHE_;
-
-//! Symbols for the program options can be different from those in equations
-/*! @ingroup biol_param
-    @return Program options description
-
-    Command line option      | Symbol         | Variable
-    ------------------------ | -------------- | --------------------------------
-    `-a,--beta_param`        | \f$\alpha\f$   | Individual::BETA_PARAM_
-    `-K,--carrying_capacity` | \f$K_{\max}\f$ | Individual::CARRYING_CAPACITY_
-    `-b,--birth_rate`        | \f$b\f$        | Individual::AVG_NUM_OFFSPINRGS_
-    `-p,--height_pref`       | \f$h_0\f$      | Individual::HEIGHT_PREFERENCE_
-    `-P,--diameter_pref`     | \f$h_1\f$      | Individual::DIAMETER_PREFERENCE_
-    `-s,--toepad_select`     | \f$s_0\f$      | Individual::TOEPAD_SELECTION_
-    `-S,--limb_select`       | \f$s_1\f$      | Individual::LIMB_SELECTION_
-    `-c,--pref_compe`        | \f$c_y\f$      | Individual::PREF_COMPETITION_
-    `-C,--morph_compe`       | \f$c_x\f$      | Individual::MORPH_COMPETITION_
-    `-f,--mating_sigma`      | \f$\sigma_a\f$ | Individual::MATING_SIGMA_
-    `-u,--mu_locus`          | -              | Individual::MU_LOCUS_
-    `-U,--mutation_mask`     | -              | Individual::MUTATION_MASK_
-    `-m,--migration_rate`    | \f$m\f$        | Individual::MIGRATION_RATE_
-*/
-boost::program_options::options_description Individual::opt_description() {
-    namespace po = boost::program_options;
-    po::options_description desc{"Individual"};
-    desc.add_options()
-        ("beta_param,a", po::value(&BETA_PARAM_)->default_value(BETA_PARAM_))
-        ("carrying_capacity,K", po::value(&CARRYING_CAPACITY_)->default_value(CARRYING_CAPACITY_))
-        ("birth_rate,b", po::value(&AVG_NUM_OFFSPINRGS_)->default_value(AVG_NUM_OFFSPINRGS_))
-        ("height_pref,p", po::value(&HEIGHT_PREFERENCE_)->default_value(HEIGHT_PREFERENCE_))
-        ("diameter_pref,P", po::value(&DIAMETER_PREFERENCE_)->default_value(DIAMETER_PREFERENCE_))
-        ("toepad_select,s", po::value(&TOEPAD_SELECTION_)->default_value(TOEPAD_SELECTION_))
-        ("limb_select,S", po::value(&LIMB_SELECTION_)->default_value(LIMB_SELECTION_))
-        ("pref_compe,c", po::value(&PREF_COMPETITION_)->default_value(PREF_COMPETITION_))
-        ("morph_compe,C", po::value(&MORPH_COMPETITION_)->default_value(MORPH_COMPETITION_))
-        ("mating_sigma,f", po::value(&MATING_SIGMA_)->default_value(MATING_SIGMA_))
-        ("mu_locus,u", po::value(&MU_LOCUS_)->default_value(MU_LOCUS_))
-        ("mutation_mask,U", po::value(&MUTATION_MASK_)->default_value(MUTATION_MASK_))
-        ("migration_rate,m", po::value(&MIGRATION_RATE_)->default_value(MIGRATION_RATE_))
-    ;
-    return desc;
-}
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
@@ -85,9 +27,9 @@ boost::program_options::options_description Individual::opt_description() {
 inline double pdf_beta(const double height, const double diameter) {
     static_cast<void>(diameter);
     static const double k =
-        std::tgamma(2 * Individual::BETA_PARAM_)
-        / wtl::pow(std::tgamma(Individual::BETA_PARAM_), 2);
-    double result = std::pow(height * (1 - height), Individual::BETA_PARAM_ - 1);
+        std::tgamma(2 * Individual::param().BETA_PARAM)
+        / wtl::pow(std::tgamma(Individual::param().BETA_PARAM), 2);
+    double result = std::pow(height * (1 - height), Individual::param().BETA_PARAM - 1);
     return result *= k;
 }
 
@@ -109,12 +51,12 @@ inline double abundance(const double height, const double diameter) {
 //! Distribution of tree height given diameter
 inline double pdf_normal(const double height, const double diameter) {
     static_cast<void>(diameter);
-    return std::exp(- 0.5 * wtl::pow(height - 0.5, 2) / wtl::pow(Individual::NORMAL_SIGMA_, 2));
+    return std::exp(- 0.5 * wtl::pow(height - 0.5, 2) / wtl::pow(Individual::param().NORMAL_SIGMA, 2));
 }
 
 //! Distribution of twig diameter given height
 inline double pdf_exp(const double height, const double diameter) {
-    const double theta = Individual::C0_ - Individual::C1_ * height;
+    const double theta = Individual::param().C0 - Individual::param().C1 * height;
     if (theta <= 0) {return 0.0;}
     double lambda = 1.0;
     lambda /= theta;
@@ -173,9 +115,9 @@ Individual::Individual(const std::vector<unsigned long>& flags): genotype_{{}, {
 
 double Individual::habitat_preference_exp(const double height, const double diameter) const {
     double exponent = gaussian_exponent(phenotype_[trait::height_preference],
-                                        height, HEIGHT_PREFERENCE_);
+                                        height, param().HEIGHT_PREFERENCE);
     return exponent += gaussian_exponent(phenotype_[trait::diameter_preference],
-                                         diameter, DIAMETER_PREFERENCE_);
+                                         diameter, param().DIAMETER_PREFERENCE);
 }
 
 double Individual::habitat_preference_quadratic(const double height, const double diameter) const {
@@ -185,15 +127,15 @@ double Individual::habitat_preference_quadratic(const double height, const doubl
         return u *= h;
     };
     double x = 1.0;
-    x -= impl(phenotype_[trait::height_preference], height, HEIGHT_PREFERENCE_);
-    x -= impl(phenotype_[trait::diameter_preference], diameter, DIAMETER_PREFERENCE_);
+    x -= impl(phenotype_[trait::height_preference], height, param().HEIGHT_PREFERENCE);
+    x -= impl(phenotype_[trait::diameter_preference], diameter, param().DIAMETER_PREFERENCE);
     return std::max(x, 0.0);
 }
 
 double Individual::calc_DI_analytical() const {
-    const double a = BETA_PARAM_;
-    const double h0 = HEIGHT_PREFERENCE_;
-    const double h1 = DIAMETER_PREFERENCE_;
+    const double a = param().BETA_PARAM;
+    const double h0 = param().HEIGHT_PREFERENCE;
+    const double h1 = param().DIAMETER_PREFERENCE;
     const double y0 = phenotype_[trait::height_preference];
     const double y1 = phenotype_[trait::diameter_preference];
     double d = 12;
@@ -221,8 +163,8 @@ double Individual::calc_Dxi_analytical() const {
         return result += y;
     };
     double x = 0.5;
-    x -= HEIGHT_PREFERENCE_ * impl(phenotype_[trait::height_preference]);
-    x -= DIAMETER_PREFERENCE_ * impl(phenotype_[trait::diameter_preference]);
+    x -= param().HEIGHT_PREFERENCE * impl(phenotype_[trait::height_preference]);
+    x -= param().DIAMETER_PREFERENCE * impl(phenotype_[trait::diameter_preference]);
     return x;
 }
 
@@ -234,13 +176,13 @@ double Individual::calc_Dxi_numerical() const {
 
 double Individual::fitness(const double height, const double diameter) const {
     double exponent = gaussian_exponent(phenotype_[trait::toepad_size],
-                                        height, TOEPAD_SELECTION_);
+                                        height, param().TOEPAD_SELECTION);
     return exponent += gaussian_exponent(phenotype_[trait::limb_length],
-                                  diameter, LIMB_SELECTION_);
+                                  diameter, param().LIMB_SELECTION);
 }
 
 double Individual::effective_carrying_capacity_quad_unnormalized() const {
-    double result = CARRYING_CAPACITY_;
+    double result = param().CARRYING_CAPACITY;
     return result *= integrate_triangle([this](const double u, const double v) {
         double x = std::exp(fitness(u, v));
         x *= habitat_preference_quadratic(u, v);
@@ -249,7 +191,7 @@ double Individual::effective_carrying_capacity_quad_unnormalized() const {
 }
 
 double Individual::effective_carrying_capacity_exp_unnormalized() const {
-    double result = CARRYING_CAPACITY_;
+    double result = param().CARRYING_CAPACITY;
     return result *= integrate_triangle([this](const double u, const double v) {
         double x = fitness(u, v);
         x += habitat_preference_exp(u, v);
@@ -258,7 +200,7 @@ double Individual::effective_carrying_capacity_exp_unnormalized() const {
 }
 
 double Individual::effective_carrying_capacity_old_exp_unnormalized() const {
-    double result = CARRYING_CAPACITY_;
+    double result = param().CARRYING_CAPACITY;
     return result *= integrate_square([this](const double u, const double v) {
         double x = fitness(u, v);
         x += habitat_preference_exp(u, v);
@@ -279,23 +221,23 @@ double Individual::effective_carrying_capacity_cache() const {
 double Individual::preference_overlap(const Individual& other) const {
     double exponent = gaussian_exponent(phenotype_[trait::height_preference],
                                   other.phenotype_[trait::height_preference],
-                                  PREF_COMPETITION_);
+                                  param().PREF_COMPETITION);
     return exponent += gaussian_exponent(phenotype_[trait::diameter_preference],
                                    other.phenotype_[trait::diameter_preference],
-                                   PREF_COMPETITION_);
+                                   param().PREF_COMPETITION);
 }
 
 double Individual::morphology_overlap(const Individual& other) const {
     double exponent = gaussian_exponent(phenotype_[trait::toepad_size],
                                   other.phenotype_[trait::toepad_size],
-                                  MORPH_COMPETITION_);
+                                  param().MORPH_COMPETITION);
     return exponent += gaussian_exponent(phenotype_[trait::limb_length],
                                    other.phenotype_[trait::limb_length],
-                                   MORPH_COMPETITION_);
+                                   param().MORPH_COMPETITION);
 }
 
 double Individual::survival_probability(const double effective_num_competitors) const {
-    double denom = AVG_NUM_OFFSPINRGS_;
+    double denom = param().AVG_NUM_OFFSPINRGS;
     denom -= 1.0;
     denom *= effective_num_competitors;  // ^ theta for crowding strength
     denom /= ke_;
@@ -320,7 +262,7 @@ double Individual::mating_probability(const Individual& male) const {
         exponent -= 1.0;
         exponent += male.phenotype_[trait::male_trait];
     }
-    exponent /= MATING_SIGMA_;
+    exponent /= param().MATING_SIGMA;
     exponent *= choosiness;
     exponent *= exponent;
     exponent *= -0.5;
@@ -338,7 +280,7 @@ double Individual::mating_probability_debarre(const Individual& male) const {
     choosiness -= 1.0;
     double exponent = phenotype_[trait::female_trait];
     exponent -= male.phenotype_[trait::male_trait];
-    exponent /= MATING_SIGMA_;
+    exponent /= param().MATING_SIGMA;
     exponent *= exponent;
     exponent *= -0.5;
     double phi = choosiness;
@@ -364,7 +306,7 @@ double Individual::mating_probability_TPG2013(const Individual& male) const {
     choosiness -= 1.0;
     double exponent = phenotype_[trait::female_trait];
     exponent -= male.phenotype_[trait::male_trait];
-    exponent /= MATING_SIGMA_;
+    exponent /= param().MATING_SIGMA;
     exponent *= choosiness;
     exponent *= exponent;
     exponent *= -0.5;
@@ -381,9 +323,9 @@ double Individual::mating_probability_TPG2013(const Individual& male) const {
 
 std::vector<Individual::Loci> Individual::gametogenesis(URBG& engine) const {
     std::uniform_int_distribution<unsigned long> uniform_filter(0, FULL_BITS);
-    std::bernoulli_distribution bernoulli(MU_LOCUS_ * NUM_LOCI_);
+    std::bernoulli_distribution bernoulli(param().MU_LOCUS * NUM_LOCI_);
     std::uniform_int_distribution<size_t> uniform_pos(0, NUM_LOCI_ - 1);
-    static const std::bitset<8> mask(MUTATION_MASK_);
+    static const std::bitset<8> mask(param().MUTATION_MASK);
     std::vector<Loci> gamete;
     gamete.reserve(trait::size);
     for (size_t i=0; i<trait::size; ++i) {

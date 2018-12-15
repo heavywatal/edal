@@ -19,11 +19,6 @@
 #include <memory>
 #include <random>
 
-namespace boost {namespace program_options {
-  class options_description;
-  class variables_map;
-}}
-
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 namespace edal {
 
@@ -32,50 +27,7 @@ class Patch;
 /*! @brief Represents single run
 */
 class Simulation {
-  private:
-    /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
-    /*! @addtogroup biol_param
-        @{*/
-
-    //! \f$K_0\f$, the number of individuals in an initial patch
-    size_t INITIAL_PATCH_SIZE = 100;
-
-    //! The number of patches on Y axis
-    size_t NUM_ROWS = 4;
-
-    //! The number of patches on X axis
-    size_t NUM_COLS = 4;
-
-    //! Dimension number of resources/traits
-    size_t DIMENSIONS = 2;
-
-    //! The overall number of generations to observe
-    size_t ENTIRE_PERIOD = 1000;
-
-    //! Interval between snapshots
-    size_t OBSERVATION_CYCLE = 100;
-
-    /** @} endgroup */
-    /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
-
-    //! Print extra information
-    bool VERBOSE = false;
-
-    //! Seed for random number generator
-    unsigned int SEED = std::random_device{}();
-
-    //! Control execution mode
-    int MODE = 0;
-
-    //! Set same values of \$h\$ and \$s\$ for two axes
-    bool SYMMETRIC = false;
-
-    //! Group name of this run such as altered parameter
-    std::string LABEL;
-
   public:
-    /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
-
     //! Parse command arguments
     Simulation(int argc, char* argv[]);
     //! destructor in cpp for incomplete type
@@ -111,16 +63,13 @@ class Simulation {
     //! output genotype frequencies for each patch
     void write_snapshot(const size_t time, std::ostream& ost) const;
 
-    boost::program_options::options_description opt_description();
-
     /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
     // data members
-    //! optional variables
-    std::unique_ptr<boost::program_options::variables_map> vars_;
-
     //! Two-dimensional matrix of Patch
     std::vector<std::vector<Patch> > population;
 
+    //! Print verbose output
+    bool verbose_ = false;
 };
 
 } // namespace edal

@@ -11,7 +11,6 @@ The results are analyzed in R.
 
 - [cxxwtl](https://github.com/heavywatal/cxxwtl)
 - [sfmt-class](https://github.com/heavywatal/sfmt-class)
-- [Boost](http://www.boost.org/)
 
 ## Parameters and functions
 

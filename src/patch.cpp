@@ -8,7 +8,6 @@
 #include <wtl/iostr.hpp>
 #include <wtl/random.hpp>
 #include <sfmt.hpp>
-#include <boost/program_options.hpp>
 
 #include <cmath>
 
@@ -34,7 +33,7 @@ void Patch::change_sex_half(size_t n) {
 }
 
 std::vector<Individual> Patch::mate_and_reproduce() const {
-    std::poisson_distribution<size_t> poisson(Individual::AVG_NUM_OFFSPINRGS());
+    std::poisson_distribution<size_t> poisson(Individual::param().AVG_NUM_OFFSPINRGS);
     std::vector<Individual> offsprings;
     std::vector<size_t> male_indices;
     male_indices.reserve(members_.size());
@@ -44,7 +43,7 @@ std::vector<Individual> Patch::mate_and_reproduce() const {
         }
     }
     if (male_indices.empty()) {return offsprings;}
-    offsprings.reserve(members_.size() * Individual::AVG_NUM_OFFSPINRGS());
+    offsprings.reserve(members_.size() * Individual::param().AVG_NUM_OFFSPINRGS);
     for (const auto& mother: members_) {
         if (mother.is_male()) continue;
         std::vector<double> prefs;
@@ -71,7 +70,7 @@ std::vector<Individual> Patch::mate_and_reproduce() const {
 }
 
 inline std::pair<unsigned int, unsigned int> choose_patch(size_t row, size_t col, Patch::URBG& engine) {
-    thread_local std::bernoulli_distribution bern_mig(Individual::MIGRATION_RATE());
+    thread_local std::bernoulli_distribution bern_mig(Individual::param().MIGRATION_RATE);
     thread_local std::uniform_int_distribution<unsigned int> unif_int(0, 7);
     if (bern_mig(engine)) {
         switch (unif_int(engine)) {

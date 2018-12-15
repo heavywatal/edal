@@ -13,7 +13,6 @@
 #include <bitset>
 
 namespace wtl {class sfmt19937_64;}
-namespace boost {namespace program_options {class options_description;}}
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 namespace edal {
@@ -41,6 +40,70 @@ enum {
 };
 } // namespace trait
 
+
+//! @brief Parameters for Individual class
+/*! @ingroup biol_param
+*/
+struct IndividualParams {
+    /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
+    //! @addtogroup biol_param
+    //@{
+
+    //! \f$ \alpha \f$ of Beta distribution in \f$ F(u,v) \f$
+    double BETA_PARAM = 3.0;
+
+    //! \f$ K_{\max} \f$ in \f$ K_e(I)\f$
+    size_t CARRYING_CAPACITY = 1000u;
+
+    //! \f$ b \f$ in \f$ w(I) \f$
+    double AVG_NUM_OFFSPINRGS = 4.0;
+
+    //! \f$ h_0 \f$ in \f$ \Xi(y_0,y_1 \mid u,v) \f$
+    double HEIGHT_PREFERENCE = 2.0;
+
+    //! \f$ h_1 \f$ in \f$ \Xi(y_0,y_1 \mid u,v) \f$
+    double DIAMETER_PREFERENCE = 2.0;
+
+    //! \f$ s_0 \f$ in \f$ W(x_0,x_1 \mid u,v) \f$
+    double TOEPAD_SELECTION = 2.0;
+
+    //! \f$ s_1\f$ in \f$ W(x_0,x_1 \mid u,v) \f$
+    double LIMB_SELECTION = 2.0;
+
+    //! \f$c_y\f$ in \f$C_y(I,J)\f$
+    double PREF_COMPETITION = 2.0;
+
+    //! \f$c_x\f$ in \f$C_x(I,J)\f$
+    double MORPH_COMPETITION = 2.0;
+
+    //! \f$ \sigma_a \f$ in \f$ \psi(f,c \mid m) \f$
+    double MATING_SIGMA = 0.05;
+
+    //! Mutation rate per locus per generation
+    /*! Mutations occur at equal rates across all loci;
+        the probabilities of forward and backward mutations are equal.
+    */
+    double MU_LOCUS = 1e-4;
+
+    //! Flag set to protect specific traits from mutations
+    /*! e.g., 10 ("00001010") blocks mutations on limb and diameter preference
+    */
+    unsigned long MUTATION_MASK = 0;
+
+    //! Migration rate \f$m\f$ (i.e., \f$Nm\f$ makes the expected # of migrants)
+    double MIGRATION_RATE = 0.005;
+
+    //! \f$ \sigma \f$ of Normal distribution in v2 \f$ F(u,v) \f$
+    constexpr static double NORMAL_SIGMA = 0.3;
+
+    //! \f$ c_0 \f$ of Normal distribution in v2 \f$ F(u,v) \f$
+    constexpr static double C0 = 1.0;
+
+    //! \f$ c_1 \f$ of Normal distribution in v2 \f$ F(u,v) \f$
+    constexpr static double C1 = 0.5;
+    //@}
+};
+
 /*! @brief sexual, diploid, additive, unlinked, diallelic
 
     Individuals are sexual and diploid.
@@ -61,72 +124,14 @@ enum {
 */
 class Individual {
   public:
+    //! Alias
+    using param_type = IndividualParams;
     //! Uniform Random Number Generator
     using URBG = wtl::sfmt19937_64;
 
   private:
-    /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
-    /*! @addtogroup biol_param
-        @{*/
-
-    //! \f$ \alpha \f$ of Beta distribution in \f$ F(u,v) \f$
-    static double BETA_PARAM_;
-
-    //! \f$ K_{\max} \f$ in \f$ K_e(I)\f$
-    static size_t CARRYING_CAPACITY_;
-
-    //! \f$ b \f$ in \f$ w(I) \f$
-    static double AVG_NUM_OFFSPINRGS_;
-
-    //! \f$ h_0 \f$ in \f$ \Xi(y_0,y_1 \mid u,v) \f$
-    static double HEIGHT_PREFERENCE_;
-
-    //! \f$ h_1 \f$ in \f$ \Xi(y_0,y_1 \mid u,v) \f$
-    static double DIAMETER_PREFERENCE_;
-
-    //! \f$ s_0 \f$ in \f$ W(x_0,x_1 \mid u,v) \f$
-    static double TOEPAD_SELECTION_;
-
-    //! \f$ s_1\f$ in \f$ W(x_0,x_1 \mid u,v) \f$
-    static double LIMB_SELECTION_;
-
-    //! \f$c_y\f$ in \f$C_y(I,J)\f$
-    static double PREF_COMPETITION_;
-
-    //! \f$c_x\f$ in \f$C_x(I,J)\f$
-    static double MORPH_COMPETITION_;
-
-    //! \f$ \sigma_a \f$ in \f$ \psi(f,c \mid m) \f$
-    static double MATING_SIGMA_;
-
-    //! Mutation rate per locus per generation
-    /*! Mutations occur at equal rates across all loci;
-        the probabilities of forward and backward mutations are equal.
-    */
-    static double MU_LOCUS_;
-
-    //! Flag set to protect specific traits from mutations
-    /*! e.g., 10 ("00001010") blocks mutations on limb and diameter preference
-    */
-    static unsigned long MUTATION_MASK_;
-
-    //! Migration rate \f$m\f$ (i.e., \f$Nm\f$ makes the expected # of migrants)
-    static double MIGRATION_RATE_;
-
     //! The number of loci per trait
     constexpr static size_t NUM_LOCI_ = 8;
-
-    /** @} endgroup */
-    /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
-
-    //! \f$ \sigma \f$ of Normal distribution in v2 \f$ F(u,v) \f$
-    static double NORMAL_SIGMA_;
-
-    //! \f$ c_0 \f$ of Normal distribution in v2 \f$ F(u,v) \f$
-    static double C0_;
-
-    //! \f$ c_1 \f$ of Normal distribution in v2 \f$ F(u,v) \f$
-    static double C1_;
 
     //! Genotype that produce trait value = 1.0, i.e., `11111111`
     constexpr static unsigned long FULL_BITS = (1u << NUM_LOCI_) - 1u;
@@ -295,12 +300,6 @@ class Individual {
     */
     std::vector<Loci> gametogenesis(URBG&) const;
 
-    //! Getter
-    static double MIGRATION_RATE() {return MIGRATION_RATE_;}
-
-    //! Getter
-    static double AVG_NUM_OFFSPINRGS() {return AVG_NUM_OFFSPINRGS_;}
-
     /** @} biol_proc */
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 
@@ -330,7 +329,10 @@ class Individual {
     //! test function
     static std::string possible_geographic();
 
-    static boost::program_options::options_description opt_description();
+    //! Set #PARAM_
+    static void param(const param_type& p) {PARAM_ = p;}
+    //! Get #PARAM_
+    static const param_type& param() {return PARAM_;}
 
     /////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
   private:
@@ -459,6 +461,9 @@ class Individual {
 
     //! \f$K_e(I)\f$ calculated in advance
     double ke_;
+
+    //! Parameters shared among instances
+    static param_type PARAM_;
 };
 
 //! Overload: output 15 instead of 00001111
