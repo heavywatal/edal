@@ -8,5 +8,4 @@ target_link_libraries(objlib PUBLIC
   wtl::sfmt
   ZLIB::ZLIB
   Boost::program_options
-  Boost::system
 )

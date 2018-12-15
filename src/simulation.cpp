@@ -13,7 +13,6 @@
 #include <wtl/filesystem.hpp>
 #include <wtl/zlib.hpp>
 #include <sfmt.hpp>
-#include <boost/asio.hpp>
 
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////
 namespace edal {
@@ -113,9 +112,7 @@ Simulation::Simulation(int argc, char* argv[])
     fs::path OUT_DIR(vm["top_dir"].as<std::string>());
     fs::create_directory(OUT_DIR);
     const std::string now(wtl::strftime("%Y%m%d_%H%M%S"));
-    std::ostringstream pid_at_host;
-    pid_at_host << ::getpid() << "@" << boost::asio::ip::host_name();
-    OUT_DIR /= (LABEL + "_" + now + "_" + pid_at_host.str());
+    OUT_DIR /= (LABEL + "_" + now + "_" + std::to_string(::getpid()));
     fs::create_directory(OUT_DIR);
     fs::current_path(OUT_DIR.string());
     wtl::make_ofs("program_options.conf") << CONFIG_STRING;
