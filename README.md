@@ -9,8 +9,16 @@ The results are analyzed in R.
 
 ## Requirements
 
+- Unix-like environment (macOS, Linux, etc.)
+- C++14 compiler (clang++ >= Apple LLVM 8.1, g++ >= 5.3)
+- [CMake](https://cmake.org/) (>= 3.12.0)
+
+The following libraries are optional or automatically installed:
+
+- [clippson](https://github.com/heavywatal/clippson)
 - [cxxwtl](https://github.com/heavywatal/cxxwtl)
 - [sfmt-class](https://github.com/heavywatal/sfmt-class)
+- [zlib](https://zlib.net)
 
 ## Parameters and functions
 
